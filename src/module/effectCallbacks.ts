@@ -9,14 +9,6 @@ export function registerEffectCallbacks() {
   effectCallbacks.set('shaken', removeShaken);
   effectCallbacks.set('stunned', removeStunned);
   effectCallbacks.set('bleeding-out', bleedOut);
-  effectCallbacks.set('wild-attack', wildAttack);
-}
-
-async function wildAttack(effect: SwadeActiveEffect) {
-  const parent = effect.parent;
-  if (!(parent instanceof SwadeActor)) return;
-  await parent.toggleActiveEffect('vulnerable');
-  await effect.delete();
 }
 
 async function removeShaken(effect: SwadeActiveEffect) {

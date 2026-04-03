@@ -403,14 +403,16 @@ async function _migratePTModifiers(actor: SwadeActor) {
     updateData['system.stats.parry.modifier'] = 0;
     effects.push({
       name: game.i18n.localize('SWADE.Addi') + ' ' + game.i18n.localize('SWADE.Parry'),
-      changes: [
-        {
-          key: 'system.stats.parry.value',
-          value: parryModifier,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          priority: null,
-        },
-      ],
+      system: {
+        changes: [
+          {
+            key: 'system.stats.parry.value',
+            value: parryModifier,
+            type: 'add',
+            priority: null,
+          },
+        ],
+      },
       description: 'Created by 3.1 Migration',
     });
   }
@@ -418,14 +420,16 @@ async function _migratePTModifiers(actor: SwadeActor) {
     updateData['system.stats.toughness.modifier'] = 0;
     effects.push({
       name: game.i18n.localize('SWADE.Addi') + ' ' + game.i18n.localize('SWADE.Tough'),
-      changes: [
-        {
-          key: 'system.stats.toughness.value',
-          value: toughModifier,
-          mode: CONST.ACTIVE_EFFECT_MODES.ADD,
-          priority: null,
-        },
-      ],
+      system: {
+        changes: [
+          {
+            key: 'system.stats.toughness.value',
+            value: toughModifier,
+            type: 'add',
+            priority: null,
+          },
+        ],
+      },
       description: 'Created by 3.1 Migration',
     });
   }

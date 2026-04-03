@@ -379,8 +379,8 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
     if (!combatantUpdates.length) return this;
 
     // Update the combat instance with the new combatants
-    await this.updateEmbeddedDocuments('Combatant', combatantUpdates);
-    await this.updateEmbeddedDocuments('CombatantGroup', groupUpdates);
+    await this.updateEmbeddedDocuments('Combatant', combatantUpdates, {turnEvents: false});
+    await this.updateEmbeddedDocuments('CombatantGroup', groupUpdates, {turnEvents: false});
 
     // Create multiple chat messages
     this._playInitiativeSound();
@@ -528,6 +528,15 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
     }
   }
 
+  protected override async _manageTurnEvents() {
+    const isFromLastRound = this.previous && (this.previous.turn === (this.turns.length - 1)) && (this.turn === 0) && (this.previous.round === this.round - 1);
+    if (isFromLastRound) {
+      const trueLast = this.combatants.reduce((c, acc) => c.system.lastInitiative < acc.system.lastInitiative ? c : acc, {system: {initiative: Infinity}});
+      if (trueLast) this.previous.combatantId = trueLast.id;
+    }
+    await super._manageTurnEvents();
+  }
+
   protected override _onUpdateDescendantDocuments<
     DescendantDocumentType extends Combat.DescendantClass,
     Parent extends Combat.Stored,
@@ -541,19 +550,16 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
     options: foundry.abstract.Document.Database.UpdateOptions<Operation>,
     userId: string
   ) {
-    const oldTurn = this.turn;
     super._onUpdateDescendantDocuments(parent, collection, documents, changes, options, userId);
-    if (this.turn != oldTurn && game.user.isGM) {
-      // FIXME: restore old turn; somehow, super._onUpdateDescendantDocuments() sometimes mutates the turn erroneously.
-      // This especially happens on next round / when resetting initiative / rolling all NPCs.
-      this.update({ turn: oldTurn });
-    }
     if (
       (collection === 'combatants' && changes?.some((change) => Object.hasOwn(change, 'initiative'))) ||
       collection === 'groups' ||
       changes?.some((change) => Object.hasOwn(change, 'initiative'))
     ) {
       this.#onModifyCombatantGroups(parent, documents, options);
+    }
+    if (game.user.isActiveGM && this.system.awaitingNextRound && !this.combatants.some(c => !c.isDefeated && (c.initiative === null))) {
+      this.update({turn: this.turns.length - 1, 'system.awaitingNextRound': false}, {turnEvents: false}).then(() => super.nextRound())
     }
   }
 
@@ -748,8 +754,20 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
     }
   }
 
+  protected override async _onStartTurn(combatant: SwadeCombatant, context: object) {
+    await super._onStartTurn(combatant, context);
+    await this._handleTurnExpirations(combatant, 'start', context);
+  }
+
+  protected override async _onEndTurn(combatant: SwadeCombatant, context: object) {
+    await super._onEndTurn(combatant, context);
+    await this._handleTurnExpirations(combatant, 'end', context);
+  }
+
   override async nextTurn() {
-    await this._handleEndOfTurnExpirations();
+    if (this.system.awaitingNextRound) {
+      return void ui.notifications.warn('SWADE.Combat.MustDrawInitiative', {localize: true});
+    }
     const turn = this.turn ?? -1;
 
     // Determine the next turn number
@@ -777,7 +795,6 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
     const updateOptions = { advanceTime: CONFIG.time.turnTime, direction: 1 };
     Hooks.callAll('combatTurn', this, updateData, updateOptions);
     await this.update(updateData, updateOptions);
-    await this._handleStartOfTurnExpirations();
     await this.expandGroupIfNeeded();
     return this;
   }
@@ -796,14 +813,26 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
   }
 
   override async previousRound() {
-    const revert = await Dialog.confirm({
-      title: game.i18n.localize('SWADE.Combat.RevertRoundTitle'),
+    const revert = await foundry.applications.api.Dialog.confirm({
+      window: {title: game.i18n.localize('SWADE.Combat.RevertRoundTitle')},
       content: '<p>' + game.i18n.localize('SWADE.Combat.RevertRoundContent') + '</p>',
-      defaultYes: true,
+      yes: {default: true},
       rejectClose: false,
       options: { classes: [...Dialog.defaultOptions.classes, 'swade-app'] },
     });
     if (!revert) return this;
+    const combatantUpdates = [];
+    for (const combatant of this.combatants) {
+      if (combatant.group && this.getGroupLeader(combatant.group.id) !== combatant) continue;
+      combatantUpdates.push({_id: combatant.id, initiative: combatant.system.lastInitiative, system: {
+        cardString: '',
+        cardValue: null,
+        hasJoker: false,
+        suitValue: null
+      }});
+    }
+    await this.updateEmbeddedDocuments('Combatant', combatantUpdates, {turnEvents: false});
+    await this.update({'system.awaitingNextRound': false});
     await super.previousRound();
     await this.expandGroupIfNeeded();
     return this;
@@ -819,25 +848,13 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
     });
   }
 
-  protected async _handleStartOfTurnExpirations() {
-    if (!this.combatant || this.combatant.isDefeated) return;
-    const expirations =
-      this.combatant?.actor?.effects.filter(
-        (effect: SwadeActiveEffect) => effect.isTemporary && effect.isExpired('start')
-      ) ?? [];
+  protected async _handleTurnExpirations(combatant: SwadeCombatant, event: 'start'|'end', context: object) {
+    if (!combatant?.actor || combatant.isDefeated) return;
+    const expirations = combatant.actor.effects.filter(e => e.isTemporary && e.shouldPromptDeletion(event, context));
     for (const effect of expirations) {
       await effect.expire();
     }
-  }
-
-  protected async _handleEndOfTurnExpirations() {
-    if (!this.combatant || this.combatant.isDefeated) return;
-    const expirations =
-      this.combatant?.actor?.effects.filter((effect) => effect.isTemporary && effect.isExpired('end')) ?? [];
-    for (const effect of expirations) {
-      await effect.expire();
-    }
-  }
+  } 
 
   protected async _playInitiativeSound() {
     if (!game.settings.get('swade', 'initiativeSound')) return;
@@ -850,6 +867,9 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
   }
 
   protected async _nextRoundAsGM() {
+    if (this.system.awaitingNextRound) {
+      return void ui.notifications.warn('SWADE.Combat.MustDrawInitiative', {localize: true});
+    }
     if (this.#roundAdvanceDialog) return;
     this.#roundAdvanceDialog = true; //set the flag
     //run the dialog
@@ -867,15 +887,12 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
     //reset the combatants
     await this.resetAll();
 
-    //advance the round to the next one
-    await super.nextRound();
-
-    // Reset turn and handle expirations
-    await this._handleStartOfTurnExpirations();
+    // mark "waiting for next round"
+    await this.update({'system.awaitingNextRound': true});
 
     //no auto init, we're done;
     if (!this.automaticInitiative) return;
-
+    
     // if automatic init is on we draw cards
     await this._promptAllPlayersForInitiative();
     //grab the NPCs, we're drawing them locally

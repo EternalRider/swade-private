@@ -17,6 +17,7 @@ function baseCombatantSchema() {
     roundHeld: new fields.NumberField(),
     turnLost: new fields.BooleanField(),
     firstRound: new fields.NumberField(),
+    lastInitiative: new fields.NumberField(),
     // jokerBenniesGiven field removed
   };
 }

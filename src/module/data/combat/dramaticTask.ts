@@ -5,6 +5,7 @@ import { BaseCombat } from './baseCombat';
 function dramaticTaskSchema() {
   const fields = foundry.data.fields;
   return {
+    ...BaseCombat.defineSchema(),
     tokens: new fields.SchemaField({
       value: new fields.NumberField({
         min: 0,

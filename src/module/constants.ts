@@ -18,13 +18,6 @@ export const constants = {
     LBT: 'lbt',
   },
   /** @enum */
-  STATUS_EFFECT_EXPIRATION: {
-    StartOfTurnAuto: 0,
-    StartOfTurnPrompt: 1,
-    EndOfTurnAuto: 2,
-    EndOfTurnPrompt: 3,
-  },
-  /** @enum */
   ADVANCE_TYPE: {
     EDGE: 0,
     SINGLE_SKILL: 1,

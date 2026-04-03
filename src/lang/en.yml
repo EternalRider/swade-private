@@ -1069,7 +1069,7 @@ SWADE:
   EffectWizard:
     Preview: Preview
     Change: Change
-    Mode: Mode
+    Type: Type
     Value: Value
     Changes: Changes
     SelectAttribute: Select Attribute
@@ -1636,6 +1636,7 @@ SWADE:
     RevertRoundTitle: Revert to previous round?
     RevertRoundContent: Do you want to revert to the previous round?
     DiscardedCards: Discarded Cards
+    MustDrawInitiative: Cannot change turn or round without all combatants having initiative!
     Redraw: Card Redraw
     RedrawFor: Card Redraw ({name})
     RedrawDialog:

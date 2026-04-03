@@ -81,8 +81,8 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     const index = target.closest<HTMLLIElement>('li')?.dataset.index;
     if (target.classList.contains('value')) {
       this.#changes[Number(index)].value = target.value;
-    } else if (target.classList.contains('mode')) {
-      this.#changes[Number(index)].mode = Number(target.value) as CONST.ACTIVE_EFFECT_MODES;
+    } else if (target.classList.contains('type')) {
+      this.#changes[Number(index)].type = target.value;
     } else if (target.classList.contains('target')) {
       this[target.name] = target.value;
     }
@@ -117,10 +117,10 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
       },
       currAttribute: this.currAttribute,
       currSkill: this.currSkill,
-      changeModes: {
-        [foundry.CONST.ACTIVE_EFFECT_MODES.ADD]: 'EFFECT.MODE_ADD',
-        [foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE]: 'EFFECT.MODE_OVERRIDE',
-        [foundry.CONST.ACTIVE_EFFECT_MODES.UPGRADE]: 'EFFECT.MODE_UPGRADE',
+      changeTypes: {
+        add: 'EFFECT.CHANGES.TYPES.add',
+        override: 'EFFECT.CHANGES.TYPES.override',
+        upgrade: 'EFFECT.CHANGES.TYPES.upgrade',
       },
       buttons: [
         {
@@ -341,19 +341,20 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
   }
 
   #getExpirationOptions(): Record<number, string> {
-    return {
-      [constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto]: 'SWADE.Expiration.BeginAuto',
-      [constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt]: 'SWADE.Expiration.BeginPrompt',
-      [constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto]: 'SWADE.Expiration.EndAuto',
-      [constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt]: 'SWADE.Expiration.EndPrompt',
-    };
+    return Object.entries(ActiveEffect.EXPIRY_EVENTS)
+      .map(([value, label]) => ({value, label: _loc(label)}))
+      .sort((a, b) => a.label.localeCompare(b.label, game.i18n.lang))
+      .reduce((events, {value, label}) => {
+        events[value] = label;
+        return events;
+      });
   }
 
   #prepareChanges() {
     this.#effect.changes = this.#changes.map((c) => {
       return {
         key: c.key,
-        mode: c.mode,
+        type: c.type,
         value: c.value,
       };
     });
@@ -387,7 +388,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     this.#changes?.push({
       label: label,
       key: key,
-      mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
+      type: 'add',
     });
     this.render({ force: true });
   }
