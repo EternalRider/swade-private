@@ -17,8 +17,9 @@ export interface ChargesSchema extends foundry.data.fields.DataSchema {
 }
 
 export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
-
-  static get initialHasCharges() { return false; }
+  static get initialHasCharges() {
+    return false;
+  }
 
   static randomID() {
     return foundry.utils.randomID(8);
@@ -28,14 +29,14 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
     const fields = foundry.data.fields;
     return {
       hasCharges: new fields.BooleanField({ initial: this.initialHasCharges, label: 'SWADE.HasCharges' }),
-      charges: new fields.TypedObjectField(
+      charges: new fields.ArrayField(
         new fields.SchemaField({
           id: new fields.StringField({ initial: ChargesData.randomID, required: false }),
           sort: new fields.IntegerSortField(),
           name: new fields.StringField({ initial: game.i18n.localize('SWADE.Charges'), required: true }),
           value: new fields.NumberField({ initial: 1, nullable: false, min: 0 }),
           max: new fields.NumberField({ initial: 1, nullable: false, positive: true, min: 1 }),
-          rechargeAmount: new FormulaField(),
+          rechargeAmount: new FormulaField({ initial: '' }),
           rechargeType: new fields.StringField({
             initial: constants.CHARGE_RECHARGE_TYPE.FINITE,
             choices: Object.values(constants.CHARGE_RECHARGE_TYPE),
@@ -44,19 +45,18 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
         }),
         {
           initial: () => {
-            const id = ChargesData.randomID();
-            return {
-              [id]: {
-                id: id,
+            return [
+              {
+                id: ChargesData.randomID(),
                 sort: 0,
                 name: game.i18n.localize('SWADE.Charges'),
                 value: 1,
                 max: 1,
                 rechargeType: constants.CHARGE_RECHARGE_TYPE.FINITE,
-              }
-            };
+              },
+            ];
           },
-        },
+        }
       ),
     };
   }
@@ -65,23 +65,21 @@ export class ChargesData extends foundry.abstract.DataModel<ChargesSchema> {
     return a.sort - b.sort;
   }
 
-  get array(): Array<ChargeData> {
-    return (Object.values(this.charges) as Array<ChargeData>);
-  }
-
-  get sorted(): Array<ChargeData> {
-    return this.array.sort(ChargesData.sortFunction);
-  }
-
   get default(): ChargeData {
-    return this.sorted[0];
+    return this.charges[0];
   }
 
   get size(): number {
-    return Object.keys(this.charges).length;
+    return this.charges.length;
+  }
+
+  find(id: string): ChargeData {
+    return this.charges.find((c) => c.id === id);
   }
 }
 
 export class DefaultHasChargesData extends ChargesData {
-  static get initialHasCharges() { return true; }
+  static get initialHasCharges() {
+    return true;
+  }
 }

@@ -2,23 +2,22 @@ import { Logger } from '../Logger';
 import type SwadeUser from '../documents/SwadeUser';
 import type SwadeCombatant from '../documents/combat/SwadeCombatant';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
 export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(ApplicationV2) {
   declare ctx: HerderInternalContext;
-  
+
   constructor(
     ctx: HerderConstructionContext,
     resolve: () => void,
-    options?: Partial<foundry.applications.api.ApplicationV2.Configuration>,
+    options?: Partial<foundry.applications.api.ApplicationV2.Configuration>
   ) {
     super(options);
     this.#callback = resolve;
     this.ctx = this.#initContext(ctx);
     this.#promptAllPlayers();
   }
-  
+
   #isResolved = false;
   #callback: () => void;
 
@@ -34,36 +33,57 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(Application
     classes: ['swade-application'],
     position: {
       width: 400,
-      height: 'auto'
+      height: 'auto' as const,
     },
     actions: {
-      close: this.#onClose
-    }
+      close: this.#onClose,
+      override: this.#onOverride,
+    },
   };
 
   static override PARTS = {
-    herder: { template: 'systems/swade/templates/apps/player-card-draw-herder.hbs' },
-    footer: { template: 'templates/generic/form-footer.hbs' }
+    herder: {
+      template: 'systems/swade/templates/apps/player-card-draw-herder.hbs',
+    },
+    footer: { template: 'templates/generic/form-footer.hbs' },
   };
 
-  static #onClose(
-    this: PlayerCardDrawHerder,
-    _event: PointerEvent,
-    _target: HTMLElement
-  ) {
+  static #onClose(this: PlayerCardDrawHerder, _event: PointerEvent, _target: HTMLElement) {
     return this.close();
+  }
+
+  static async #onOverride(this: PlayerCardDrawHerder, _event: PointerEvent, target: HTMLElement) {
+    const userId = target.dataset.userId;
+    if (!userId) return;
+    const draw = this.ctx.draws.find((d) => d.user.id === userId);
+    if (!draw) return;
+    const combat = game.combats?.get(this.ctx.combatId);
+    if (!combat) return;
+    await combat.rollInitiative(draw.combatant.id as string, {
+      autoPick: true,
+    });
   }
 
   override async _prepareContext(options) {
     const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      draws: this.ctx.draws.map((draw) => ({
-        user: draw.user.name,
-        combatant: draw.combatant.name,
-        icon: this.#getIconForDraw(draw)
-      })),
-      buttons: [
-        { type: 'button', action: 'close', label: 'Close' }
-      ]
+      draws: this.ctx.draws.map((draw) => {
+        const base = {
+          user: draw.user.name,
+          combatant: draw.combatant.name,
+          icon: this.#getIconForDraw(draw),
+          userId: draw.user.id,
+        };
+        if (draw.state === PlayerDrawState.DRAWING) {
+          (base as any).overrideButton = {
+            type: 'button',
+            action: 'override',
+            icon: 'fa-solid fa-gavel',
+            dataset: { userId: draw.user.id },
+          };
+        }
+        return base;
+      }),
+      buttons: [{ type: 'button', action: 'close', label: 'Close' }],
     });
 
     return context;
@@ -85,10 +105,7 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(Application
       Logger.debug('Waiting for user' + draw.user.name);
       //mark the user as drawing
       this.#markPlayer(draw.user.id as string, PlayerDrawState.DRAWING);
-      await this.#promptPlayerForInitiative(
-        draw.user.id as string,
-        draw.combatant.id as string,
-      );
+      await this.#promptPlayerForInitiative(draw.user.id as string, draw.combatant.id as string);
     }
     this.#resolve();
   }
@@ -105,7 +122,7 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(Application
           combatant: SwadeCombatant,
           _changed: Combatant.UpdateData,
           _options: Combatant.Database.OnUpdateOperation,
-          triggeringUser: string,
+          triggeringUser: string
         ) => {
           if (triggeringUser !== userId || combatant.id !== combatantId) return;
           Logger.debug(`User ${game.users?.get(userId)?.name} drew a card!`);
@@ -113,14 +130,10 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(Application
           this.#cancelHook(hookId);
           this.#markPlayer(triggeringUser, PlayerDrawState.DONE);
           resolve();
-        },
+        }
       );
       //poke the player client
-      game.swade.sockets.promptInitiative(
-        this.ctx.combatId,
-        userId,
-        combatantId,
-      );
+      game.swade.sockets.promptInitiative(this.ctx.combatId, userId, combatantId);
     });
   }
 
@@ -149,19 +162,14 @@ export class PlayerCardDrawHerder extends HandlebarsApplicationMixin(Application
         break;
       case PlayerDrawState.DRAWING:
         classes.push('fa-cards', 'fa-fade');
-        style.push(
-          'color: var(--color-level-info)',
-          '--fa-animation-duration: 2s',
-        );
+        style.push('color: var(--color-level-info)', '--fa-animation-duration: 2s');
         break;
       case PlayerDrawState.DONE:
         classes.push('fa-check');
         style.push('color: var(--color-level-success)');
         break;
     }
-    return new Handlebars.SafeString(
-      `<i class='${classes.join(' ')}' style='${style.join(';')}'></i>`,
-    );
+    return new Handlebars.SafeString(`<i class='${classes.join(' ')}' style='${style.join(';')}'></i>`);
   }
 
   protected override _onClose(options) {

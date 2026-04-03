@@ -6,26 +6,22 @@ export function registerAuraHooks() {
   Hooks.on('canvasInit', () => {
     CONFIG.Canvas.auras = {
       collection: new foundry.utils.Collection<AuraPointSource>(),
-      filter:
-        foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.create({
-          mode: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter
-            .FILTER_MODES.BACKGROUND,
-          visionTexture: canvas.masks.vision.renderTexture,
-        }),
+      filter: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.create({
+        mode: foundry.canvas.rendering.filters.VisualEffectsMaskingFilter.FILTER_MODES.BACKGROUND,
+        visionTexture: canvas.masks.vision.renderTexture,
+      }),
     };
     canvas.effects.auras = CONFIG.Canvas.auras.collection;
   });
 
-  Hooks.on('drawGridLayer', (layer: GridLayer) => {
+  Hooks.on('drawGridLayer', (layer: foundry.canvas.layers.GridLayer) => {
     layer.auras = layer.addChild(new PIXI.Container());
     layer.auras.filters = [CONFIG.Canvas.auras.filter];
-    canvas.effects.visualEffectsMaskingFilters.add(CONFIG.Canvas.auras.filter);
+    canvas.effects?.visualEffectsMaskingFilters.add(CONFIG.Canvas.auras.filter);
   });
 
-  Hooks.on('tearDownGridLayer', (_layer: GridLayer) => {
-    canvas.effects.visualEffectsMaskingFilters.delete(
-      CONFIG.Canvas.auras.filter,
-    );
+  Hooks.on('tearDownGridLayer', (_layer: foundry.canvas.layers.GridLayer) => {
+    canvas.effects?.visualEffectsMaskingFilters.delete(CONFIG.Canvas.auras.filter);
   });
 
   Hooks.on('drawToken', (token: SwadeToken) => {
@@ -61,9 +57,11 @@ export function registerAuraHooks() {
   Hooks.on('controlToken', () => updateAllAuras());
   Hooks.on('hoverToken', () => updateAllAuras());
   Hooks.on('refreshToken', (token: SwadeToken) => {
-    game.settings.get('core', 'visionAnimation')
-      ? updateAurasForToken(token)
-      : refreshAuras();
+    if (game.settings.get('core', 'visionAnimation')) {
+      updateAurasForToken(token);
+    } else {
+      refreshAuras();
+    }
   });
 }
 

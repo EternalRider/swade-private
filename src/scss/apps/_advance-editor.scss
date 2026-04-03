@@ -1,10 +1,12 @@
+@use '../variables';
+
 .advance-editor {
   .editor-container {
     height: 300px;
     .editor {
       height: 100%;
       overflow-y: hidden;
-      border: $solid-line;
+      border: variables.$solid-line;
     }
   }
 }

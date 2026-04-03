@@ -1,0 +1,118 @@
+<section class='swade-roll-message'>
+  {{#unless isPrivate}}
+    {{#if content}}
+      <section class='content'>{{{content}}}</section>
+    {{/if}}
+    <section class='targets'>
+      {{#if targets.length}}
+        <h4 class='actions-subheading'>
+          <i class='fa-solid fa-reflect-both'></i>
+          {{localize 'SWADE.Targets'}}
+        </h4>
+        <ul class='target-list'>
+          {{#each targets}}
+            <li>
+              <button class='target' data-token-uuid='{{uuid}}'>
+                {{name}}
+              </button>
+            </li>
+          {{/each}}
+        </ul>
+      {{/if}}
+    </section>
+    {{#if modifiers.length}}
+      <details class='modifiers'>
+        <summary>{{localize 'SWADE.Modifiers'}}</summary>
+        <span class='content'>
+          <ul class='modifier-list'>
+            {{#each modifiers}}
+              <li>{{label}}: {{value}}</li>
+            {{/each}}
+          </ul>
+        </span>
+      </details>
+    {{/if}}
+    <div class='roll-metadata flexrow'>
+      <div class='reroll'>
+        {{#if rerolled}}{{rerolled}}{{/if}}
+      </div>
+      <div class='group-roll'>
+        {{#if groupRoll}}
+          <i class='fa-duotone fa-user-group'></i>
+          {{localize 'SWADE.GroupRoll'}}
+        {{/if}}
+      </div>
+    </div>
+    {{#if isCritfail}}
+      {{#if (or isWildCard hasConfirmedCritfail)}}
+        <p class='critical-failure'>
+          {{localize 'SWADE.Rolls.Critfail.Critfail'}}
+        </p>
+      {{else if isAuthor}}
+        <p class='critical-failure possible'>
+          {{localize 'SWADE.Rolls.Critfail.Possible'}}
+        </p>
+        <span class='roll-interaction'>
+          <button class='confirm-critfail'>
+            {{localize 'SWADE.Rolls.Critfail.Confirm'}}
+          </button>
+        </span>
+      {{/if}}
+    {{/if}}
+  {{/unless}}
+  {{{rolls}}}
+  {{#if isDamageRoll}}
+    <div class='wounds-calc'>
+      <button
+        type='button'
+        class='calculate-wounds'
+        data-tooltip='{{localize "SWADE.DamageApplicator.ApplyDamage.Hint"}}'
+        {{disabled lockReroll}}
+      >
+        <i class='fa-solid fa-heart-crack'></i>
+        {{localize 'SWADE.DamageApplicator.ApplyDamage.Label'}}
+      </button>
+    </div>
+  {{/if}}
+  <footer class='roll-interaction'>
+    {{#unless (or isPrivate notRerollable)}}
+      {{#if isGM}}
+        <button
+          type='button'
+          class='benny-reroll'
+          data-gm-benny='true'
+          data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+          aria-label='{{localize "SWADE.RerollWithBenny"}}'
+          {{disabled lockReroll}}
+        >
+          <i class='fa-solid fa-dice'></i>
+          {{localize 'SWADE.Rolls.GMBenny'}}
+        </button>
+      {{/if}}
+      {{#if isAuthor}}
+        {{#if isWildCard}}
+          <button
+            type='button'
+            class='benny-reroll'
+            data-tooltip='{{localize "SWADE.RerollWithBenny"}}'
+            aria-label='{{localize "SWADE.RerollWithBenny"}}'
+            {{disabled lockReroll}}
+          >
+            <i class='fa-solid fa-dice'></i>
+            {{localize 'SWADE.Rolls.Benny'}}
+          </button>
+        {{/if}}
+        <button
+          type='button'
+          class='free-reroll'
+          data-tooltip='{{localize "SWADE.FreeReroll"}}'
+          aria-label='{{localize "SWADE.FreeReroll"}}'
+          {{disabled lockReroll}}
+        >
+          <i class='fa-solid fa-dice'></i>
+          {{localize 'SWADE.Rolls.Free'}}
+        </button>
+      {{/if}}
+    {{/unless}}
+  </footer>
+</section>

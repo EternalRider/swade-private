@@ -1,0 +1,74 @@
+<section class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{! Sheet Header }}
+  {{> 'swade.item-header'}}
+
+  <section class='sheet-content'>
+    <div>
+      <div class='form-group'>
+        <label>
+          {{localize 'SWADE.BaseDie'}}
+        </label>
+        <span class='form-fields'>
+          <select name='system.die.sides' data-dtype='Number'>
+            {{selectOptions dieSideOptions selected=item._source.system.die.sides valueAttr="key" labelAttr="label"}}
+          </select>
+          <input
+            name='system.die.modifier'
+            type='text'
+            value='{{item._source.system.die.modifier}}'
+            placeholder='{{localize "SWADE.Modifier"}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>
+          {{localize 'SWADE.LinkAttr'}}
+        </label>
+        <span class='form-fields'>
+          <select name='system.attribute'>
+            {{selectOptions attributeOptions selected=item.system.attribute localize=true}}
+          </select>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>
+          {{localize 'SWADE.WildDie'}}
+        </label>
+        <span class='form-fields'>
+          <select name='system.wild-die.sides' data-dtype='Number'>
+            {{selectOptions wildDieSideOptions selected=item._source.system.wild-die.sides valueAttr='key' labelAttr='label'}}
+          </select>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for='{{item.uuid}}-core-skill'>
+          {{localize 'SWADE.CoreSkill'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id='{{item.uuid}}-core-skill'
+            type='checkbox'
+            name='system.isCoreSkill'
+            {{checked item.system.isCoreSkill}}
+          />
+        </span>
+      </div>
+    </div>
+    <div class='editor-container'>
+      <prose-mirror toggled name='system.description' value='{{enrichedDescription}}'>
+        {{{enrichedDescription}}}
+      </prose-mirror>
+    </div>
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</section>

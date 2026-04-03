@@ -1,21 +1,13 @@
 import { constants } from '../constants';
 import type SwadeItem from '../documents/item/SwadeItem';
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 const { ApplicationV2, HandlebarsApplicationMixin } = foundry.applications.api;
 
-export default class Reloadinator extends HandlebarsApplicationMixin(
-  ApplicationV2,
-) {
+export default class Reloadinator extends HandlebarsApplicationMixin(ApplicationV2) {
   declare magazines: SwadeItem[];
   declare weapon: SwadeItem;
 
-  constructor({
-    weapon,
-    magazines,
-    resolve,
-    ...options
-  }: MagReloadConfiguration) {
+  constructor({ weapon, magazines, resolve, ...options }: MagReloadConfiguration) {
     super(options);
     this.#callback = resolve;
     this.magazines = magazines;
@@ -26,12 +18,8 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
   #isResolved = false;
   #wantsToDiscard = false;
 
-  static asPromise(
-    ctx: Omit<MagReloadConfiguration, 'resolve'>,
-  ): Promise<boolean> {
-    return new Promise((resolve) =>
-      new Reloadinator({ ...ctx, resolve }).render({ force: true }),
-    );
+  static asPromise(ctx: Omit<MagReloadConfiguration, 'resolve'>): Promise<boolean> {
+    return new Promise((resolve) => new Reloadinator({ ...ctx, resolve }).render({ force: true }));
   }
 
   static override DEFAULT_OPTIONS = {
@@ -40,7 +28,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     },
     position: {
       width: 400,
-      height: 'auto',
+      height: 'auto' as const,
     },
     classes: ['swade', 'magazine-manager', 'swade-application'],
     actions: {
@@ -58,27 +46,18 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
   }
 
   get noShotsInWeapon() {
-    return (
-      this.weapon.type === 'weapon' && this.weapon.system.currentShots === 0
-    );
+    return this.weapon.type === 'weapon' && this.weapon.system.currentShots === 0;
   }
 
-  static #onDiscard(
-    this: Reloadinator,
-    _event: PointerEvent,
-    target: HTMLInputElement,
-  ) {
+  static #onDiscard(this: Reloadinator, _event: PointerEvent, target: HTMLInputElement) {
     this.#wantsToDiscard = target.checked;
   }
 
   override async _prepareContext(options) {
-    const context = foundry.utils.mergeObject(
-      await super._prepareContext(options),
-      {
-        magazineGroups: this.#prepareOptionList(),
-        canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo,
-      },
-    );
+    const context = foundry.utils.mergeObject(await super._prepareContext(options), {
+      magazineGroups: this.#prepareOptionList(),
+      canDiscard: this.weapon.system.currentShots === 0 && this.loadedAmmo,
+    });
     return context;
   }
 
@@ -87,11 +66,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     if (!this.#isResolved) this.#callback(false);
   }
 
-  static async #onSelectMag(
-    this: Reloadinator,
-    event: PointerEvent,
-    target: HTMLButtonElement,
-  ) {
+  static async #onSelectMag(this: Reloadinator, event: PointerEvent, target: HTMLButtonElement) {
     event.preventDefault();
     if (this.weapon.type !== 'weapon') return;
     const selected = this.#selectOption(target.dataset.itemId as string);
@@ -103,8 +78,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     if (currentShots === magContent) return;
 
     const stackSize = selected.system.quantity;
-    const discardEmpty =
-      this.#wantsToDiscard && this.noShotsInWeapon && this.loadedAmmo;
+    const discardEmpty = this.#wantsToDiscard && this.noShotsInWeapon && this.loadedAmmo;
 
     //discard empty magazine if desired
     if (discardEmpty || !this.loadedAmmo) {
@@ -132,25 +106,14 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
   }
 
   #prepareOptionList(): MagazineGroups {
-    const groups: MagazineGroups = Object.fromEntries(
-      this.magazines.map((m) => [m.name!, []]),
-    );
-    const filteredMags = this.magazines.filter(
-      (m) => m.system.charges.default.value > 0,
-    );
+    const groups: MagazineGroups = Object.fromEntries(this.magazines.map((m) => [m.name!, []]));
+    const filteredMags = this.magazines.filter((m) => m.system.charges.default.value > 0);
 
     for (const mag of filteredMags) {
       if (mag.type !== 'consumable') continue;
-      const charges = foundry.utils.getProperty(
-        mag,
-        'system.charges.default.value',
-      ) as number;
-      const capacity = foundry.utils.getProperty(
-        mag,
-        'system.charges.default.max',
-      ) as number;
-      const isBattery =
-        mag.system.subtype === constants.CONSUMABLE_TYPE.BATTERY;
+      const charges = foundry.utils.getProperty(mag, 'system.charges.default.value') as number;
+      const capacity = foundry.utils.getProperty(mag, 'system.charges.default.max') as number;
+      const isBattery = mag.system.subtype === constants.CONSUMABLE_TYPE.BATTERY;
 
       groups[mag.name!].push({
         id: mag.id!,
@@ -163,9 +126,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
       });
     }
 
-    Object.values(groups).forEach((v) =>
-      v.sort((a, b) => b.percentage - a.percentage),
-    );
+    Object.values(groups).forEach((v) => v.sort((a, b) => b.percentage - a.percentage));
     return groups;
   }
 
@@ -200,9 +161,7 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     if (selected.type !== 'consumable') return;
 
     //find an existing magazine stack we can add to
-    const emptyMagStack = this.magazines.find(
-      (m) => m.type === 'consumable' && m.system.charges.default.value === 0,
-    );
+    const emptyMagStack = this.magazines.find((m) => m.type === 'consumable' && m.system.charges.default.value === 0);
     //if there's no existing stack or we're doing a partial reload.
     if (!emptyMagStack || (!this.noShotsInWeapon && this.loadedAmmo)) {
       const subtype = selected.system.subtype;
@@ -215,10 +174,9 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
         newCharges = this.#getBatteryFillFromShots(currentShots);
       }
       //copy the selected consumable and set the new charges on the clone.
-      await selected.clone(
-        { 'system.quantity': 1, [`system.charges.charges.${selected.system.charges.default.id}.value`]: newCharges },
-        { save: true },
-      );
+      const charges = selected.system.charges.charges;
+      charges[0].value = newCharges;
+      await selected.clone({ 'system.quantity': 1, [`system.charges.charges`]: charges }, { save: true });
     } else {
       //else increase the stack by 1
       await emptyMagStack.update({
@@ -243,7 +201,11 @@ export default class Reloadinator extends HandlebarsApplicationMixin(
     } else if (subtype === constants.CONSUMABLE_TYPE.BATTERY) {
       shots = this.#getBatteryFillFromShots(currentShots);
     }
-    await selected.update({ [`system.charges.charges.${selected.system.charges.default.id}.value`]: shots });
+
+    selected.system.charges.default.value = shots;
+    await selected.update({
+      [`system.charges.charges`]: selected.system.charges.charges,
+    });
   }
 
   #getBatteryFillFromShots(currentShots: number): number {

@@ -29,9 +29,7 @@ export class UserSummary {
   }
 
   async #onMouseEnter(event: MouseEvent) {
-    const userId = (event.target as HTMLElement).closest<HTMLLIElement>(
-      '[data-user-id]',
-    )?.dataset.userId as string;
+    const userId = (event.target as HTMLElement).closest<HTMLLIElement>('[data-user-id]')?.dataset.userId as string;
     const user = game.users!.get(userId, { strict: true });
     const actor = user.character as SwadeActor;
     let text = '';

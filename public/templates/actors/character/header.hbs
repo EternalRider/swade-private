@@ -1,0 +1,100 @@
+<header class='header'>
+  <div class="char-img-container">
+	  <img
+      class="profile-img"
+      src="{{actor.img}}"
+      data-edit="img"
+      data-action='editImg'
+      alt="{{actor.name}}"
+      data-tooltip='SWADE.RightClickZoom'
+    />
+	</div>
+  {{!-- Sheet Header --}}
+  <label class="gridcell charname-container">
+    <span class="sr-only">{{localize 'Name'}}</span>
+    <input
+      type="text"
+      name="name"
+      class="charname"
+      value="{{actor.name}}"
+      placeholder="{{localize 'Name'}}"
+      data-tooltip="{{actor.name}}"
+      {{readonly (not editable)}}
+    />
+  </label>
+  <figure class="gridcell branding"></figure>
+  {{#if (and settingrules.conviction actor.isWildcard)}}
+  <div id="conviction" class="gridcell">
+    <button type="button" class="conviction-toggle" data-action="toggleConviction">
+      <strong class="{{#if actor.system.details.conviction.active}}pulse{{/if}}">
+        {{~#if actor.system.details.conviction.active~}} {{localize
+        "SWADE.ConvictionActive"}} {{~else~}} {{localize "SWADE.Conv"}} {{/if}}
+      </strong>
+    </button>
+    <div>
+      <input
+        type="Number"
+        class="conviction-counter"
+        name="system.details.conviction.value"
+        value="{{actor.system.details.conviction.value}}"
+        class="character-detail"
+        data-dtype="Number"
+      />
+    </div>
+  </div>
+  {{/if}}
+  <span class="gridcell character-detail ancestry" data-tooltip="{{localize 'SWADE.Ancestry'}}">
+    <label class="sr-only">{{localize 'SWADE.Ancestry'}}</label>
+    {{#if actor.ancestry}}
+      <button type="button" data-action="openAncestryArchetype" data-item-id="{{actor.ancestry.id}}">{{actor.ancestry.name}}</button>
+    {{else}}
+      <input
+        type="text"
+        name="system.details.species.name"
+        value="{{actor.system.details.species.name}}"
+        placeholder="{{localize 'SWADE.Ancestry'}}"
+        data-tooltip="{{localize 'SWADE.Ancestry'}}"
+      >
+    {{/if}}
+  </span>
+  <span class="gridcell character-detail archetype" data-tooltip="SWADE.Archetype">
+    <label class="sr-only">{{localize 'SWADE.Archetype'}}</label>
+    {{#if actor.archetype}}
+      <button type="button" data-action="openAncestryArchetype" data-item-id="{{actor.archetype.id}}" >{{actor.archetype.name}}</button>
+    {{else}}
+      <input
+        type="text"
+        name="system.details.archetype"
+        value="{{actor.system.details.archetype}}"
+        placeholder="{{localize 'SWADE.Archetype'}}"
+        data-tooltip="{{localize 'SWADE.Archetype'}}"
+      >
+    {{/if}}
+  </span>
+  <span class="gridcell character-detail rank" data-tooltip="SWADE.Rank">
+    <label class="sr-only">{{localize 'SWADE.Rank'}}</label>
+    <input
+      type="text"
+      name="system.advances.rank"
+      value="{{actor.system.advances.rank}}"
+      placeholder="{{localize 'SWADE.Rank'}}"
+      {{disabled advances.expanded}}
+    />
+  </span>
+  {{#if hasAnyRechargeableItems}}
+  <span class="gridcell character-detail recharge" data-tooltip="SWADE.Recharge">
+    <button type='menu' class='charge-recharge-menu'>
+      <i class='fas fa-rotate'></i>
+    </button>
+  </span>
+  {{/if}}
+  <span class="gridcell character-detail advances" data-tooltip="SWADE.Adv">
+    <a data-action="displayAdvances">{{localize 'SWADE.Adv'}}</a>
+    <input
+      type="number"
+      name="system.advances.value"
+      value="{{actor.system.advances.value}}"
+      {{disabled advances.expanded}}
+    />
+  </span>
+</header>

@@ -1,8 +1,5 @@
 import { Attribute } from '../../globals';
-import {
-  ItemAction,
-  RollModifier,
-} from '../../interfaces/additional.interface';
+import { ItemAction, RollModifier } from '../../interfaces/additional.interface';
 import IRollOptions from '../../interfaces/RollOptions.interface';
 import { constants } from '../constants';
 import { DamageRoll } from '../dice/DamageRoll';
@@ -19,15 +16,10 @@ export default class ItemCardService {
 
     //if it's a power and the No Power Points rule is in effect add the power cost as a modifier to the roll
     if (item.type === 'power' && game.settings.get('swade', 'noPowerPoints')) {
-      const ppCost =
-        html.querySelector<HTMLInputElement>('input.pp-adjust')
-          ?.valueAsNumber ?? 0;
+      const ppCost = html.querySelector<HTMLInputElement>('input.pp-adjust')?.valueAsNumber ?? 0;
       let modifier = Math.ceil(ppCost / 2);
       modifier = Math.min(modifier * -1, modifier);
-      if (
-        action === 'formula' ||
-        actionObj?.type === constants.ACTION_TYPE.TRAIT
-      ) {
+      if (action === 'formula' || actionObj?.type === constants.ACTION_TYPE.TRAIT) {
         mods.push({
           label: game.i18n.localize('TYPES.Item.power'),
           value: modifier,
@@ -42,20 +34,16 @@ export default class ItemCardService {
     item: SwadeItem,
     actor: SwadeActor,
     additionalMods: RollModifier[] = [],
-    html?: HTMLElement,
+    html?: HTMLElement
   ) {
     const traitName = foundry.utils.getProperty(item, 'system.actions.trait');
 
     let costOverride = undefined;
     if (item.type === 'power') {
       costOverride =
-        html?.querySelector<HTMLInputElement>('input.pp-adjust')
-          ?.valueAsNumber ?? item.system.ppModifiers.cost;
+        html?.querySelector<HTMLInputElement>('input.pp-adjust')?.valueAsNumber ?? item.system.ppModifiers.cost;
     }
-    const canExpend =
-      costOverride !== undefined
-        ? item.canExpendResources(costOverride)
-        : item.canExpendResources();
+    const canExpend = costOverride !== undefined ? item.canExpendResources(costOverride) : item.canExpendResources();
     if (!canExpend) {
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
@@ -72,11 +60,7 @@ export default class ItemCardService {
     return roll;
   }
 
-  async handleDamageAction(
-    item: SwadeItem,
-    actor: SwadeActor,
-    additionalMods: RollModifier[] = [],
-  ) {
+  async handleDamageAction(item: SwadeItem, actor: SwadeActor, additionalMods: RollModifier[] = []) {
     const dmgMod = this.#getDamageMod(item);
     if (dmgMod) additionalMods.push(dmgMod);
     const roll = await item.rollDamage({ additionalMods });
@@ -97,15 +81,12 @@ export default class ItemCardService {
     action: ItemAction | undefined,
     key: string,
     additionalMods: RollModifier[] = [],
-    event?: Event,
+    event?: Event
   ): Promise<TraitRoll | DamageRoll | null> {
     if (!action) return null;
     let roll: TraitRoll | DamageRoll | null = null;
 
-    if (
-      action.type === constants.ACTION_TYPE.TRAIT ||
-      action.type === constants.ACTION_TYPE.RESIST
-    ) {
+    if (action.type === constants.ACTION_TYPE.TRAIT || action.type === constants.ACTION_TYPE.RESIST) {
       roll = await this.#handleTraitAction(action, item, actor, additionalMods);
     } else if (action.type === constants.ACTION_TYPE.DAMAGE) {
       //Do Damage stuff
@@ -122,13 +103,11 @@ export default class ItemCardService {
     item: SwadeItem,
     actor: SwadeActor,
     btn: HTMLButtonElement,
-    html: HTMLElement,
+    html: HTMLElement
   ): Promise<void> {
     //bail early if the No Power points rule is in effect
     if (game.settings.get('swade', 'noPowerPoints')) return;
-    const ppCost =
-      html.querySelector<HTMLInputElement>('input.pp-adjust')?.valueAsNumber ??
-      0;
+    const ppCost = html.querySelector<HTMLInputElement>('input.pp-adjust')?.valueAsNumber ?? 0;
     const adjustment = btn.dataset.adjust;
 
     if (item.type === 'power') {
@@ -157,12 +136,10 @@ export default class ItemCardService {
     action: ItemAction,
     item: SwadeItem,
     actor: SwadeActor,
-    additionalMods: RollModifier[],
+    additionalMods: RollModifier[]
   ): Promise<TraitRoll | null> {
     //set the trait name and potentially override it via the action
-    const traitName =
-      action.override ||
-      foundry.utils.getProperty(item, 'system.actions.trait');
+    const traitName = action.override || foundry.utils.getProperty(item, 'system.actions.trait');
 
     //find the trait and either get the skill item or the key of the attribute
     const trait = getTrait(traitName, actor);
@@ -174,10 +151,7 @@ export default class ItemCardService {
       });
     }
 
-    if (
-      item.type === 'weapon' &&
-      !item.canExpendResources(action.resourcesUsed ?? 1)
-    ) {
+    if (item.type === 'weapon' && !item.canExpendResources(action.resourcesUsed ?? 1)) {
       Logger.warn('SWADE.NotEnoughAmmo', { localize: true, toast: true });
       return null;
     }
@@ -190,10 +164,7 @@ export default class ItemCardService {
       additionalMods,
       item: item,
     });
-    const shouldConsume =
-      !!roll &&
-      item.type === 'weapon' &&
-      action.type === constants.ACTION_TYPE.TRAIT;
+    const shouldConsume = !!roll && item.type === 'weapon' && action.type === constants.ACTION_TYPE.TRAIT;
     if (shouldConsume) {
       await item.consume(action.resourcesUsed ?? 1);
     }
@@ -203,7 +174,7 @@ export default class ItemCardService {
   async #handleDamageAction(
     action: ItemAction,
     item: SwadeItem,
-    additionalMods: RollModifier[],
+    additionalMods: RollModifier[]
   ): Promise<DamageRoll | null> {
     const dmgMod = this.#getDamageMod(item);
     if (dmgMod) additionalMods.push(dmgMod);
@@ -222,18 +193,11 @@ export default class ItemCardService {
     });
   }
 
-  async #handleMacroAction(
-    action: ItemAction,
-    item: SwadeItem,
-    event?: Event,
-  ): Promise<void> {
+  async #handleMacroAction(action: ItemAction, item: SwadeItem, event?: Event): Promise<void> {
     if (!action.uuid) return;
     const macro = (await fromUuid(action.uuid)) as Macro | null;
     if (!macro) {
-      Logger.warn(
-        game.i18n.format('SWADE.CouldNotFindMacro', { uuid: action.uuid }),
-        { toast: true },
-      );
+      Logger.warn(game.i18n.format('SWADE.CouldNotFindMacro', { uuid: action.uuid }), { toast: true });
     }
     let targetActor;
     let targetToken;
@@ -257,10 +221,7 @@ export default class ItemCardService {
   }
 
   #getDamageMod(item: SwadeItem): RollModifier | null {
-    const value: string | undefined = foundry.utils.getProperty(
-      item,
-      'system.actions.dmgMod',
-    );
+    const value: string | undefined = foundry.utils.getProperty(item, 'system.actions.dmgMod');
     if (!value) return null;
 
     let label = '';
@@ -274,7 +235,7 @@ export default class ItemCardService {
   async #doTraitAction(
     trait: string | SwadeItem | undefined,
     actor: SwadeActor,
-    options: IRollOptions,
+    options: IRollOptions
   ): Promise<TraitRoll | null> {
     const rollSkill = trait instanceof SwadeItem || !trait;
     const rollAttribute = typeof trait === 'string';
@@ -289,12 +250,7 @@ export default class ItemCardService {
     }
   }
 
-  #callActionHook(
-    item: SwadeItem,
-    actor: SwadeActor,
-    action: string,
-    roll: TraitRoll | DamageRoll | null,
-  ) {
+  #callActionHook(item: SwadeItem, actor: SwadeActor, action: string, roll: TraitRoll | DamageRoll | null) {
     if (!roll) return; // Do not trigger the hook if the roll was cancelled
     /** @category Hooks */
     Hooks.call('swadeAction', actor, item, action, roll, game.userId);

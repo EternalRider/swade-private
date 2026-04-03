@@ -1,0 +1,32 @@
+<ul class="effects-list">
+  {{#each allApplicableEffects }}
+  <li
+    class="flexrow effect{{#unless origin}} active-effect{{/unless}}{{#if disabled}} disabled-effect{{/if}}"
+    data-effect-id="{{id}}"
+    data-effect-uuid="{{uuid}}"
+    {{#if transfer}}data-parent-id="{{parent.id}}"{{/if}}
+    data-document-class="ActiveEffect"
+  >
+    <img src="{{img}}" alt="{{name}}" class="effect-icon" />
+    {{#if transfer}}
+    <a class="effect-label effect-action" data-action="openEffectOrigin"
+      >{{name}}</a
+    >
+    {{else}}
+    <span class="effect-label">{{name}}</span>
+    {{/if}} {{#unless ../data.isOwned}}
+    <span class="effect-controls">
+      <a class="effect-action" data-action="toggleProperty" data-toggle="disabled">
+        <i class="fas fa-power-off"></i>
+      </a>
+      <a class="effect-action" data-action="openEffect">
+        <i class="fas fa-edit"></i>
+      </a>
+      <a class="effect-action" data-action="deleteEffect">
+        <i class="fas fa-trash"></i>
+      </a>
+    </span>
+    {{/unless}}
+  </li>
+  {{/each}}
+</ul>

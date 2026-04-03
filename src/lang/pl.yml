@@ -194,8 +194,8 @@ SWADE:
   Effects: Stany
   Hindrances: Zawady
   MajHind: Poważna Zawada
-  Major: "(Poważna)"
-  Minor: "(Drobna)"
+  Major: '(Poważna)'
+  Minor: '(Drobna)'
   Edges: Przewagi
   ArcBack: Zdolności nadprzyrodzone
   Req: Wymagania
@@ -296,7 +296,7 @@ SWADE:
   Cancel: Anuluj
   Redraw: Przelosuj kartę
   RedrawBenny: Użyj Fuksa by przelosować kartę
-  Add: "Dodaj"
+  Add: 'Dodaj'
   ConfigInit: Konfiguruj inicjatywę
   IgnWounds: Ignoruj Rany
   Size: Rozmiar
@@ -307,8 +307,8 @@ SWADE:
   OldCard: Stara karta
   ActionCard: Karta Akcji
   ConvictionActive: Determinacja aktywna
-  ConvictionActivate: "{name} używa swojej Determinacji!"
-  ConvictionEnd: "{name} nie jest zbyt Zdeterminowany"
+  ConvictionActivate: '{name} używa swojej Determinacji!'
+  ConvictionEnd: '{name} nie jest zbyt Zdeterminowany'
   ConvictionExtend: Czy chcesz zwiększyć swoją Determinację?
   ConvictionExtendPrompt: Czy chcesz wydać Fuksa aby zwiększyć swoją Determinację?
   NoBennies: Masz za mało Fuksów!
@@ -319,7 +319,7 @@ SWADE:
   Items: Przedmioty
   Max: Maks
   Curr: Aktualny
-  DSNNone: "- Brak -"
+  DSNNone: '- Brak -'
   Duplicate: Kopiuj
   Reload: Przeładowanie
   Refresh: Odśwież tę kartę
@@ -332,8 +332,8 @@ SWADE:
     Title: Dodaj lub zamień akcje
     Add: Dodaj nową
     Replace: Zamień istniejącą
-    Content: "<p>Czy chcesz dodać akcje z {type} <strong>{source}</strong> jako nowe
-      akcje lub wymienić istniejące akcje?</p>"
+    Content: '<p>Czy chcesz dodać akcje z {type} <strong>{source}</strong> jako nowe
+      akcje lub wymienić istniejące akcje?</p>'
   ppReload: Punkty Mocy do przeładowania
   ReloadNotPossible: Ten typ aktora nie przeładowuje
   ReloadUnneeded: Broń jest już w pełni załadowana
@@ -395,7 +395,7 @@ SWADE:
   Quick: Błyskawiczny refleks
   BonusDamage: Dodatkowe obrażenia
   Joker: Joker
-  CustomWildDie: "- Niestandardowa Kość Figury -"
+  CustomWildDie: '- Niestandardowa Kość Figury -'
   Subtract: Odejmij
   DmgRolls: Rzuty na obrażenia
   SubtractPPDesc: Odejmij koszt PM od dostępnych PM
@@ -528,7 +528,7 @@ SWADE:
   ChaseReset: Talia "{deck}" została zresetowana.
   Expiration:
     TabLabel: Zachowanie w czasie tury
-    Description: "<p>Efekty wygasają podczas <em>następnej tury celu lub później</em>.</p>"
+    Description: '<p>Efekty wygasają podczas <em>następnej tury celu lub później</em>.</p>'
     Behavior: Zasady wygasania
     BeginAuto: Początek tury, automatycznie
     BeginPrompt: Początek tury, zapytanie
@@ -855,11 +855,11 @@ SWADE:
     Use: Użyj
     Consumables: Przedmioty zużywalne
     NotEnoughCharges: Za mało ładunków!
-    ChargesUsed: "<p>{charges} ładunki/ów użytych na <em>{name}</em></p>"
-  EmptyAncestralAbilitiesHint: "<strong>Uwaga:</strong> Ta funkcja została wyłączona
+    ChargesUsed: '<p>{charges} ładunki/ów użytych na <em>{name}</em></p>'
+  EmptyAncestralAbilitiesHint: '<strong>Uwaga:</strong> Ta funkcja została wyłączona
     na rzecz przyznawania przedmiotów. Jeśli tworzysz nowe {ancestry} albo {archetype},
     przeciągnij i upuść przedmioty na jego kartę. Przeciągnięte {ancestry} albo {archetype}
-    automatycznie dodadzą te przedmioty do karty postaci aktora."
+    automatycznie dodadzą te przedmioty do karty postaci aktora.'
   NoTokenSelectedForResistRoll: Aby wykonać rzut na odporność, najpierw zaznacz token
   Templates:
     Cone:
@@ -968,14 +968,14 @@ SWADE:
       Label: Ustal obrażenia
       Hint: Kliknij aby ustalić obrażenia wybranego tokenu
     SoakModifier: Modyfikator Wyparowania
-    WoundsAboutToBeTaken: "<p><strong>{name}</strong> otrzyma <strong>{wounds}</strong>!</p>"
+    WoundsAboutToBeTaken: '<p><strong>{name}</strong> otrzyma <strong>{wounds}</strong>!</p>'
     SoakDialog:
       SoakRoll: Test Wigoru w celu Wyparowania
       WoundedTitle: Rzuć aby Wyparować Rany dla {name}?
       UnwoundedTitle: Dostosuj obrażenia aby ustalić status dla {name}?
-      WoundedPrompt: "<p>{name} otrzyma {wounds}. Czy chcesz podjąć próbę Wyparowania?</p>"
-      ShakenPrompt: "<p>{name} zaraz będzie W Szoku.</p>"
-      UnharmedPrompt: "<p>{name} może być nienaruszony.</p>"
+      WoundedPrompt: '<p>{name} otrzyma {wounds}. Czy chcesz podjąć próbę Wyparowania?</p>'
+      ShakenPrompt: '<p>{name} zaraz będzie W Szoku.</p>'
+      UnharmedPrompt: '<p>{name} może być nienaruszony.</p>'
       Benny: Wydaj Fuksa w celu Wyparowania
       GMBenny: Wydaj Fuksa MG w celu Wyparowania
       Free: Darmowe Wyparowanie
@@ -986,35 +986,35 @@ SWADE:
       NoVehicleSoak: Wyparowanie w przypadku pojazdów nie jest jeszcze wspierane
     RerollSoakDialog:
       Title: Przerzuć aby Wyparować Rany dla {name}?
-      Prompt: "<p>{name} otrzyma {wounds}. Czy chcesz przerzucić Wyparowanie?</p>"
-      PromptCritFail: "<p>{name} otrzyma {wounds}. Katastrofa nie pozwala na przerzuty.</p>"
+      Prompt: '<p>{name} otrzyma {wounds}. Czy chcesz przerzucić Wyparowanie?</p>'
+      PromptCritFail: '<p>{name} otrzyma {wounds}. Katastrofa nie pozwala na przerzuty.</p>'
       Benny: Wydaj Fuksa aby przerzucić
       GMBenny: Wydaj Fuksa MG aby przerzucić
       Free: Darmowy przerzut
       TakeWounds: Otrzymaj {wounds}
-    AdjustDamagePrompt: "<p>Dostosuj obrażenia do dowolnych zdolności i efektów, które
-      {name} może mieć.</p>"
+    AdjustDamagePrompt: '<p>Dostosuj obrażenia do dowolnych zdolności i efektów, które
+      {name} może mieć.</p>'
     Result:
-      NoSignificantDamage: "<p><strong>{name}</strong> nie ponosi znacznych szkód.</p>"
-      SoakedAll: "<p><strong>{name}</strong> Wyparował wszystkie Rany i nie jest W
-        Szoku!</p>"
-      IsShaken: "<p><strong>{name}</strong> jest <strong>W Szoku</strong>!</p>"
-      IsShakenWithWounds: "<p><strong>{name}</strong> jest <strong>W Szoku</strong>
-        i otrzymał <strong>{wounds}</strong>!</p>"
-      IsIncapacitated: "<p><strong>{name}</strong> jest <strong>Wyeliminowany!</strong></p>"
+      NoSignificantDamage: '<p><strong>{name}</strong> nie ponosi znacznych szkód.</p>'
+      SoakedAll: '<p><strong>{name}</strong> Wyparował wszystkie Rany i nie jest W
+        Szoku!</p>'
+      IsShaken: '<p><strong>{name}</strong> jest <strong>W Szoku</strong>!</p>'
+      IsShakenWithWounds: '<p><strong>{name}</strong> jest <strong>W Szoku</strong>
+        i otrzymał <strong>{wounds}</strong>!</p>'
+      IsIncapacitated: '<p><strong>{name}</strong> jest <strong>Wyeliminowany!</strong></p>'
     Incapacitation:
       InjuryRoll: 'Wyeliminowany: Test Wigoru w celu uniknięcia Urazu'
-      Dies: "<p><strong>{name}</strong> umiera z powodu obrażeń!</p>"
-      PermanentInjury: "<p><strong>{name}</strong> doznaje trwałego Urazu oraz <strong>Kona!</strong></p>"
-      PermanentInjuryHND: "<p><strong>{name}</strong> doznaje trwałego Urazu!</p>"
-      TemporaryInjury: "<p><strong>{name}</strong> doznaje Urazu, który trwa do pełnego
-        wyleczenia Ran.</p>"
-      ShortInjury: "<p><strong>{name}</strong> doznaje Urazu, który trwa 24 godziny,
-        albo pełnego wyleczenia Ran (cokolwiek wydarzy się pierwsze).</p>"
+      Dies: '<p><strong>{name}</strong> umiera z powodu obrażeń!</p>'
+      PermanentInjury: '<p><strong>{name}</strong> doznaje trwałego Urazu oraz <strong>Kona!</strong></p>'
+      PermanentInjuryHND: '<p><strong>{name}</strong> doznaje trwałego Urazu!</p>'
+      TemporaryInjury: '<p><strong>{name}</strong> doznaje Urazu, który trwa do pełnego
+        wyleczenia Ran.</p>'
+      ShortInjury: '<p><strong>{name}</strong> doznaje Urazu, który trwa 24 godziny,
+        albo pełnego wyleczenia Ran (cokolwiek wydarzy się pierwsze).</p>'
       TakeFail: Doznaje trwałego Urazu
       TakeSuccess: Doznaje Urazu, który trwa do pełnego wyleczenia Ran
       Title: Przerzut Urazu dla {name}?
-      Prompt: "<p>{name} dozna Urazu. Czy chcesz przerzucić test Wigoru?</p>"
+      Prompt: '<p>{name} dozna Urazu. Czy chcesz przerzucić test Wigoru?</p>'
     NoInjuryTable: Żadna Tabela Urazów nie została wybrana. Sprawdź ustawienia SWADE
     NoTargetsSelected: Wybierz cel, dla którego mają zostać zastosowane obrażenia.
   NumberOfDice:
@@ -1420,7 +1420,7 @@ SWADE:
     LinkScene: Powiąż scenę
     StartEncounter: Rozpocznij spotkanie
     RedrawFor: Dobranie karty ({name})
-  FollowerCount: "{count} podążający"
+  FollowerCount: '{count} podążający'
   Benny: Fuks
   Free: Za darmo
   SettingConfigurator:

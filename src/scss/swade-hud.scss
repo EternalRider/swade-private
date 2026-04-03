@@ -4,8 +4,7 @@
 // You may add SCSS variables, mixins, or nesting as needed for future maintainability.
 
 :root {
-  --swadehud-paper-texture: url('assets/paperboard-texture.webp') left top
-    repeat;
+  --swadehud-paper-texture: url('/assets/paperboard-texture.webp') left top repeat;
   --swadehud-accent: #972824;
   --swadehud-font-primary: 'Roboto Slab', 'Signika', serif;
   --swadehud-text: #000000;
@@ -38,7 +37,7 @@
 }
 
 .swadehud-popout .swadehud-note-header {
-  background-image: url('assets/skills_header.webp');
+  background-image: url('/assets/skills_header.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -47,7 +46,7 @@
 }
 
 .swadehud-popout .swadehud-note-main {
-  background-image: url('assets/skills_bg.webp');
+  background-image: url('/assets/skills_bg.webp');
   background-size: contain;
   background-position: center;
   background-repeat: repeat-y;
@@ -58,7 +57,7 @@
 }
 
 .swadehud-popout .swadehud-note-footer {
-  background-image: url('assets/skills_footer.webp');
+  background-image: url('/assets/skills_footer.webp');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -423,10 +422,8 @@
     0 0 15px rgba(242, 194, 75, 0.4);
 }
 
-.swadehud-combat-toggle-clickable[data-in-combat='true']
-  .swadehud-bottomstat__icon,
-.swadehud-combat-toggle-clickable[data-in-combat='true']
-  .swadehud-bottomstat__value--large {
+.swadehud-combat-toggle-clickable[data-in-combat='true'] .swadehud-bottomstat__icon,
+.swadehud-combat-toggle-clickable[data-in-combat='true'] .swadehud-bottomstat__value--large {
   color: var(--swadehud-text, #000000);
 }
 
@@ -1028,8 +1025,7 @@
   transition: all 0.3s ease;
 }
 
-.swadehud-core__rightcircle
-  .swadehud-circle:has(.swadehud-circle-content):hover {
+.swadehud-core__rightcircle .swadehud-circle:has(.swadehud-circle-content):hover {
   background: var(--swadehud-accent, #972824);
   box-shadow:
     0 4px 16px rgba(151, 40, 36, 0.6),
@@ -1740,8 +1736,7 @@
   }
 
   .swadehud-circle:has(.swadehud-circle-content):hover,
-  .swadehud-core__rightcircle
-    .swadehud-circle:has(.swadehud-circle-content):hover,
+  .swadehud-core__rightcircle .swadehud-circle:has(.swadehud-circle-content):hover,
   .swadehud-portrait:hover {
     transform: none !important;
     animation: none !important;
@@ -1877,12 +1872,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.2),
-    transparent
-  );
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   animation: swadehud-loading-shimmer 1.5s infinite;
 }
 
@@ -2242,11 +2232,7 @@ body.theme-dark .app.window-app[id='swadehud'] .window-content,
 
 .swadehud body.game .app.window-app[id='swadehud'] .window-title,
 .swadehud body.theme-dark .app.window-app[id='swadehud'] .window-title,
-.swadehud
-  body.game
-  body.theme-dark
-  .app.window-app[id='swadehud']
-  .window-title,
+.swadehud body.game body.theme-dark .app.window-app[id='swadehud'] .window-title,
 .swadehud .app.window-app[id='swadehud'] .window-title {
   display: none !important;
   cursor: default !important;

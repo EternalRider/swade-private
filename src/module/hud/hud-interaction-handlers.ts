@@ -1,7 +1,6 @@
 import { SwadePopout } from './hud-popout';
-import { debounce } from './hud-utils';
 import { setupHudStatHandlers } from './hud-stat-handlers';
-import { debounceRender } from './hud-utils';
+import { debounce, debounceRender } from './hud-utils';
 
 /**
  * Toggles a popout window for a specific HUD tab
@@ -22,9 +21,9 @@ import { debounceRender } from './hud-utils';
 async function togglePopout(
   hudInstance: any,
   template: string,
-  side: string,
+  _side: string,
   popoutProperty: string,
-  setupCallback: ((element: HTMLElement, actor: any) => void) | null = null,
+  setupCallback: ((element: HTMLElement, actor: any) => void) | null = null
 ): Promise<SwadePopout | null> {
   // Check if this specific popout is already open
   if (hudInstance[popoutProperty]) {
@@ -59,10 +58,7 @@ async function togglePopout(
   const popout = new SwadePopout({
     actor: hudInstance.actor,
     token: hudInstance.token,
-    panelType: popoutProperty
-      .replace('current', '')
-      .replace('Popout', '')
-      .toLowerCase(),
+    panelType: popoutProperty.replace('current', '').replace('Popout', '').toLowerCase(),
     title: '',
     template,
     width: 400,
@@ -104,9 +100,9 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'systems/swade/templates/actors/hud/hud-traits-panel.hbs',
           'left',
           'currentTraitsPopout',
-          null,
+          null
         );
-      }, 50),
+      }, 50)
     );
   }
 
@@ -125,15 +121,10 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           async (element) => {
             // setupHudActionButtonListeners is run by the popout's activateListeners();
             // only attach specialized stat handlers here.
-            setupHudStatHandlers(
-              element,
-              hudInstance.actor,
-              null,
-              hudInstance.token,
-            );
-          },
+            setupHudStatHandlers(element, hudInstance.actor, null, hudInstance.token);
+          }
         );
-      }, 50),
+      }, 50)
     );
   }
 
@@ -149,9 +140,9 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           'systems/swade/templates/actors/hud/hud-edges-panel.hbs',
           'left',
           'currentEdgesPopout',
-          null,
+          null
         );
-      }, 80),
+      }, 80)
     );
   }
 
@@ -166,9 +157,9 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           hudInstance,
           'systems/swade/templates/actors/hud/hud-actions-panel.hbs',
           'left',
-          'currentActionsPopout',
+          'currentActionsPopout'
         );
-      }, 50),
+      }, 50)
     );
   }
 
@@ -183,13 +174,13 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           hudInstance,
           'systems/swade/templates/actors/hud/hud-conditions-panel.hbs',
           'right',
-          'currentConditionsPopout',
+          'currentConditionsPopout'
         );
         if (popout && popout.element) {
           // Setup condition handlers for toggling status effects
           setupConditionHandlers(popout.element, hudInstance);
         }
-      }, 80),
+      }, 80)
     );
   }
 
@@ -204,7 +195,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           hudInstance,
           'systems/swade/templates/actors/hud/hud-effects-panel.hbs',
           'right',
-          'currentEffectsPopout',
+          'currentEffectsPopout'
         );
 
         // Setup effect handlers
@@ -212,7 +203,7 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           // Panel-specific handlers are attached by the popout's activateListeners();
           // no additional action listener attachment is required here.
         }
-      }, 80),
+      }, 80)
     );
   }
 
@@ -227,12 +218,12 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           hudInstance,
           'systems/swade/templates/actors/hud/hud-powers-panel.hbs',
           'right',
-          'currentPowersPopout',
+          'currentPowersPopout'
         );
         if (popout && popout.element) {
           // Popout's activateListeners() will attach action and stat handlers.
         }
-      }, 80),
+      }, 80)
     );
   }
 
@@ -251,9 +242,9 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           async (_element) => {
             // Popout will attach action and stat handlers itself via activateListeners();
             // Any gear-specific setup should be handled inside the popout listeners.
-          },
+          }
         );
-      }, 80),
+      }, 80)
     );
   }
 
@@ -268,9 +259,9 @@ export async function setupTabHandlers(html: HTMLElement, hudInstance: any) {
           hudInstance,
           'systems/swade/templates/actors/hud/hud-bio-panel.hbs',
           'right',
-          'currentBioPopout',
+          'currentBioPopout'
         );
-      }, 80),
+      }, 80)
     );
   }
 }
@@ -291,11 +282,7 @@ export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
   // Only attach stat circle handlers for wounds/fatigue, not for benny/conviction (handled in SwadeActorHUD)
   statCircles.forEach((circle) => {
     const statPath = circle.getAttribute('data-stat-path');
-    if (
-      statPath === 'system.bennies.value' ||
-      statPath === 'system.conviction.value'
-    )
-      return;
+    if (statPath === 'system.bennies.value' || statPath === 'system.conviction.value') return;
     circle.addEventListener('click', (event) => {
       event.preventDefault();
       handleStatClick(event, hudInstance);
@@ -311,9 +298,7 @@ export function setupRollButtonHandlers(html: HTMLElement, hudInstance: any) {
   // Only attach bottom stat handlers for non-benny/non-conviction stats (handled in SwadeActorHUD)
   bottomStats.forEach((stat) => {
     const statPath = stat.getAttribute('data-stat-path');
-    const isConviction = stat.classList.contains(
-      'swadehud-conviction-clickable',
-    );
+    const isConviction = stat.classList.contains('swadehud-conviction-clickable');
     if (statPath === 'system.bennies.value' || isConviction) return;
     stat.addEventListener('click', (event) => {
       event.preventDefault();
@@ -341,8 +326,7 @@ function handleStatClick(event: Event, hudInstance: any) {
   if (!statPath) return;
 
   // Decrement stat (left click)
-  const currentValue =
-    foundry.utils.getProperty(hudInstance.actor, statPath) || 0;
+  const currentValue = foundry.utils.getProperty(hudInstance.actor, statPath) || 0;
   const minValue = parseInt(circle.dataset.statMin || '0');
   const newValue = Math.max(minValue, currentValue - 1);
 
@@ -364,8 +348,7 @@ function handleStatRightClick(event: Event, hudInstance: any) {
   if (!statPath) return;
 
   // Increment stat (right click)
-  const currentValue =
-    foundry.utils.getProperty(hudInstance.actor, statPath) || 0;
+  const currentValue = foundry.utils.getProperty(hudInstance.actor, statPath) || 0;
   const maxValue = parseInt(circle.dataset.statMax || '999');
   const newValue = Math.min(maxValue, currentValue + 1);
 
@@ -430,9 +413,7 @@ function handleCombatToggleClick(stat: HTMLElement, hudInstance: any) {
 
     // Show user feedback (variables are used here)
     const actorName = hudInstance.actor?.name || 'Unknown';
-    const message = newCombatState
-      ? `${actorName} combat state: ON`
-      : `${actorName} combat state: OFF`;
+    const message = newCombatState ? `${actorName} combat state: ON` : `${actorName} combat state: OFF`;
 
     ui.notifications.info(message);
   }
@@ -449,8 +430,7 @@ function handleBennieClick(stat: HTMLElement, hudInstance: any) {
   const statPath = stat.dataset.statPath;
   if (!statPath) return;
 
-  const currentValue =
-    foundry.utils.getProperty(hudInstance.actor, statPath) || 0;
+  const currentValue = foundry.utils.getProperty(hudInstance.actor, statPath) || 0;
   const minValue = parseInt(stat.dataset.statMin || '0');
   const newValue = Math.max(minValue, currentValue - 1);
 
@@ -462,8 +442,7 @@ function handleBennieRightClick(stat: HTMLElement, hudInstance: any) {
   const statPath = stat.dataset.statPath;
   if (!statPath) return;
 
-  const currentValue =
-    foundry.utils.getProperty(hudInstance.actor, statPath) || 0;
+  const currentValue = foundry.utils.getProperty(hudInstance.actor, statPath) || 0;
   const newValue = currentValue + 1;
 
   hudInstance.actor.update({ [statPath]: newValue });
@@ -492,9 +471,7 @@ export function setupAbilityHandlers(html: HTMLElement, hudInstance: any) {
   }
 
   // Handle incapacitated button (bolt icon in fatigue circle)
-  const incapacitatedButton = html.querySelector(
-    '.swadehud-incapacitated-clickable',
-  );
+  const incapacitatedButton = html.querySelector('.swadehud-incapacitated-clickable');
   if (incapacitatedButton) {
     incapacitatedButton.addEventListener('click', (event) => {
       event.preventDefault();
@@ -518,10 +495,7 @@ function handleSoakClick(hudInstance: any) {
   if (!hudInstance.actor) return;
 
   // Get current wounds
-  const currentWounds =
-    (hudInstance.actor.wounds?.value ??
-      hudInstance.actor.system.wounds?.value) ||
-    0;
+  const currentWounds = (hudInstance.actor.wounds?.value ?? hudInstance.actor.system.wounds?.value) || 0;
 
   if (currentWounds > 0) {
     // Create a soak roll dialog or directly reduce wounds
@@ -544,10 +518,7 @@ function handleIncapacitatedClick(hudInstance: any) {
   if (!hudInstance.actor) return;
 
   // Toggle incapacitated status
-  const isIncapacitated =
-    (hudInstance.actor.isIncapacitated ??
-      hudInstance.actor.system.isIncapacitated) ||
-    false;
+  const isIncapacitated = (hudInstance.actor.isIncapacitated ?? hudInstance.actor.system.isIncapacitated) || false;
   const newIncapacitatedState = !isIncapacitated;
 
   // This would typically update a status effect or actor flag
@@ -556,9 +527,7 @@ function handleIncapacitatedClick(hudInstance: any) {
 
 export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
   // Handle condition toggle icons
-  const conditionToggleIcons = element.querySelectorAll(
-    '.swadehud-condition-toggle-icon',
-  );
+  const conditionToggleIcons = element.querySelectorAll('.swadehud-condition-toggle-icon');
   conditionToggleIcons.forEach((icon) => {
     // Remove existing event listeners to prevent duplicates
     const newIcon = icon.cloneNode(true) as HTMLElement;
@@ -571,17 +540,11 @@ export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
 
       try {
         // Simple toggle: just add/remove the specific status that was clicked
-        const isCurrentlyActive =
-          hudInstance.actor.effects?.some((e: any) =>
-            e.statuses?.has(statusId),
-          ) ?? false;
+        const isCurrentlyActive = hudInstance.actor.effects?.some((e: any) => e.statuses?.has(statusId)) ?? false;
 
         if (isCurrentlyActive) {
           // Remove the status
-          const effectsToRemove =
-            hudInstance.actor.effects?.filter((e: any) =>
-              e.statuses?.has(statusId),
-            ) ?? [];
+          const effectsToRemove = hudInstance.actor.effects?.filter((e: any) => e.statuses?.has(statusId)) ?? [];
           for (const effect of effectsToRemove) {
             await effect.delete();
           }
@@ -593,34 +556,22 @@ export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
         // Update all condition icons after a short delay to allow related effects to be applied
         setTimeout(() => {
           // Re-query the DOM for current elements since we cloned/replaced them
-          const currentIcons = element.querySelectorAll(
-            '.swadehud-condition-toggle-icon',
-          );
+          const currentIcons = element.querySelectorAll('.swadehud-condition-toggle-icon');
           currentIcons.forEach((icon) => {
             const iconElement = icon as HTMLElement;
             const iconStatusId = iconElement.dataset.statusId;
-            const iconIsActive =
-              hudInstance.actor.effects?.some((e: any) =>
-                e.statuses?.has(iconStatusId),
-              ) ?? false;
+            const iconIsActive = hudInstance.actor.effects?.some((e: any) => e.statuses?.has(iconStatusId)) ?? false;
             iconElement.classList.toggle('active', iconIsActive);
 
             // Update icon appearance
             const iconI = iconElement.querySelector('i') || iconElement;
-            if (
-              iconI.classList.contains('fa-toggle-on') ||
-              iconI.classList.contains('fa-toggle-off')
-            ) {
+            if (iconI.classList.contains('fa-toggle-on') || iconI.classList.contains('fa-toggle-off')) {
               iconI.classList.remove('fa-toggle-on', 'fa-toggle-off');
-              iconI.classList.add(
-                iconIsActive ? 'fa-toggle-on' : 'fa-toggle-off',
-              );
+              iconI.classList.add(iconIsActive ? 'fa-toggle-on' : 'fa-toggle-off');
             }
 
             // Update tooltip
-            const effect = (CONFIG as any).statusEffects?.find(
-              (e: any) => e.id === iconStatusId,
-            );
+            const effect = (CONFIG as any).statusEffects?.find((e: any) => e.id === iconStatusId);
             if (effect) {
               iconElement.title = iconIsActive
                 ? `Remove ${(game as any).i18n.localize(effect.name)}`
@@ -667,9 +618,7 @@ export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
           hudInstance.actor.effects?.filter(
             (e: any) =>
               e.statuses &&
-              Array.from(e.statuses).some((status: string) =>
-                allowedConditions.includes(status.toLowerCase()),
-              ),
+              Array.from(e.statuses).some((status: string) => allowedConditions.includes(status.toLowerCase()))
           ) ?? [];
 
         // Remove all active status effects
@@ -679,9 +628,7 @@ export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
 
         // Update all condition icons to inactive state
         // Re-query the DOM for current elements since we cloned/replaced them
-        const currentIcons = element.querySelectorAll(
-          '.swadehud-condition-toggle-icon',
-        );
+        const currentIcons = element.querySelectorAll('.swadehud-condition-toggle-icon');
         currentIcons.forEach((icon) => {
           const iconElement = icon as HTMLElement;
           iconElement.classList.remove('active');
@@ -694,9 +641,7 @@ export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
             iconI.classList.add('fa-toggle-off');
           }
 
-          const effect = (CONFIG as any).statusEffects?.find(
-            (e: any) => e.id === statusId,
-          );
+          const effect = (CONFIG as any).statusEffects?.find((e: any) => e.id === statusId);
           if (effect) {
             iconElement.title = `Add ${(game as any).i18n.localize(effect.name)}`;
           }
@@ -767,7 +712,7 @@ export function setupDragHandler(html: HTMLElement) {
 
     const target = event.target as HTMLElement;
     const isInteractive = target.closest(
-      '.swadehud-stat-clickable, .swadehud-bottomstat--label, .swadehud-tabbtn, .swadehud-portrait, button, input, select, textarea',
+      '.swadehud-stat-clickable, .swadehud-bottomstat--label, .swadehud-tabbtn, .swadehud-portrait, button, input, select, textarea'
     );
 
     if (isInteractive) return; // Don't drag when clicking interactive elements

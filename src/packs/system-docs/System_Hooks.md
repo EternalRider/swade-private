@@ -11,6 +11,7 @@ This page is intended for developers and power uses seeking to dig deeper into t
 ## SWADE Hooks
 
 The [Knowledge Base](https://foundryvtt.com/article/intro-development/#javascript) explains what hooks are and how to generally use them. Here is a list of all hooks defined by the swade system and the available data for them
+
 ```javascript
 /**
  * This hook is called once swade is done setting up itself
@@ -47,7 +48,7 @@ Hooks.on('swadeGetGameMasterBenny', (user) => {
  */
 Hooks.on('swadeSpendBenny', (actor) => {
   // Returning `false` in a hook callback will cancel the benny animation
-})
+});
 ```
 
 ```javascript
@@ -57,7 +58,7 @@ Hooks.on('swadeSpendBenny', (actor) => {
  */
 Hooks.on('swadeGetBenny', (actor) => {
   // Returning `false` in a hook callback will cancel the benny message
-})
+});
 ```
 
 ```javascript
@@ -67,7 +68,7 @@ Hooks.on('swadeGetBenny', (actor) => {
  */
 Hooks.on('swadeActorPrepareDerivedData', (actor) => {
   // Updates to the actor are saved.
-})
+});
 ```
 
 ```javascript
@@ -80,7 +81,7 @@ Hooks.on('swadeActorPrepareDerivedData', (actor) => {
  */
 Hooks.on('swadeChatCard', (actor, item, html, userId) => {
   // Returning `false` in a hook callback will cancel showing the chat message
-})
+});
 ```
 
 ```javascript
@@ -93,7 +94,7 @@ Hooks.on('swadeChatCard', (actor, item, html, userId) => {
  */
 Hooks.on('swadeAction', (actor, item, action, roll) => {
   // Returning `false` in a hook callback will cancel the roll entirely
-})
+});
 ```
 
 ```javascript
@@ -107,7 +108,7 @@ Hooks.on('swadeAction', (actor, item, action, roll) => {
  */
 Hooks.on('swadeRollDamage', (actor, item, roll, modifiers, options) => {
   // Returning `false` in a hook callback will cancel the roll entirely
-})
+});
 ```
 
 ```javascript
@@ -136,15 +137,15 @@ Hooks.on('swadeConsumeItem', (item, charges, usage) => {
 
 ```javascript
 /* A hook event that is fired before an attribute is rolled, giving the opportunity to programmatically adjust a roll and its modifiers
-* @param {SwadeActor} actor                The actor that rolls the attribute
-* @param {String} attribute                The name of the attribute, in lower case
-* @param {TraitRoll} roll                  The built base roll, without any modifiers
-* @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
-* @param {IRollOptions} options            The options passed into the roll function
-*/
+ * @param {SwadeActor} actor                The actor that rolls the attribute
+ * @param {String} attribute                The name of the attribute, in lower case
+ * @param {TraitRoll} roll                  The built base roll, without any modifiers
+ * @param {RollModifier[]} modifiers   An array of modifiers which are to be added to the roll
+ * @param {IRollOptions} options            The options passed into the roll function
+ */
 Hooks.on('swadePreRollAttribute', (actor, attribute, roll, modifiers, options) => {
   // Returning `false` in a hook callback will cancel the roll entirely
-})
+});
 ```
 
 ```javascript
@@ -158,7 +159,7 @@ Hooks.on('swadePreRollAttribute', (actor, attribute, roll, modifiers, options) =
  */
 Hooks.on('swadeRollAttribute', (actor, attribute, roll, modifiers, options) => {
   // do stuff here
-})
+});
 ```
 
 ```javascript
@@ -172,7 +173,7 @@ Hooks.on('swadeRollAttribute', (actor, attribute, roll, modifiers, options) => {
  */
 Hooks.on('swadePreRollSkill', (actor, skill, roll, modifiers, options) => {
   // Returning `false` in a hook callback will cancel the roll entirely
-})
+});
 ```
 
 ```javascript
@@ -186,7 +187,7 @@ Hooks.on('swadePreRollSkill', (actor, skill, roll, modifiers, options) => {
  */
 Hooks.on('swadeRollSkill', (actor, skill, roll, modifiers, options) => {
   // do stuff here
-})
+});
 ```
 
 ```javascript
@@ -197,7 +198,7 @@ Hooks.on('swadeRollSkill', (actor, skill, roll, modifiers, options) => {
  */
 Hooks.on('swadeTakeDamage', (actor, damageContext) => {
   // do stuff here
-})
+});
 ```
 
 ```javascript
@@ -208,7 +209,7 @@ Hooks.on('swadeTakeDamage', (actor, damageContext) => {
  */
 Hooks.on('swadeIncapacitation', (actor, statuses) => {
   // returning false will end the Incapacitation workflow, including the roll to resist possible injury
-})
+});
 ```
 
 ```javascript
@@ -219,7 +220,7 @@ Hooks.on('swadeIncapacitation', (actor, statuses) => {
  */
 Hooks.on('swadePreReloadWeapon', (item) => {
   //  Returning false will cancel the reload operation
-})
+});
 ```
 
 ```javascript
@@ -231,7 +232,7 @@ Hooks.on('swadePreReloadWeapon', (item) => {
  */
 Hooks.on('swadeReloadWeapon', (item) => {
   //  do stuff
-})
+});
 ```
 
 ```javascript
@@ -242,7 +243,7 @@ Hooks.on('swadeReloadWeapon', (item) => {
  */
 Hooks.on('swadeRefreshGmBennies', (user) => {
   //  do stuff
-})
+});
 ```
 
 ```javascript
@@ -253,7 +254,7 @@ Hooks.on('swadeRefreshGmBennies', (user) => {
  */
 Hooks.on('swadeRefreshBennies', (user) => {
   //  do stuff
-})
+});
 ```
 
 ```javascript
@@ -268,6 +269,6 @@ Hooks.on('swadeRefreshBennies', (user) => {
  * @param {Status} statusToApply          The resulting status that would be applied
  */
 Hooks.on('swadePreCalcWounds', (actor, damageContext, woundsInflicted, statusToApply) => {
-    //  Returning false will cancel damage application
+  //  Returning false will cancel damage application
 });
 ```

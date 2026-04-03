@@ -2,11 +2,7 @@ import { AnyObject } from 'fvtt-types/utils';
 import { FormulaField } from './FormulaField';
 
 export class FormulaDerivedValueField extends FormulaField {
-  override initialize(
-    value: string,
-    model: foundry.abstract.DataModel.Any,
-    _options?: AnyObject,
-  ): number {
+  override initialize(value: string, model: foundry.abstract.DataModel.Any, _options?: AnyObject): number {
     value = this._cast(value);
     if (!model.parent?.actor) return 0;
     const rollData = model.parent?.actor?.getRollData();
@@ -22,9 +18,7 @@ export class FormulaDerivedValueField extends FormulaField {
     return evaluated.total;
   }
 
-  #simplifyTerm(
-    term: foundry.dice.terms.RollTerm,
-  ): foundry.dice.terms.RollTerm | foundry.dice.terms.RollTerm[] {
+  #simplifyTerm(term: foundry.dice.terms.RollTerm): foundry.dice.terms.RollTerm | foundry.dice.terms.RollTerm[] {
     if (term instanceof foundry.dice.terms.DiceTerm) {
       return new foundry.dice.terms.NumericTerm({
         number: (term.number ?? 1) * (term.faces ?? 0),

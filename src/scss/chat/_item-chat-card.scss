@@ -1,3 +1,5 @@
+@use '../variables';
+
 .swade.chat-card.item-card {
   .item-name {
     text-align: start;
@@ -24,12 +26,12 @@
 
   .pp-counter,
   .ammo-counter {
-    margin: $small-spacing 0;
+    margin: variables.$small-spacing 0;
   }
 
   .ammo-counter {
     display: flex;
-    column-gap: $medium-spacing;
+    column-gap: variables.$medium-spacing;
 
     .ammo-name {
       margin-left: auto;

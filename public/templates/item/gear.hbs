@@ -1,0 +1,127 @@
+<section class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{!-- Sheet Header --}}
+  {{> 'swade.item-header'}}
+
+  {{!-- Sidebar --}}
+  <section class='sheet-sidebar'>
+    <div class="form-group">
+      <label for="{{item.uuid}}-equippable">
+        {{localize "SWADE.Equippable"}}
+      </label>
+      <span class="form-fields">
+        <input
+          id="{{item.uuid}}-equippable"
+          type="checkbox"
+          name="system.equippable"
+          {{checked item.system.equippable}}
+          data-dtype="Boolean"
+        />
+      </span>
+    </div>
+    {{> 'swade.item-equipped'}}
+    <div class="form-group">
+      <label for="{{item.uuid}}-weight">
+        {{localize "SWADE.Weight"}}
+      </label>
+      <span class="form-fields">
+        <input
+          id="{{item.uuid}}-weight"
+          name="system.weight"
+          type="text"
+          value="{{item.system.weight}}"
+          placeholder="{{localize 'SWADE.Weight'}}"
+          data-dtype="Number"
+        />
+      </span>
+    </div>
+    <hr>
+    {{> 'swade.item-additional-stats'}}
+  </section>
+
+  {{!-- Sheet Tab Navigation --}}
+  {{> "templates/generic/tab-navigation.hbs"}}
+
+  {{!-- Main Section --}}
+  <section class='sheet-body'>
+    {{> 'swade.item-tab-description'}}
+    <section class='{{tabs.properties.tabCssClass}}' data-group='{{tabs.properties.group}}' data-tab='{{tabs.properties.id}}'>
+      <div class='form-group'>
+        <label for="{{item.uuid}}-arcane-device">
+          {{localize 'SWADE.ArcaneDevice'}}
+        </label>
+        <span class='form-fields'>
+          <input id="{{item.uuid}}-arcane-device" type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for="{{item.uuid}}-ammo">
+          {{localize 'SWADE.ItemIsAmmo'}}
+        </label>
+        <span class='form-fields'>
+          <input id="{{item.uuid}}-ammo" type='checkbox' name='system.isAmmo' {{checked item.system.isAmmo}}/>
+        </span>
+      </div>
+      <div class="form-group">
+        <label for="{{item.uuid}}-vehicular">
+          {{localize "SWADE.VehicleMod"}}
+        </label>
+        <span class="form-fields">
+          <input
+            id="{{item.uuid}}-vehicular"
+            type="checkbox"
+            name="system.isVehicular"
+            {{checked item.system.isVehicular}}
+            data-dtype="Boolean"
+          />
+        </span>
+      </div>
+      {{#if (and item.system.isVehicular settingRules.modSlots)}}
+        <div class="form-group">
+          <label for="{{item.uuid}}-mods">
+            {{localize "SWADE.ModSlots"}}
+          </label>
+          <span class="form-fields">
+            <input
+              id="{{item.uuid}}-mods"
+              name="system.mods"
+              type="text"
+              value="{{item.system.mods}}"
+              placeholder="{{localize 'SWADE.ModSlots'}}"
+              data-dtype="Number"
+            />
+          </span>
+        </div>
+      {{/if}}
+      {{> 'swade.item-action-properties'}}
+      {{formGroupSimple "system.activities" stacked=true}}
+      {{> 'swade.item-bonus-damage'}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
+        </span>
+      </div>
+      {{> 'swade.item-grants'}}
+    </section>
+    {{#if item.isArcaneDevice}}
+      {{> 'swade.item-tab-powers'}}
+    {{/if}}
+    {{#if item.system.charges.hasCharges}}
+      {{> 'swade.item-tab-charges'}}
+    {{/if}}
+    {{> 'swade.item-tab-actions'}}
+    {{> 'swade.item-tab-effects'}}
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</section>

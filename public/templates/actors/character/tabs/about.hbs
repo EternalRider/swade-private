@@ -1,0 +1,97 @@
+<section
+  class='about-body {{tab.tabCssClass}} {{tab.id}}'
+  data-group='{{tab.group}}'
+  data-tab='{{tab.id}}'
+>
+  {{> "templates/generic/tab-navigation.hbs" tabs=subtabs}}
+  <section class='tab advances{{#if subtabs.advances.active}} active{{/if}}' data-group='about' data-tab='advances'>
+    {{#if (eq actor.system.advances.mode 'expanded')}}
+      <span class='advance-add'>
+        <button type='button' class='item-create' data-action='addAdvance'>
+          <i class='fa fa-plus'></i>{{localize 'SWADE.AddAdvance'}}
+        </button>
+      </span>
+      {{#each advances.list}}
+        <h2>{{rank}}</h2>
+        <ol class='advance-track'>
+          {{#each list}}
+            <li class='form-group advance' data-advance-id='{{id}}' data-document-class='Item'>
+              {{#if planned}}
+                <span class='faded'>{{sort}}</span>
+                <span class='faded'>{{advanceType type}}</span>
+                <span class='faded'>{{{enrichedNotes}}}</span>
+              {{else}}
+                <span>{{sort}}</span>
+                <span>{{advanceType type}}</span>
+                <span>{{{enrichedNotes}}}</span>
+              {{/if}}
+              <span class='item-controls'>
+                <button
+                  type='button'
+                  class='advance-action{{#unless planned}} faded{{/unless}}'
+                  data-action='togglePlannedAdvance'
+                  title='{{localize "SWADE.Advances.Toggle"}}'
+                >
+                  <i class='fa-solid fa-hourglass'></i>
+                </button>
+                <button
+                  type='button'
+                  class='advance-action'
+                  data-action='editAdvance'
+                  title='{{localize "SWADE.Ed"}}'
+                >
+                  <i class='fas fa-edit'></i>
+                </button>
+                <button
+                  type='button'
+                  class='advance-action'
+                  data-action='deleteAdvance'
+                  title='{{localize "SWADE.Del"}}'
+                >
+                  <i class='fa-solid fa-trash'></i>
+                </button>
+              </span>
+            </li>
+          {{/each}}
+        </ol>
+      {{/each}}
+    {{else}}
+      {{editor
+        enrichedText.advances
+        target='system.advances.details'
+        button=editable
+        editable=editable
+        engine='prosemirror'
+      }}
+    {{/if}}
+  </section>
+  <section class='tab background{{#if subtabs.background.active}} active{{/if}}' data-group='about' data-tab='background'>
+    <div class='editor-container'>
+      <header class='section-header'>{{localize 'SWADE.Appearance'}}</header>
+      <div class='editor-container'>
+        <prose-mirror toggled name='system.details.appearance' value='{{document.system.details.appearance}}'>
+          {{{enrichedText.appearance}}}
+        </prose-mirror>
+      </div>
+    </div>
+    <div class='editor-container'>
+      <header class='section-header'>
+        {{localize 'SWADE.CharacterGoals'}}
+      </header>
+      <prose-mirror toggled name='system.details.goals' value='{{document.system.details.goals}}'>
+        {{{enrichedText.goals}}}
+      </prose-mirror>
+    </div>
+    <div class='editor-container'>
+      <header class='section-header'>{{localize 'SWADE.Biography'}}</header>
+      <prose-mirror toggled name='system.details.biography.value' value='{{document.system.details.biography.value}}'>
+        {{{enrichedText.biography}}}
+      </prose-mirror>
+    </div>
+  </section>
+  <section class='tab actor-notes{{#if subtabs.notes.active}} active{{/if}}' data-group='about' data-tab='notes'>
+    <prose-mirror toggled name='system.details.notes' value='{{document.system.details.notes}}'>
+      {{{enrichedText.notes}}}
+    </prose-mirror>
+  </section>
+</section>

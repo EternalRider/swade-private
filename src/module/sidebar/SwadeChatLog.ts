@@ -6,8 +6,7 @@ import { processFormula } from '../enrichers';
 
 const dice = '([^#]+)(?:#(.*))?'; // Dice expression with appended flavor text
 
-export default class SwadeChatLog extends foundry.applications.sidebar.tabs
-  .ChatLog {
+export default class SwadeChatLog extends foundry.applications.sidebar.tabs.ChatLog {
   static DAMAGE_ROLL_REGEXP = new RegExp(`^(\\/d(?:amage)? )${dice}$`, 'i');
   static TRAIT_ROLL_REGEXP = new RegExp(`^(\\/t(?:rait)? )${dice}$`, 'i');
 
@@ -19,10 +18,7 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs
 
   #swadeRollCommands: SwadeRollCommand[] = ['damage', 'trait'];
 
-  override async processMessage(
-    message: string,
-    options: any = {},
-  ): Promise<ChatMessage.Implementation | undefined> {
+  override async processMessage(message: string, options: any = {}): Promise<ChatMessage.Implementation | undefined> {
     let { speaker } = options;
     message = message.trim();
     if (!message) return;
@@ -46,12 +42,7 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs
 
     const match = parsed[1];
 
-    await this.#processSwadeDiceCommand(
-      command,
-      match,
-      chatData,
-      createOptions,
-    );
+    await this.#processSwadeDiceCommand(command, match, chatData, createOptions);
 
     return cls.create(chatData, createOptions);
   }
@@ -60,11 +51,10 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs
     command: SwadeRollCommand,
     match: RegExpMatchArray,
     chatData: ChatMessage.CreateData,
-    createOptions: ChatMessage.Database.CreateOperation<false>,
+    createOptions: ChatMessage.Database.CreateOperation<false>
   ) {
-    const actor =
-      ChatMessage.implementation.getSpeakerActor(chatData.speaker) ||
-      game.user.character;
+    const speaker = chatData.speaker as ChatMessage.SpeakerData | undefined;
+    const actor = ChatMessage.implementation.getSpeakerActor(speaker) || game.user.character;
     const rollData = actor ? actor.getRollData() : {};
     const rollMode = game.settings.get('core', 'rollMode');
     const [formula, flavor] = match.slice(2, 4);
@@ -96,14 +86,7 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs
     createOptions.rollMode = rollMode;
   }
 
-  async #processTraitRoll({
-    formula,
-    flavor = '',
-    chatData,
-    actor,
-    rollData,
-    rollMode,
-  }: TraitRollContext) {
+  async #processTraitRoll({ formula, flavor = '', chatData, actor, rollData, rollMode }: TraitRollContext) {
     const processed = processFormula(formula, 'trait', actor);
     try {
       await this.#createRoll({
@@ -114,19 +97,12 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs
         rollData,
         rollMode,
       });
-    } catch (error) {
+    } catch {
       throw new Error(`${formula} is not a valid trait roll`);
     }
   }
 
-  async #createRoll({
-    rollClass,
-    formula,
-    flavor = '',
-    chatData,
-    rollData,
-    rollMode,
-  }: RollContext): Promise<void> {
+  async #createRoll({ rollClass, formula, flavor = '', chatData, rollData, rollMode }: RollContext): Promise<void> {
     if (flavor && !chatData.flavor) chatData.flavor = flavor;
     const roll = new rollClass(formula, rollData);
     await roll.evaluate({

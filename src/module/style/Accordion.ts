@@ -16,11 +16,7 @@ export class Accordion {
     easing: 'ease-in-out',
   };
 
-  constructor(
-    el: HTMLDetailsElement,
-    contentSelector: string = '.content',
-    options?: AccordionOptions,
-  ) {
+  constructor(el: HTMLDetailsElement, contentSelector = '.content', options?: AccordionOptions) {
     this.options = { ...this.#defaultOptions, ...options };
     // Store the <details> element
     this.el = el;
@@ -86,7 +82,7 @@ export class Accordion {
       {
         duration: this.options.duration,
         easing: this.options.easing,
-      },
+      }
     );
 
     // When the animation is complete, call onAnimationFinish()
@@ -110,9 +106,7 @@ export class Accordion {
     // Get the current fixed height of the element
     const startHeight = `${this.el.offsetHeight}px`;
     // Calculate the open height of the element (summary height + content height)
-    const endHeight = `${
-      (this.summary?.offsetHeight ?? 0) + (this.content?.offsetHeight ?? 0)
-    }px`;
+    const endHeight = `${(this.summary?.offsetHeight ?? 0) + (this.content?.offsetHeight ?? 0)}px`;
 
     // If there is already an animation running
     if (this.animation) {
@@ -129,7 +123,7 @@ export class Accordion {
       {
         duration: this.options.duration,
         easing: this.options.easing,
-      },
+      }
     );
     // When the animation is complete, call onAnimationFinish()
     this.animation.onfinish = () => this.onAnimationFinish(true);

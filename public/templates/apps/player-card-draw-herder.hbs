@@ -1,0 +1,33 @@
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th>{{localize 'DOCUMENT.User'}}</th>
+        <th>{{localize 'DOCUMENT.Combatant'}}</th>
+        <th>{{localize 'COMBAT.CombatantStatus'}}</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each draws}}
+        <tr>
+          <td>{{user}}</td>
+          <td>{{combatant}}</td>
+          <td>{{icon}}</td>
+          <td>
+            {{#if overrideButton}}
+              <button
+                type='button'
+                class='{{overrideButton.type}}'
+                data-action='{{overrideButton.action}}'
+                data-user-id='{{userId}}'
+              >
+                <i class='{{overrideButton.icon}}'></i>
+              </button>
+            {{/if}}
+          </td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>

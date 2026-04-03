@@ -1,20 +1,12 @@
 import { AnyObject, NullishProps, ValueOf } from 'fvtt-types/utils';
 import { Attribute } from '../../../globals';
 import IRollOptions from '../../../interfaces/RollOptions.interface';
-import {
-  DerivedModifier,
-  RollModifier,
-} from '../../../interfaces/additional.interface';
+import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
 import { Logger } from '../../Logger';
 import { RollDialog, RollDialogContext } from '../../apps/RollDialog';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
-import {
-  CharacterData,
-  GroupData,
-  NpcData,
-  VehicleData,
-} from '../../data/actor';
+import { CharacterData, GroupData, NpcData, VehicleData } from '../../data/actor';
 import { CreatureData, SwadeBaseActorData } from '../../data/actor/base';
 import { TokenSize } from '../../data/actor/base/base';
 import { PaceSchemaField } from '../../data/fields/PaceSchemaField';
@@ -73,9 +65,7 @@ declare global {
   }
 }
 
-class SwadeActor<
-  Subtype extends Actor.SubType = Actor.SubType,
-> extends Actor<Subtype> {
+class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Subtype> {
   static getWoundsColor(current: number, max: number) {
     const minDegrees = 30;
     const maxDegrees = 120;
@@ -105,14 +95,9 @@ class SwadeActor<
     return data;
   }
 
-  constructor(
-    data: Actor.CreateData,
-    ctx?: foundry.abstract.Document.ConstructionContext<TokenDocument>,
-  ) {
+  constructor(data: Actor.CreateData, ctx?: foundry.abstract.Document.ConstructionContext<TokenDocument>) {
     if (game.swade.ready && ctx?.pack && data._id) {
-      const art = game.swade.compendiumArt.map.get(
-        `Compendium.${ctx.pack}.${data._id}`,
-      );
+      const art = game.swade.compendiumArt.map.get(`Compendium.${ctx.pack}.${data._id}`);
       if (art) {
         data.img = art.actor;
         const tokenArt =
@@ -125,10 +110,7 @@ class SwadeActor<
                   scaleY: art.token.scale,
                 },
               };
-        data.prototypeToken = foundry.utils.mergeObject(
-          data.prototypeToken ?? {},
-          tokenArt,
-        );
+        data.prototypeToken = foundry.utils.mergeObject(data.prototypeToken ?? {}, tokenArt);
       }
     }
     super(data, ctx);
@@ -151,7 +133,7 @@ class SwadeActor<
     return !!this.items.find(
       (i: SwadeItem<'edge' | 'ability' | 'power'>) =>
         (i.system instanceof EdgeData && i.system.isArcaneBackground) ||
-        (i.system instanceof AbilityData && i.system.grantsPowers),
+        (i.system instanceof AbilityData && i.system.grantsPowers)
     );
   }
 
@@ -195,43 +177,32 @@ class SwadeActor<
     return this.itemTypes.armor.some(
       (a) =>
         !!foundry.utils.getProperty(a, 'system.isHeavyArmor') &&
-        foundry.utils.getProperty(a, 'system.equipStatus') >=
-          constants.EQUIP_STATE.EQUIPPED,
+        foundry.utils.getProperty(a, 'system.equipStatus') >= constants.EQUIP_STATE.EQUIPPED
     );
   }
 
   get isUnarmored(): boolean {
     return this.itemTypes.armor.every(
-      (a) =>
-        foundry.utils.getProperty(a, 'system.equipStatus') <
-        constants.EQUIP_STATE.EQUIPPED,
+      (a) => foundry.utils.getProperty(a, 'system.equipStatus') < constants.EQUIP_STATE.EQUIPPED
     );
   }
 
   get ancestry(): SwadeItem | undefined {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
     const ancestries = this.items.filter((i) => i.type === 'ancestry');
     if (ancestries.length > 1) {
-      Logger.warn(
-        `Actor ${this.name} (${this.id}) has more than one ancestry!`,
-      );
+      Logger.warn(`Actor ${this.name} (${this.id}) has more than one ancestry!`);
     }
     return ancestries[0];
   }
 
   get archetype(): SwadeItem | undefined {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
     const archetypes = this.items.filter(
-      (i) =>
-        i.type === 'ability' &&
-        (i as SwadeItem<'ability'>).system.subtype === 'archetype',
+      (i) => i.type === 'ability' && (i as SwadeItem<'ability'>).system.subtype === 'archetype'
     );
     if (archetypes.length > 1) {
-      Logger.warn(
-        `Actor ${this.name} (${this.id}) has more than one archetype!`,
-      );
+      Logger.warn(`Actor ${this.name} (${this.id}) has more than one archetype!`);
     }
     return archetypes[0];
   }
@@ -260,30 +231,18 @@ class SwadeActor<
 
   override prepareDerivedData() {
     this._filterOverrides();
-
-    // See src/globals.d.ts for docs
-    Hooks.callAll('swadeActorPrepareDerivedData', this);
   }
 
-  async rollAttribute(
-    attribute: Attribute,
-    options: IRollOptions = {},
-  ): Promise<TraitRoll | null> {
+  async rollAttribute(attribute: Attribute, options: IRollOptions = {}): Promise<TraitRoll | null> {
     if (!('attributes' in this.system)) return null;
     if (options.rof && options.rof > 1) {
-      ui.notifications.warn(
-        'Attribute Rolls with RoF greater than 1 are not currently supported',
-      );
+      ui.notifications.warn('Attribute Rolls with RoF greater than 1 are not currently supported');
     }
     const label: string = SWADE.attributes[attribute].long;
     const abl = this.system.attributes[attribute];
     const rolls = new Array<Roll>();
 
-    rolls.push(
-      Roll.fromTerms([
-        this._buildTraitDie(abl.die.sides!, game.i18n.localize(label)),
-      ]),
-    );
+    rolls.push(Roll.fromTerms([this._buildTraitDie(abl.die.sides!, game.i18n.localize(label))]));
 
     if (this.isWildcard) {
       rolls.push(Roll.fromTerms([this._buildWildDie(abl['wild-die'].sides!)]));
@@ -304,11 +263,7 @@ class SwadeActor<
       options.additionalMods = effects;
     }
 
-    const modifiers = this.getTraitRollModifiers(
-      abl.die,
-      options,
-      game.i18n.localize(label),
-    );
+    const modifiers = this.getTraitRollModifiers(abl.die, options, game.i18n.localize(label));
 
     //add encumbrance penalty if necessary
     if (attribute === 'agility' && this.system.encumbered) {
@@ -323,23 +278,13 @@ class SwadeActor<
     if ('isRerollable' in options) roll.setRerollable(options.isRerollable!);
 
     // See src/globals.d.ts for docs
-    const permitContinue = Hooks.call(
-      'swadePreRollAttribute',
-      this,
-      attribute,
-      roll,
-      modifiers,
-      options,
-    );
+    const permitContinue = Hooks.call('swadePreRollAttribute', this, attribute, roll, modifiers, options);
     if (permitContinue === false) return null;
 
     if (options.suppressChat) {
       return TraitRoll.fromTerms([
         ...roll.terms,
-        ...TraitRoll.parse(
-          roll.modifiers.reduce(modifierReducer, ''),
-          this.getRollData(false),
-        ),
+        ...TraitRoll.parse(roll.modifiers.reduce(modifierReducer, ''), this.getRollData(false)),
       ]) as TraitRoll;
     }
 
@@ -348,28 +293,13 @@ class SwadeActor<
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor:
-        options.flavour ??
-        `${game.i18n.localize(label)} ${game.i18n.localize(
-          'SWADE.AttributeTest',
-        )}`,
-      title:
-        options.title ??
-        `${game.i18n.localize(label)} ${game.i18n.localize(
-          'SWADE.AttributeTest',
-        )}`,
+      flavor: options.flavour ?? `${game.i18n.localize(label)} ${game.i18n.localize('SWADE.AttributeTest')}`,
+      title: options.title ?? `${game.i18n.localize(label)} ${game.i18n.localize('SWADE.AttributeTest')}`,
       actor: this,
     });
 
     // See src/globals.d.ts for docs
-    Hooks.callAll(
-      'swadeRollAttribute',
-      this,
-      attribute,
-      roll,
-      modifiers,
-      options,
-    );
+    Hooks.callAll('swadeRollAttribute', this, attribute, roll, modifiers, options);
 
     return retVal as TraitRoll | null;
   }
@@ -377,34 +307,32 @@ class SwadeActor<
   async rollSkill(
     skillId: string | null | undefined,
     options: IRollOptions = { rof: 1 },
-    tempSkill?: SwadeItem<'skill'>,
+    tempSkill?: SwadeItem<'skill'>
   ): Promise<TraitRoll | null> {
-    if (
-      this.system instanceof VehicleData ||
-      this.system instanceof GroupData
-    ) {
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) {
       Logger.error('Only Extras and Wildcards can roll skills!', {
         toast: true,
       });
       return null;
     }
     let skill: SwadeItem<'skill'> | undefined;
-    skill = this.items.find((i) => i.id == skillId) as
-      | SwadeItem<'skill'>
-      | undefined;
+    skill = this.items.find((i) => i.id == skillId) as SwadeItem<'skill'> | undefined;
     if (tempSkill) skill = tempSkill;
 
     // TODO: (Improved) Arcane Resistance, when -> Powers
     const isAttack = options.item?.type === 'weapon';
     const { isRanged = null, isMelee = null } = options.item?.system ?? {};
-    const isRangedAttack =
-      isRanged && (!isMelee || skill?.system.swid !== 'fighting');
-    const isMeleeAttack =
-      isMelee && (!isRanged || skill?.system.swid === 'fighting');
+    const isRangedAttack = isRanged && (!isMelee || skill?.system.swid !== 'fighting');
+    const isMeleeAttack = isMelee && (!isRanged || skill?.system.swid === 'fighting');
 
     // Only for attacks, and only if skill is defined (to avoid double-counting on unskilled attempts)
     if (isAttack && skill) {
-      const sourceToken = this.getActiveTokens(false, true)[0];
+      let sourceToken = this.getActiveTokens(false, true)[0];
+      // If the item belongs to a vehicle, use the vehicle's token
+      if (options.item?.actor?.type === 'vehicle') {
+        const vehicleToken = options.item.actor.getActiveTokens(false, true)[0];
+        if (vehicleToken) sourceToken = vehicleToken;
+      }
       const targetToken = game.user.targets.first()?.document;
 
       const { additionalMods, bestNonStackingMods } = getDefaultAttackModifiers(
@@ -412,7 +340,7 @@ class SwadeActor<
         targetToken,
         options.item!,
         isRangedAttack,
-        isMeleeAttack,
+        isMeleeAttack
       );
 
       /**
@@ -438,6 +366,7 @@ class SwadeActor<
         isMeleeAttack,
         additionalMods,
         bestNonStackingMods,
+        bestNonStackingMods
       );
 
       for (const mod of Object.values(bestNonStackingMods)) {
@@ -445,11 +374,8 @@ class SwadeActor<
       }
 
       if (additionalMods.length) {
-        additionalMods.forEach(
-          (mod) => (mod.label = game.i18n.localize(mod.label)),
-        );
-        if (options.additionalMods)
-          options.additionalMods.push(...additionalMods);
+        additionalMods.forEach((mod) => (mod.label = game.i18n.localize(mod.label)));
+        if (options.additionalMods) options.additionalMods.push(...additionalMods);
         else options.additionalMods = additionalMods;
       }
     }
@@ -467,24 +393,14 @@ class SwadeActor<
     if (options.flavour) flavour = ` - ${options.flavour}`;
 
     // See src/globals.d.ts for docs
-    const permitContinue = Hooks.call(
-      'swadePreRollSkill',
-      this,
-      skill,
-      roll,
-      modifiers,
-      options,
-    );
+    const permitContinue = Hooks.call('swadePreRollSkill', this, skill, roll, modifiers, options);
 
     if (!permitContinue) return null;
 
     if (options.suppressChat) {
       return TraitRoll.fromTerms([
         ...roll.terms,
-        ...TraitRoll.parse(
-          roll.modifiers.reduce(modifierReducer, ''),
-          this.getRollData(false),
-        ),
+        ...TraitRoll.parse(roll.modifiers.reduce(modifierReducer, ''), this.getRollData(false)),
       ]) as TraitRoll;
     }
 
@@ -492,12 +408,8 @@ class SwadeActor<
       roll: roll,
       mods: modifiers,
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor:
-        options.flavour ??
-        `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}${flavour}`,
-      title:
-        options.title ??
-        `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}`,
+      flavor: options.flavour ?? `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}${flavour}`,
+      title: options.title ?? `${skill.name} ${game.i18n.localize('SWADE.SkillTest')}`,
       actor: this,
     };
 
@@ -521,11 +433,7 @@ class SwadeActor<
       ui.notifications.warn('SWADE.WealthDie.Broke.Hint', { localize: true });
       return null;
     }
-    const rolls = [
-      Roll.fromTerms([
-        this._buildTraitDie(die, game.i18n.localize('SWADE.WealthDie.Label')),
-      ]),
-    ];
+    const rolls = [Roll.fromTerms([this._buildTraitDie(die, game.i18n.localize('SWADE.WealthDie.Label'))])];
     if (this.isWildcard) {
       rolls.push(Roll.fromTerms([this._buildWildDie(wildDie)]));
     }
@@ -548,18 +456,13 @@ class SwadeActor<
   }
 
   async rollRunningDie() {
-    if (
-      this.system instanceof VehicleData ||
-      this.system instanceof GroupData
-    ) {
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) {
       return null;
     }
 
     const system = this.system as CharacterData | NpcData;
 
-    const availableKeys = PaceSchemaField.paceKeys.filter(
-      (key) => !!system.pace[key],
-    );
+    const availableKeys = PaceSchemaField.paceKeys.filter((key) => !!system.pace[key]);
 
     let paceKey: string | null = availableKeys[0];
     if (Object.keys(availableKeys).length > 1) {
@@ -584,9 +487,7 @@ class SwadeActor<
     if (paceKey === null) return;
     let pace = system.pace[paceKey];
     const running = system.pace.running;
-    const runningDie = `1d${running.die}[${game.i18n.localize(
-      'SWADE.RunningDie',
-    )}]`;
+    const runningDie = `1d${running.die}[${game.i18n.localize('SWADE.RunningDie')}]`;
 
     const mods: RollModifier[] = [];
 
@@ -614,9 +515,7 @@ class SwadeActor<
       }),
       mods,
       speaker: ChatMessage.getSpeaker({ actor: this }),
-      flavor:
-        game.i18n.localize('SWADE.RunningHint.Header') +
-        game.i18n.localize('SWADE.RunningHint.Reminder'),
+      flavor: game.i18n.localize('SWADE.RunningHint.Header') + game.i18n.localize('SWADE.RunningHint.Reminder'),
       title: game.i18n.localize('SWADE.Running'),
       actor: this,
     });
@@ -649,10 +548,7 @@ class SwadeActor<
     return this.rollSkill(null, options, tempSkill);
   }
 
-  async makeArcaneDeviceSkillRoll(
-    arcaneSkillDie: TraitDie,
-    options: IRollOptions = {},
-  ) {
+  async makeArcaneDeviceSkillRoll(arcaneSkillDie: TraitDie, options: IRollOptions = {}) {
     const tempSkill = new SwadeItem<'skill'>({
       name: game.i18n.localize('SWADE.ArcaneSkill'),
       type: 'skill',
@@ -674,21 +570,16 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const message = await foundry.applications.handlebars.renderTemplate(
-        SWADE.bennies.templates.spend,
-        {
-          target: this,
-          speaker: speaker,
-        },
-      );
+      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.spend, {
+        target: this,
+        speaker: speaker,
+      });
       const chatData = { content: message, speaker: speaker };
       await msgClass.create(chatData);
     }
     await this.update({ 'system.bennies.value': this.bennies - 1 });
     if (game.settings.get('swade', 'hardChoices')) {
-      const gms = game
-        .users!.filter((u) => u.isGM && u.active)
-        .map((u) => u.id);
+      const gms = game.users!.filter((u) => u.isGM && u.active).map((u) => u.id);
       game.swade.sockets.giveBenny(gms);
     }
 
@@ -696,21 +587,14 @@ class SwadeActor<
     Hooks.callAll('swadeSpendBenny', this);
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
-      game.dice3d.showForRoll(
-        await new Roll('1dB').evaluate(),
-        game.user!,
-        true,
-        null,
-        false,
-      );
+      game.dice3d.showForRoll(await new Roll('1dB').evaluate(), game.user!, true, null, false);
     }
 
     return true;
   }
 
   async getBenny() {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return;
     const combatant = this.token?.combatant as SwadeCombatant | undefined;
     await this.update({ 'system.bennies.value': this.bennies + 1 });
 
@@ -721,13 +605,10 @@ class SwadeActor<
       const speaker = msgClass.getSpeaker({
         actor: this,
       });
-      const content = await foundry.applications.handlebars.renderTemplate(
-        SWADE.bennies.templates.add,
-        {
-          target: this,
-          speaker: speaker,
-        },
-      );
+      const content = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.add, {
+        target: this,
+        speaker: speaker,
+      });
       await msgClass.create({
         content: content,
         speaker: speaker,
@@ -738,13 +619,7 @@ class SwadeActor<
     Hooks.callAll('swadeGetBenny', this);
 
     if (!!game.dice3d && (await shouldShowBennyAnimation())) {
-      game.dice3d.showForRoll(
-        await new Roll('1dB').evaluate(),
-        game.user!,
-        true,
-        null,
-        false,
-      );
+      game.dice3d.showForRoll(await new Roll('1dB').evaluate(), game.user!, true, null, false);
     }
   }
 
@@ -784,13 +659,9 @@ class SwadeActor<
   /** @see {TokenDocument#toggleActiveEffect} */
   async toggleActiveEffect(
     effect: CONFIG.StatusEffect | string,
-    {
-      overlay = false,
-      active,
-    }: NullishProps<{ overlay: boolean; active: boolean }> = {},
+    { overlay = false, active }: NullishProps<{ overlay: boolean; active: boolean }> = {}
   ) {
-    const statusEffect =
-      typeof effect === 'string' ? getStatusEffectDataById(effect) : effect;
+    const statusEffect = typeof effect === 'string' ? getStatusEffectDataById(effect) : effect;
     if (!statusEffect?.id) return false;
 
     // Remove existing single-status effects.
@@ -828,17 +699,11 @@ class SwadeActor<
 
   /** Calculates the total Wound Penalties
    * and returns them as a negative number */
-  calcWoundPenalties(ignoreAll: boolean = false): number {
+  calcWoundPenalties(ignoreAll = false): number {
     if (ignoreAll) return 0;
     let total = 0;
-    const wounds = foundry.utils.getProperty(
-      this,
-      'system.wounds.value',
-    ) as number;
-    const ignoredWounds = foundry.utils.getProperty(
-      this,
-      'system.wounds.ignored',
-    ) as number;
+    const wounds = foundry.utils.getProperty(this, 'system.wounds.value') as number;
+    const ignoredWounds = foundry.utils.getProperty(this, 'system.wounds.ignored') as number;
 
     //clamp the value between 0 and the maximum
     total = Math.clamp(wounds - ignoredWounds, 0, 3);
@@ -848,14 +713,8 @@ class SwadeActor<
   /** Calculates the total Fatigue Penalties */
   calcFatiguePenalties(): number {
     let total = 0;
-    const fatigue = foundry.utils.getProperty(
-      this,
-      'system.fatigue.value',
-    ) as number;
-    const ignoredFatigue = foundry.utils.getProperty(
-      this,
-      'system.fatigue.ignored',
-    ) as number;
+    const fatigue = foundry.utils.getProperty(this, 'system.fatigue.value') as number;
+    const ignoredFatigue = foundry.utils.getProperty(this, 'system.fatigue.ignored') as number;
 
     //get the bigger of the two values so we don't accidentally return a negative value for the penalty
     total = Math.max(fatigue - ignoredFatigue, 0);
@@ -864,10 +723,7 @@ class SwadeActor<
 
   calcStatusPenalties(): number {
     let retVal = 0;
-    const isDistracted = foundry.utils.getProperty(
-      this,
-      'system.status.isDistracted',
-    );
+    const isDistracted = foundry.utils.getProperty(this, 'system.status.isDistracted');
     if (isDistracted) {
       retVal -= 2;
     }
@@ -876,10 +732,10 @@ class SwadeActor<
 
   calcScale(size: number): number {
     let scale = 0;
-    if (Number.between(size, 20, 12)) scale = 6;
-    else if (Number.between(size, 11, 8)) scale = 4;
-    else if (Number.between(size, 7, 4)) scale = 2;
-    else if (Number.between(size, 3, -1)) scale = 0;
+    if (Number.between(size, 12, 20)) scale = 6;
+    else if (Number.between(size, 8, 11)) scale = 4;
+    else if (Number.between(size, 4, 7)) scale = 2;
+    else if (Number.between(size, -1, 3)) scale = 0;
     else if (size === -2) scale = -2;
     else if (size === -3) scale = -4;
     else if (size === -4) scale = -6;
@@ -892,10 +748,7 @@ class SwadeActor<
    * @param type Optionally, a type name to restrict the search
    * @returns an array containing the found items
    */
-  getItemsBySwid<T extends Item.SubType>(
-    swid: string,
-    type?: T,
-  ): SwadeItem<T>[] {
+  getItemsBySwid<T extends Item.SubType>(swid: string, type?: T): SwadeItem<T>[] {
     const swidFilter = (i: SwadeItem) => i.system.swid === swid;
     if (!type) return this.items.filter(swidFilter);
     const itemTypes = this.itemTypes;
@@ -911,10 +764,7 @@ class SwadeActor<
    * @param type Optionally, a type name to restrict the search
    * @returns The matching item, or undefined if none was found.
    */
-  getSingleItemBySwid<T extends Item.SubType>(
-    swid: string,
-    type?: T,
-  ): SwadeItem<T> | undefined {
+  getSingleItemBySwid<T extends Item.SubType>(swid: string, type?: T): SwadeItem<T> | undefined {
     return this.getItemsBySwid<T>(swid, type)[0];
   }
 
@@ -922,12 +772,9 @@ class SwadeActor<
    * Function for shortcut roll in item (@str + 1d6)
    * return something like : {agi: "1d8x+1", sma: "1d6x", spi: "1d6x", str: "1d6x-1", vig: "1d6x"}
    */
-  override getRollData(
-    includeModifiers = true,
-  ): Record<string, number | string> {
+  override getRollData(includeModifiers = true): Record<string, number | string> {
     let rollData;
-    if ('getRollData' in this.system)
-      rollData = this.system.getRollData(includeModifiers);
+    if ('getRollData' in this.system) rollData = this.system.getRollData(includeModifiers);
     return rollData ?? {};
   }
 
@@ -958,7 +805,7 @@ class SwadeActor<
       i.system instanceof GearData ||
       i.system instanceof ConsumableData
         ? i.system
-        : null,
+        : null
     );
     let retVal = 0;
     if (this.system instanceof VehicleData) {
@@ -984,7 +831,7 @@ class SwadeActor<
   async rollManeuverCheck() {
     foundry.utils.logCompatibilityWarning(
       'SwadeActor#rollManeuverCheck has been moved to the VehicleData class and can be accessed via system.rollManeuverCheck',
-      { since: '4.4', until: '5.1' },
+      { since: '4.4', until: '5.1' }
     );
     if (!(this.system instanceof VehicleData)) return;
     await this.system.rollManeuverCheck();
@@ -994,38 +841,27 @@ class SwadeActor<
   async getDriver(): Promise<SwadeActor<'character' | 'npc'> | null> {
     foundry.utils.logCompatibilityWarning(
       'SwadeActor#getDriver deprecated in favor of the crew members array, which can be found at system.crew.members',
-      { since: '4.4', until: '5.1' },
+      { since: '4.4', until: '5.1' }
     );
     return this.system.operator;
   }
 
-  getTraitRollModifiers(
-    die: TraitDie,
-    options: IRollOptions,
-    name?: string | null,
-  ): RollModifier[] {
+  getTraitRollModifiers(die: TraitDie, options: IRollOptions, name?: string | null): RollModifier[] {
     const mods = new Array<RollModifier>();
 
     //Trait modifier
     if (die.modifier !== 0) {
       mods.push({
-        label: name
-          ? `${name} ${game.i18n.localize('SWADE.Modifier')}`
-          : game.i18n.localize('SWADE.TraitMod'),
+        label: name ? `${name} ${game.i18n.localize('SWADE.Modifier')}` : game.i18n.localize('SWADE.TraitMod'),
         value: die.modifier,
       });
     }
 
     const wounds = this.calcWoundPenalties(!!options.ignoreWounds);
     const fatigue = this.calcFatiguePenalties();
-    const numbness =
-      'woundsOrFatigue' in this.system
-        ? this.system.woundsOrFatigue?.ignored!
-        : 0;
+    const numbness = 'woundsOrFatigue' in this.system ? this.system.woundsOrFatigue?.ignored : 0;
     if (numbness > 0) {
-      const label = `${game.i18n.localize('SWADE.Wounds')}/${game.i18n.localize(
-        'SWADE.Fatigue',
-      )}`;
+      const label = `${game.i18n.localize('SWADE.Wounds')}/${game.i18n.localize('SWADE.Fatigue')}`;
       mods.push({
         label: label,
         value: Math.min(wounds + fatigue + numbness, 0),
@@ -1053,9 +889,7 @@ class SwadeActor<
       mods.push(...game.combats.active.system.rollModifiers(this));
     }
 
-    if (
-      !(this.system instanceof VehicleData || this.system instanceof GroupData)
-    ) {
+    if (!(this.system instanceof VehicleData || this.system instanceof GroupData)) {
       //Status penalties
       if (this.system.status.isDistracted) {
         mods.push({
@@ -1066,9 +900,7 @@ class SwadeActor<
 
       //Conviction Die
       const useConviction =
-        this.isWildcard &&
-        this.system.details.conviction.active &&
-        game.settings.get('swade', 'enableConviction');
+        this.isWildcard && this.system.details.conviction.active && game.settings.get('swade', 'enableConviction');
       if (useConviction) {
         mods.push({
           label: game.i18n.localize('SWADE.Conv'),
@@ -1082,14 +914,8 @@ class SwadeActor<
       .sort((a, b) => a.label.localeCompare(b.label)); //sort the mods alphabetically by label
   }
 
-  private _handleComplexSkill(
-    skill: SwadeItem,
-    options: IRollOptions,
-  ): [TraitRoll, RollModifier[]] {
-    if (
-      this.system instanceof VehicleData ||
-      this.system instanceof GroupData
-    ) {
+  private _handleComplexSkill(skill: SwadeItem, options: IRollOptions): [TraitRoll, RollModifier[]] {
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) {
       throw new Error('Only Extras and Wildcards can roll skills!');
     }
     if (!(skill.system instanceof SkillData)) {
@@ -1102,23 +928,18 @@ class SwadeActor<
 
     //Add all necessary trait die
     for (let i = 0; i < options.rof; i++) {
-      rolls.push(
-        Roll.fromTerms([this._buildTraitDie(skillData.die.sides, skill.name!)]),
-      );
+      rolls.push(Roll.fromTerms([this._buildTraitDie(skillData.die.sides, skill.name!)]));
     }
 
     //Add Wild Die
     if (this.isWildcard) {
-      rolls.push(
-        Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides!)]),
-      );
+      rolls.push(Roll.fromTerms([this._buildWildDie(skillData['wild-die'].sides!)]));
     }
 
     const kh = options.rof > 1 ? `kh${options.rof}` : 'kh';
     const basePool = foundry.dice.terms.PoolTerm.fromRolls(rolls);
     basePool.modifiers.push(kh);
-    const attGlobalMods: RollModifier[] =
-      this.system.stats.globalMods[skill.system.attribute ?? ''] ?? [];
+    const attGlobalMods: RollModifier[] = this.system.stats.globalMods[skill.system.attribute ?? ''] ?? [];
     const effects = structuredClone<RollModifier[]>([
       ...(skillData.effects ?? []),
       ...attGlobalMods,
@@ -1128,11 +949,7 @@ class SwadeActor<
     if (options.additionalMods) options.additionalMods.push(...effects);
     else options.additionalMods = effects;
 
-    const rollMods = this.getTraitRollModifiers(
-      skillData.die,
-      options,
-      skill.name,
-    );
+    const rollMods = this.getTraitRollModifiers(skillData.die, options, skill.name);
 
     //add encumbrance penalty if necessary
     if (skill.system.attribute === 'agility' && this.system.encumbered) {
@@ -1151,10 +968,7 @@ class SwadeActor<
    * @param modifiers modifiers to the die
    * @returns a Die instance that already has the exploding modifier by default
    */
-  private _buildTraitDie(
-    sides: number,
-    flavor: string,
-  ): foundry.dice.terms.Die {
+  private _buildTraitDie(sides: number, flavor: string): foundry.dice.terms.Die {
     const modifiers: (keyof foundry.dice.terms.Die.Modifiers)[] = [];
     if (sides > 1) modifiers.push('x');
     return new foundry.dice.terms.Die({
@@ -1196,32 +1010,34 @@ class SwadeActor<
 
   /** Calculates the correct armor value based on SWADE v5.0 and returns that value */
   calcArmor(): number {
-    const torsoArmor = this._getArmorForLocation(
-      constants.ARMOR_LOCATIONS.TORSO,
-    );
+    const torsoArmor = this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO);
     return this._calcDerivedEffects('armor', torsoArmor);
   }
 
   /** Calculates the Toughness value without armor and returns it */
   calcToughness(): number {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return 0;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0;
     /** base value of all toughness calculations */
     const toughnessBaseValue = 2;
 
     const sources: DerivedModifier[] = this.system.stats.toughness.sources;
+    const toughnessTrait = (Object.keys(SWADE.attributes) as Attribute[]).includes(
+      this.system.details.toughnessTrait as Attribute
+    )
+      ? (this.system.details.toughnessTrait as Attribute)
+      : 'vigor';
 
     //get the base values we need
-    const vigor = this.system.attributes.vigor.die.sides!;
-    const vigMod = this.system.attributes.vigor.die.modifier!;
+    const traitDie = this.system.attributes[toughnessTrait].die.sides!;
+    const traitMod = this.system.attributes[toughnessTrait].die.modifier!;
     // const toughMod = this.system.stats.toughness.modifier;
 
-    let finalToughness = Math.round(vigor / 2) + toughnessBaseValue;
-    if (vigMod > 0) {
-      finalToughness += Math.floor(vigMod / 2);
+    let finalToughness = Math.round(traitDie / 2) + toughnessBaseValue;
+    if (traitMod > 0) {
+      finalToughness += Math.floor(traitMod / 2);
     }
     sources.push({
-      label: game.i18n.localize('SWADE.AttrVig'),
+      label: game.i18n.localize(SWADE.attributes[toughnessTrait].long),
       value: finalToughness,
     });
 
@@ -1249,29 +1065,18 @@ class SwadeActor<
   }
 
   calcParry(): number {
-    if (
-      this.system instanceof VehicleData ||
-      this.system instanceof CreatureData
-    ) {
+    if (this.system instanceof VehicleData || this.system instanceof CreatureData) {
       return this._calcDerivedEffects('parry', this.system.calcParry());
     }
     return 0;
   }
 
-  private _calcDerivedEffects(
-    target: 'parry' | 'toughness' | 'armor',
-    derivedStat: number,
-  ): number {
+  private _calcDerivedEffects(target: 'parry' | 'toughness' | 'armor', derivedStat: number): number {
     let effects: DerivedModifier[] = [];
     let sources: DerivedModifier[] = [];
-    if (
-      this.system instanceof CreatureData ||
-      this.system instanceof VehicleData
-    ) {
+    if (this.system instanceof CreatureData || this.system instanceof VehicleData) {
       effects =
-        target === 'armor'
-          ? (this.system.stats.toughness?.armorEffects ?? [])
-          : this.system.stats[target].effects;
+        target === 'armor' ? (this.system.stats.toughness?.armorEffects ?? []) : this.system.stats[target].effects;
       sources =
         target === 'armor'
           ? new Array<DerivedModifier>() // currently gets discarded
@@ -1337,25 +1142,18 @@ class SwadeActor<
    * @returns The total amount of armor for that location
    */
   private _getArmorForLocation(location: ArmorLocation): number {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return 0;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return 0;
 
-    return Object.values(this._getArmorSourcesForLocation(location)).reduce(
-      (acc, value) => (acc += value),
-      0,
-    );
+    return Object.values(this._getArmorSourcesForLocation(location)).reduce((acc, value) => (acc += value), 0);
   }
 
   /**
    * @param location The location of the armor such as head, torso, arms or legs
    * @returns A record of armor sources and values
    */
-  private _getArmorSourcesForLocation(
-    location: ArmorLocation,
-  ): Record<string, number> {
+  private _getArmorSourcesForLocation(location: ArmorLocation): Record<string, number> {
     const armorSources = {};
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return armorSources;
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return armorSources;
 
     const [regularArmor, naturalArmor] = this.itemTypes.armor
       .filter((i) => {
@@ -1376,9 +1174,7 @@ class SwadeActor<
       .sort((a, b) => b.armor - a.armor) // sort the items by armor value, descending
       .partition((i) => i.isNaturalArmor); //split them into natural and regular armor
 
-    const isCoreStacking =
-      game.settings.get('swade', 'armorStacking') ===
-      constants.ARMOR_STACKING.CORE;
+    const isCoreStacking = game.settings.get('swade', 'armorStacking') === constants.ARMOR_STACKING.CORE;
 
     const [baseArmor, extraArmor] = regularArmor;
     if (baseArmor) {
@@ -1396,8 +1192,7 @@ class SwadeActor<
   }
 
   getPTTooltip(target: 'parry' | 'toughness'): string {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return '';
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return '';
     let tooltip =
       target === 'parry'
         ? `<h4>${game.i18n.localize('SWADE.Parry')}
@@ -1413,8 +1208,7 @@ class SwadeActor<
   }
 
   getArmorTooltip(): string {
-    if (this.system instanceof VehicleData || this.system instanceof GroupData)
-      return '';
+    if (this.system instanceof VehicleData || this.system instanceof GroupData) return '';
     let tooltip = '';
 
     const armor = this.armorPerLocation;
@@ -1425,9 +1219,10 @@ class SwadeActor<
 
     tooltip += this._sourcesToTooltip(this.system.stats.toughness.armorEffects);
 
-    tooltip += Object.entries(
-      this._getArmorSourcesForLocation(constants.ARMOR_LOCATIONS.TORSO),
-    ).reduce((acc, [source, value]) => acc + `${source}: ${value}<br>`, '');
+    tooltip += Object.entries(this._getArmorSourcesForLocation(constants.ARMOR_LOCATIONS.TORSO)).reduce(
+      (acc, [source, value]) => acc + `${source}: ${value}<br>`,
+      ''
+    );
 
     return tooltip;
   }
@@ -1455,16 +1250,13 @@ class SwadeActor<
           effect = 'x' + source.value;
           break;
         case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
-          effect =
-            game.i18n.localize('EFFECT.MODE_DOWNGRADE') + ' ' + source.value;
+          effect = game.i18n.localize('EFFECT.MODE_DOWNGRADE') + ' ' + source.value;
           break;
         case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
-          effect =
-            game.i18n.localize('EFFECT.MODE_UPGRADE') + ' ' + source.value;
+          effect = game.i18n.localize('EFFECT.MODE_UPGRADE') + ' ' + source.value;
           break;
         case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
-          effect =
-            game.i18n.localize('EFFECT.MODE_OVERRIDE') + ' ' + source.value;
+          effect = game.i18n.localize('EFFECT.MODE_OVERRIDE') + ' ' + source.value;
           break;
         case CONST.ACTIVE_EFFECT_MODES.ADD:
         default:
@@ -1486,16 +1278,9 @@ class SwadeActor<
     this.overrides = foundry.utils.expandObject(overrides);
   }
 
-  protected override _onUpdate(
-    changed: Actor.UpdateData,
-    options: Actor.Database.OnUpdateOperation,
-    userId: string,
-  ) {
+  protected override _onUpdate(changed: Actor.UpdateData, options: Actor.Database.OnUpdateOperation, userId: string) {
     super._onUpdate(changed, options, userId);
-    if (
-      foundry.utils.hasProperty(changed, 'system.bennies') &&
-      this.hasPlayerOwner
-    ) {
+    if (foundry.utils.hasProperty(changed, 'system.bennies') && this.hasPlayerOwner) {
       ui.players?.render({ force: true });
     }
     if (
@@ -1509,13 +1294,10 @@ class SwadeActor<
           : false;
       const tokens = this.getActiveTokens(true, false);
       for (const token of tokens) {
-        token.ring?.flashColor(
-          isDamage ? Color.from('#D41159') : Color.from('#1A85FF'),
-          {
-            duration: 1000,
-            easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
-          },
-        );
+        token.ring?.flashColor(isDamage ? Color.from('#D41159') : Color.from('#1A85FF'), {
+          duration: 1000,
+          easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
+        });
       }
     }
   }

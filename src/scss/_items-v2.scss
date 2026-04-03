@@ -1,4 +1,26 @@
+@use 'variables';
+
+body.theme-dark .swade-item-sheet,
+.swade-item-sheet.themed.theme-dark {
+  --tab-box-shadow-color-1: #ffffff9e;
+  --tab-box-shadow-color-2: #ffffff2b;
+  --tab-box-shadow-color-3: #ffffff6b;
+  --item-unequipped-color: rgba(255, 255, 255, 0.2);
+}
+
+body.theme-light .swade-item-sheet,
+.swade-item-sheet.themed.theme-light {
+  --tab-box-shadow-color-1: #0000009e;
+  --tab-box-shadow-color-2: #0000002b;
+  --tab-box-shadow-color-3: #0000006b;
+  --item-unequipped-color: rgba(0, 0, 0, 0.2);
+}
+
 .swade-item-sheet {
+  --tab-font: 'Anton', 'Signika', sans-serif;
+  --tab-color-active: var(--accent-color);
+  --tab-hover-shadow: 0 0 8px var(--color-shadow-primary);
+
   button {
     line-height: 1.5em;
   }
@@ -9,6 +31,27 @@
     grid-template-rows: 3em 2em 2em max-content minmax(0, 1fr);
     grid-template-columns: repeat(12, minmax(0, 1fr));
     gap: 0.5em;
+
+    &[data-application-part='action'],
+    &[data-application-part='ability'],
+    &[data-application-part='edge'] {
+      .category {
+        grid-column: 6/11;
+      }
+    }
+
+    &[data-application-part='armor'],
+    &[data-application-part='consumable'],
+    &[data-application-part='gear'],
+    &[data-application-part='shield'],
+    &[data-application-part='weapon'] {
+      .category {
+        grid-column: 8/-1;
+      }
+      .source {
+        grid-column: 6/-1;
+      }
+    }
   }
 
   .grid-under,
@@ -21,6 +64,26 @@
   .tabs {
     grid-row: 4;
     grid-column: 5 / -1;
+    margin-top: 6px;
+    flex-wrap: wrap;
+    border-top: none;
+    gap: 0;
+    .item {
+      flex: 1;
+      font-family: 'Anton', 'Signika', sans-serif;
+      text-align: center;
+      font-size: 1em;
+      border-radius: 8px 8px 0 0;
+      box-shadow:
+        0px -4px 6px -3px var(--tab-box-shadow-color-1),
+        0px -4px 6px -3px var(--tab-box-shadow-color-2) inset;
+      white-space: nowrap;
+    }
+    .active {
+      color: var(--swade-primary-color);
+      text-shadow: none;
+      box-shadow: 0px -6px 6px -1px var(--tab-box-shadow-color-3);
+    }
   }
 
   .item-img-container {
@@ -29,6 +92,7 @@
     img {
       width: 100%;
       height: 100%;
+      margin-top: -10px;
       object-fit: contain;
       border: none;
       transition: 150ms filter linear;
@@ -62,7 +126,7 @@
   .column-grid {
     display: grid;
     grid-template-rows: auto;
-    column-gap: $medium-spacing;
+    column-gap: variables.$medium-spacing;
   }
 
   .two-columns {
@@ -82,7 +146,7 @@
     input[type] {
       border: none;
       background: transparent;
-      margin-left: $medium-spacing;
+      margin-left: variables.$medium-spacing;
       &:disabled {
         border: none;
       }
@@ -137,6 +201,9 @@
   }
 
   .editor-container {
+    prose-mirror {
+      height: 100%;
+    }
     .editor-content {
       overflow-y: scroll;
     }
@@ -145,7 +212,7 @@
   .sheet-sidebar {
     grid-row: 4 / -1;
     grid-column: 1 / 5;
-    padding-right: $medium-spacing;
+    padding-right: variables.$medium-spacing;
     border-right: 1px solid #aaa;
   }
 
@@ -155,6 +222,9 @@
     margin: -7px;
     &.full-width {
       grid-column: 1 / -1;
+    }
+    .tab.active {
+      height: 100%;
     }
   }
 
@@ -171,18 +241,29 @@
   .window-content .description.active {
     display: grid;
     grid-template-rows: max-content 1fr;
-    &.full-page {
+    &:has(> :nth-child(1):last-child) {
       grid-template-rows: 1fr;
+    }
+    .trapping {
+      margin-left: 0.5rem;
     }
   }
 
   .properties.active {
+    gap: 0;
     .form-group {
-      padding: 0 1em;
+      padding: 0 1rem;
       & > label {
         flex: 4;
       }
     }
+    h4 {
+      padding: 0 1rem;
+    }
+  }
+
+  .properties.active .form-group.range-type > label {
+    flex: 1;
   }
 
   .header {
@@ -252,8 +333,9 @@
     margin: 0;
 
     li {
-      margin-bottom: $medium-spacing;
-      transition: .1s;
+      margin-bottom: variables.$medium-spacing;
+      padding-left: 1rem;
+      transition: 0.1s;
     }
 
     summary {
@@ -271,15 +353,25 @@
     }
   }
 
+  .powers .header {
+    padding-left: 0;
+    margin-top: 0.25rem;
+  }
+
+  .powers .header {
+    padding-left: 0;
+    margin-top: 0.25rem;
+  }
+
   .action,
   .power {
     .content {
-      margin-top: $medium-spacing;
+      margin-top: variables.$medium-spacing;
       margin-left: 1.2em;
       font-size: 12px;
       display: grid;
       grid-template-columns: 1fr 1fr 3em;
-      column-gap: $medium-spacing;
+      column-gap: variables.$medium-spacing;
       row-gap: 0;
       padding: 0;
     }
@@ -300,15 +392,15 @@
       place-self: center;
     }
     .full-width {
-      margin-bottom: $medium-spacing;
+      margin-bottom: variables.$medium-spacing;
       grid-column: 1/3;
     }
     .left {
-      margin-bottom: $medium-spacing;
+      margin-bottom: variables.$medium-spacing;
       grid-column: 1;
     }
     .right {
-      margin-bottom: $medium-spacing;
+      margin-bottom: variables.$medium-spacing;
       grid-column: 2;
     }
   }
@@ -330,9 +422,9 @@
       display: flex;
       flex-direction: column;
       align-items: flex-end;
-      margin-bottom: $medium-spacing;
+      margin-bottom: variables.$medium-spacing;
 
-      >.charge-button {
+      > .charge-button {
         padding: 0;
         margin: 0;
       }
@@ -341,6 +433,7 @@
 
   .charge {
     display: flex;
+    flex-direction: row;
     padding-left: 0;
     padding-right: calc(2.25em + 4px);
     align-items: center;
@@ -357,14 +450,17 @@
 
     .sort-handle {
       cursor: grab;
-      padding: .25em;
-      padding-right: .5em;
+      padding: 0.25em;
+      padding-right: 0.5em;
+      flex: 0;
     }
 
     .content {
       font-size: 12px;
       margin: 0;
-      display: block;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
 
       label {
         flex: 3;
@@ -377,6 +473,7 @@
 
     .charge-delete {
       padding: 0.25em;
+      flex: 0;
     }
   }
 
@@ -384,7 +481,7 @@
     summary {
       display: grid;
       grid-template-columns: 24px 1fr 80px;
-      column-gap: $medium-spacing;
+      column-gap: variables.$medium-spacing;
       line-height: 24px;
     }
     .effect-icon {
@@ -404,21 +501,21 @@
       text-align: center;
     }
     .item-unequipped {
-      color: rgba(0, 0, 0, 0.2);
+      color: var(--item-unequipped-color);
     }
   }
 
   .use-consumable {
-    margin: $medium-spacing;
+    margin: variables.$medium-spacing;
   }
 
   .granted-items {
-    padding: 0;
+    padding: 0 1rem;
     .granted-item {
-      margin: $small-spacing 0;
+      margin: variables.$small-spacing 0;
       display: grid;
       grid-template-columns: 24px 1fr 32px;
-      column-gap: $small-spacing;
+      column-gap: variables.$small-spacing;
       align-items: center;
       .grant-name {
         text-decoration: underline var(--accent-color);
@@ -438,7 +535,7 @@
 
   .loaded-ammo {
     margin: 0;
-    padding-left: $medium-spacing;
+    padding-left: variables.$medium-spacing;
     padding-right: 0;
     &-name {
       text-decoration-style: dotted;

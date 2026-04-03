@@ -22,6 +22,92 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.4
+
+### Changed
+
+- Currency on group actors now supports decimals. (!966) **by @ddbrown30**
+
+### Fixed
+
+- Modifier AE should no longer be disabled when the containing equipment item gets un-equipped. (#1410) **by @florad92**
+- Non-editable sheets should render properly again. (#1428) **by @mhilbrunner**
+- FilePicker class gets referenced properly again. (#1428) **by @mhilbrunner**
+
+## 5.2.3
+
+### Fixed
+
+- Added missing asset files for character sheet dark mode. (#1412)
+- Fixed CSS on Vehicle Sheet Trait and Crew tabs. (#1403) **by @florad92**
+- Fixed an issue that would cause weapons to not deduct shots/quantity properly when set to self-reload. (#1426) **by @florad92**
+
+## 5.2.2
+
+### Fixed
+
+- Fixed an issue that would cause the Roll Dialog from rendering. (#1422) **by @florad92**
+- Fixed several styling issues in the NPC Sheet (!958) **by @roth-michael**
+
+## 5.2.1
+
+### Added
+
+- Add missing target damage modifier (`system.stats.globalMods.targetDamage`) to compliment targetAttack modifiers.**by @jestevens210**
+- Add "No Acing" checkbox toggle to the damage roll dialog to update roll formula. Unchecking the box restores the original roll formula. **by @jestevens210**
+- Expose additional utilities `getRankFromAdvance`, `getRankFromAdvanceAsString`, `getScaleName`, `getDefaultAttackModifiers`. **by @mhilbrunner**
+
+### Fixed
+
+- Fixed display of Additional Stats and added seperator for stats with a Max Value. **by @jestevens210**
+- Move recharge button back to header. **by @ddbrown30**
+- Fixed issues where certain powers could not be sent to chat. **by @jestevens210**
+- Fixed situation where Shaken dialog could not be closed if user wished to accept the Shaken result. **by @jestevens210**
+- Fixed an issue that would cause the card selection in the Update Combatant window to be rendered incorrectly. (#1409) **by @florad92**
+- Derived Stat inputs should once again be center-aligned. (#1418) **by @florad92**
+
+## 5.2.0
+
+### Added
+
+- Added GM Override for Quick/Level Headeed Card picker. GM can trigger to auto select highest result if player is unresponsive **by @jestevens210**
+- Added Active Effects support for Target Attack Modifiers (any, ranged, melee) and Gang-Up Modifiers **by @jestevens210**
+- Added support to add Gang Up bonus to damage rolls via `system.stats.gangUpDamage` Active Effect **by @jestevens210**
+- Added `Defeated` button to damage applicator workflow to skip injury/bleeding out when not needed
+- Added Actor Tweak to allow selecting attribute to use for auto-calculating Toughness (default: `vigor`) by **@jestevens210**
+- Added Actor Tweak to overriding the Parry base skill by SWID per-actor (falls back to the global `parryBaseSwid` setting when blank) by **@jestevens210**
+
+### Changed
+
+- **Breaking** Updated actor sheet and item sheets to use application v2 framework. Modules that use application v1 character sheet styling will lose their custom styles and core sheet will render instead **by @roth-michael**
+- Improved the Spirit roll dialog for Unshaking by making it loop and remain available after failed rolls, allowing players to retry the roll or spend a benny without losing access to the options. The dialog now closes only on successful Unshake roll or when a benny is spent. **by @jestevens210**
+
+### Fixed
+
+- Fixed an issue where Innate Powers would fail the resource check when rolling a trait from the item card or quick access. (!1406) **by @jestevens210**
+- Allow editing a skill when Active Effect is modifying it. **by @florad**
+- Moved call `swadeActorPrepareDerivedData` hook before pace calculation to allow modules to adjust `encumbrance.max` by **@jestevens210**
+
+### Known Issues
+
+- Using charges on consumables and quantity drops to 0 quantity, charges don't fresh as item is considered expended. Reset quantity and charges will replish as usual.
+
+## 5.1.1
+
+=======
+
+### Added
+
+- Added @size as a possible roll key. (!931) **by @ddbrown30**
+
+### Changed
+
+- Several HUD and localization improvements (!927) **by @mhilbrunner**
+
+### Fixed
+
+- Refactored the charges system to use an array. This should fix the duplicating charges bug. (!929) **by @ddbrown30**
+
 ## 5.1.0
 
 ### Added
@@ -2528,7 +2614,6 @@ m
 - Added Active Effect to the Defend status which adds +4 Parry
 - Added new Status _Protection_ which adds an Active Effect that adds 0 to both toughness and armor, making it easy to apply the power. All you need to do is to put the modifier (4 or 6) into the appropriate Active Effect change.
 - Added new Item type `ability`. This item type has two subtypes, `race` and `special`. If the item has the subtype `race` you can drag&drop the following items onto it to create racial abilities:
-
   - Skills
   - Edges
   - Hindrances
@@ -2539,7 +2624,6 @@ m
   When you have prepared the race you can then drag&drop it onto any non-vehicle actor.
 
   Once that is done, several things happen:
-
   - The racial abilities are taken from the race and added to the actor
   - Any active effects that were added to the race are copied to the actor
   - The actors race is set to the name of the race item that was dropped onto the actors
@@ -3020,7 +3104,6 @@ gioness if it is marked as natural armor, has at least the torso location and is
 ### Added
 
 - Layout rework (Thanks to U~Man)
-
   - Added multiple arcane support, filling the Arcane field of power items will sort it in the powers tab and gives it its own PP pool when the filter is enabled
   - Moved sheet config options (initiative, wounds) to a Tweaks dialog in the sheet header
   - Moved Race and Rank fields to the sheet header

@@ -1,20 +1,12 @@
 import { PotentialSource } from '../../../globals';
 import { constants } from '../../constants';
 import { ItemChatCardChip } from '../../documents/item/SwadeItem.interface';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import * as migrations from './_migration';
 import * as quarantine from './_quarantine';
 import * as shims from './_shims';
 import { SwadePhysicalItemData } from './base';
-import {
-  actions,
-  activities,
-  arcaneDevice,
-  category,
-  equippable,
-  favorite,
-  grantEmbedded,
-} from './common';
+import { actions, activities, arcaneDevice, category, equippable, favorite, grantEmbedded } from './common';
 import {
   Actions,
   Activities,
@@ -27,7 +19,8 @@ import {
 
 declare namespace ShieldData {
   interface Schema
-    extends SwadePhysicalItemData.Schema,
+    extends
+      SwadePhysicalItemData.Schema,
       Equippable,
       ArcaneDevice,
       Actions,
@@ -43,11 +36,7 @@ declare namespace ShieldData {
   interface DerivedData extends SwadePhysicalItemData.DerivedData {}
 }
 
-class ShieldData extends SwadePhysicalItemData<
-  ShieldData.Schema,
-  ShieldData.BaseData,
-  ShieldData.DerivedData
-> {
+class ShieldData extends SwadePhysicalItemData<ShieldData.Schema, ShieldData.BaseData, ShieldData.DerivedData> {
   /** @inheritdoc */
   static override defineSchema(): ShieldData.Schema {
     const fields = foundry.data.fields;
@@ -101,7 +90,7 @@ class ShieldData extends SwadePhysicalItemData<
   }
 
   async getChatChips(
-    enrichOptions: Partial<TextEditor.EnrichmentOptions>,
+    enrichOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions>
   ): Promise<ItemChatCardChip[]> {
     const chips = new Array<ItemChatCardChip>();
     if (this.isReadied) {
@@ -132,23 +121,17 @@ class ShieldData extends SwadePhysicalItemData<
       },
       {
         icon: '<i class="fas fa-sticky-note"></i>',
-        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          this.notes ?? '',
-          enrichOptions,
-        ),
+        text: await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.notes ?? '', enrichOptions),
         title: game.i18n.localize('SWADE.Notes'),
-      },
+      }
     );
     return chips;
   }
 
   protected override async _preCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      ShieldData.Schema,
-      Item<'shield'>
-    >,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<ShieldData.Schema, Item<'shield'>>,
     options: Item.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
@@ -160,8 +143,8 @@ class ShieldData extends SwadePhysicalItemData<
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -169,18 +152,10 @@ class ShieldData extends SwadePhysicalItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/shield-embeds.hbs',
-      ['item-embed', 'shield'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/shield-embeds.hbs', ['item-embed', 'shield']);
   }
 }
 

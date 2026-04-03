@@ -33,19 +33,14 @@ export async function registerCompendiumArt() {
   const modules = [...game.modules.entries()].filter(([_key, m]) => m.active); // Get a list of active modules
 
   for (const [id, module] of modules) {
-    const mappingFlag = foundry.utils.getProperty(
-      module,
-      `flags.${id}.swade-art`,
-    );
+    const mappingFlag = foundry.utils.getProperty(module, `flags.${id}.swade-art`);
     const moduleArt = await getArtMap(mappingFlag); // Get maps from any active modules
     if (!moduleArt) continue;
 
     for (const [packName, art] of Object.entries(moduleArt)) {
       const pack = game.packs.get(packName);
       if (!pack) {
-        Logger.warn(
-          `Failed pack lookup from module art registration (${id}): ${packName}`,
-        );
+        Logger.warn(`Failed pack lookup from module art registration (${id}): ${packName}`);
         continue;
       }
 
@@ -55,10 +50,7 @@ export async function registerCompendiumArt() {
         if (!record) continue;
 
         record.img = paths.actor; // Set the actor's art in the index, which is used by compendium windows
-        game.swade.compendiumArt.map.set(
-          `Compendium.${packName}.${actorId}`,
-          paths,
-        ); // Push the actor ID and art to the map
+        game.swade.compendiumArt.map.set(`Compendium.${packName}.${actorId}`, paths); // Push the actor ID and art to the map
       }
     }
   }
@@ -77,9 +69,7 @@ async function getArtMap(art): Promise<ArtworkMappingFile | null> {
   } else if (typeof art === 'string') {
     // Instead of being in a module.json file, the art map is in a separate JSON file referenced by path
     try {
-      const response = (await foundry.utils.fetchJsonWithTimeout(
-        art,
-      )) as ArtworkMappingFile;
+      const response = (await foundry.utils.fetchJsonWithTimeout(art)) as ArtworkMappingFile;
       if (!response) {
         Logger.warn(`Failed loading art mapping file at ${art}`);
         return null;
@@ -113,9 +103,8 @@ function isArtMappingObject(record: ArtworkMappingFile): boolean {
             (isObject(art.token) &&
               typeof art.token.img === 'string' &&
               typeof art.token === 'string' && // token can be a file path, or an object containing the file path and the token scale
-              (art.token.scale === undefined ||
-                typeof art.token.scale === 'number')),
-        ),
+              (art.token.scale === undefined || typeof art.token.scale === 'number'))
+        )
     )
   );
 }

@@ -1,0 +1,18 @@
+{{prompt}}
+<form>
+  <fieldset>
+    {{adjustDamage}}
+    <div class='form-group'>
+      <label for='damage'>{{localize 'SWADE.Dmg'}}</label>
+      <span class='form-fields'>
+        <input type='number' id='damage' value='{{damageContext.damage.total}}' autofocus />
+      </span>
+    </div>
+    <div class='form-group'>
+      <label for='ap'>{{localize 'SWADE.Ap'}}</label>
+      <span class='form-fields'>
+        <input type='number' id='ap' value='{{damageContext.damage.ap}}' />
+      </span>
+    </div>
+  </fieldset>
+</form>

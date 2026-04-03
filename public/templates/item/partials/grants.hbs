@@ -1,0 +1,36 @@
+<hr />
+<h4>{{localize 'SWADE.ItemGrants.Header'}}</h4>
+{{#if item.isPhysicalItem}}
+  <div class='form-group'>
+    <label>{{localize 'SWADE.ItemGrants.When'}}</label>
+    <span class='form-fields'>
+      <select name='system.grantOn' data-dtype='Number'>
+        {{selectOptions grantOnTriggers selected=item.system.grantOn localize=true valueAttr='key' labelAttr='label'}}
+      </select>
+    </span>
+  </div>
+{{/if}}
+<ul class='unmarked-list granted-items'>
+  {{#if (isEmpty grantedItems)}}
+    <p class='text-center empty-hint'>
+      {{localize 'SWADE.ItemGrants.EmptyHint'}}
+    </p>
+  {{else}}
+    {{#each grantedItems}}
+      <li class='granted-item' data-uuid='{{uuid}}'>
+        {{#if missing}}
+          <i class='fa-solid fa-link-slash'></i>
+          <a class='grant-name missing'>{{name}}</a>
+        {{else}}
+          <img class='icon' src='{{img}}' />
+          <a data-action='openItem' class='grant-name'>{{name}}
+            {{#if major}}{{localize 'SWADE.Major'}}{{/if}}
+          </a>
+        {{/if}}
+        <button data-action='deleteGrant' class='grant-delete invisible'>
+          <i class='fas fa-trash'></i>
+        </button>
+      </li>
+    {{/each}}
+  {{/if}}
+</ul>

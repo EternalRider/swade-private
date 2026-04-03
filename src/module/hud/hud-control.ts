@@ -1,13 +1,12 @@
 import SwadeActorHUD from '../apps/SwadeActorHUD';
+import SwadeToken from '../canvas/SwadeToken';
 
 /**
  * Get the current HUD app instance.
  * @returns {SwadeActorHUD | null} The current HUD app instance, or null if not found.
  */
 export function getHudApp(): SwadeActorHUD | null {
-  return (
-    (foundry.applications.instances.get('swadehud') as SwadeActorHUD) || null
-  );
+  return (foundry.applications.instances.get('swadehud') as SwadeActorHUD) || null;
 }
 
 /**
@@ -23,10 +22,10 @@ export function hideSwadeHUD() {
 
 /**
  * Check if an actor is a SWADE PC (player character).
- * @param {any} token - The token to check.
+ * @param {SwadeToken} token - The token to check.
  * @returns {boolean} True if the token is a SWADE PC, false otherwise.
  */
-export function isSwadePC(token: any): boolean {
+export function isSwadePC(token: SwadeToken): boolean {
   if (!token?.actor) return false;
 
   // Check if it's a character or NPC type
@@ -44,9 +43,9 @@ export function isSwadePC(token: any): boolean {
 
 /**
  * Switch the HUD to display a different token's data.
- * @param token - The token document to switch to.
+ * @param {SwadeToken} token - The token document to switch to.
  */
-export async function switchHudToToken(token: any) {
+export async function switchHudToToken(token: SwadeToken) {
   const currentHud = getHudApp();
   if (!currentHud || !token) return;
 
@@ -58,14 +57,14 @@ export async function switchHudToToken(token: any) {
 /**
  * Handle SWADE HUD token control (show/hide).
  * Shows or hides the HUD for the specified token.
- * @param {any} token - The token to control.
+ * @param {SwadeToken} token - The token to control.
  * @param {boolean} controlled - Whether the token is controlled.
  * @param {typeof SwadeActorHUD} hudClass - The HUD class to use.
  */
 export async function handleSwadeHUDTokenControl(
-  token: any,
+  token: SwadeToken,
   controlled: boolean,
-  hudClass: typeof SwadeActorHUD,
+  hudClass: typeof SwadeActorHUD
 ) {
   // Only handle if it's a SWADE PC
   if (!isSwadePC(token)) {
@@ -98,8 +97,9 @@ export async function handleSwadeHUDTokenControl(
 
 /**
  * Handle SWADE HUD token deletion
+ * @param {SwadeToken} token - The token that was deleted.
  */
-export function handleSwadeHUDTokenDeleted(token: any) {
+export function handleSwadeHUDTokenDeleted(token: SwadeToken) {
   const currentHud = getHudApp();
 
   // Close HUD if it belongs to the deleted token
@@ -111,20 +111,19 @@ export function handleSwadeHUDTokenDeleted(token: any) {
 /**
  * Toggle the SWADE HUD for the currently controlled token or assigned character.
  * This function mimics the behavior of the JavaScript version's toggleSwadeHud.
+ * @param {SwadeToken} token - The token to toggle the HUD for. If null, the token is selected based on controlled tokens and assigned actors.
  */
-export function toggleSwadeHUD() {
-  let token = null;
-
+export function toggleSwadeHUD(token: SwadeToken | null = null) {
   // First, check for controlled tokens
-  const controlledTokens = canvas.tokens?.controlled || [];
-  token = controlledTokens.find((t: any) => isSwadePC(t));
+  if (!token) {
+    const controlledTokens = canvas.tokens?.controlled || [];
+    token = controlledTokens.find((t: any) => isSwadePC(t));
+  }
 
   // If no controlled token, check for player's assigned actor's token
   if (!token && game.user?.character) {
     const assignedActor = game.user.character;
-    token = canvas.tokens?.placeables.find(
-      (t: any) => t.actor?.id === assignedActor.id && isSwadePC(t),
-    );
+    token = canvas.tokens?.placeables.find((t: any) => t.actor?.id === assignedActor.id && isSwadePC(t));
   }
 
   if (!token) return;

@@ -1,0 +1,311 @@
+<section class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{!-- Sheet Header --}}
+  {{> 'swade.item-header'}}
+
+  {{!-- Sidebar --}}
+  <section class='sheet-sidebar'>
+    {{> 'swade.item-equipped'}}
+    <div class='form-group'>
+      <label for="{{item.uuid}}-range">
+        {{localize 'SWADE.Range._name'}}
+      </label>
+      <span class='form-fields'>
+        <input
+          id="{{item.uuid}}-range"
+          name='system.range'
+          type='text'
+          list="{{item.id}}-ranges"
+          value='{{item.system.range}}'
+          placeholder='{{localize "SWADE.Range._name"}}'
+        />
+      </span>
+    </div>
+    <div class='form-group'>
+      <label for="{{item.uuid}}-damage">
+        {{localize 'SWADE.Dmg'}}
+      </label>
+      <span class='form-fields'>
+        <input
+          id="{{item.uuid}}-damage"
+          name='system.damage'
+          type='text'
+          value='{{item.system.damage}}'
+          placeholder='{{localize "SWADE.Dmg"}}'
+        />
+      </span>
+    </div>
+    <div class='form-group'>
+      <label for='{{item.uuid}}-ap'>{{localize 'SWADE.Ap'}}</label>
+      <span class='form-fields'>
+        <input
+          id="{{item.uuid}}-ap"
+          name='system.ap'
+          type='number'
+          value='{{item.system.ap}}'
+          placeholder='{{localize "SWADE.Ap"}}'
+          data-dtype='Number'
+        />
+      </span>
+    </div>
+    <div class='form-group'>
+      <label for='{{item.uuid}}-shots'>{{localize 'SWADE.Mag'}}</label>
+      <span class='form-fields text-center'>
+        <input
+          id="{{item.uuid}}-shots"
+          name='system.currentShots'
+          type='number'
+          value='{{item.system.currentShots}}'
+          placeholder='{{localize "SWADE.Mag"}}'
+          data-dtype="Number"
+        />
+        <strong class="flex-separator">/</strong>
+        <input
+          name='system.shots'
+          type='number'
+          value='{{item.system.shots}}'
+          placeholder='0'
+          data-dtype="Number"
+        />
+      </span>
+    </div>
+    {{#if ammoLoaded}}
+    <fieldset class="loaded-ammo">
+      <legend>{{localize "SWADE.LoadedAmmo"}}</legend>
+      <u class="loaded-ammo-name">{{ammoLoaded}}</u>
+    </fieldset>
+    {{/if}}
+    <hr>
+    {{> 'swade.item-additional-stats'}}
+  </section>
+
+  {{!-- Sheet Tab Navigation --}}
+  {{> "templates/generic/tab-navigation.hbs"}}
+
+  {{!-- Main Section --}}
+  <section class='sheet-body'>
+    {{> 'swade.item-tab-description'}}
+    {{!-- Properties --}}
+    <section class='{{tabs.properties.tabCssClass}}' data-group='{{tabs.properties.group}}' data-tab='{{tabs.properties.id}}'>
+      <div class="form-group">
+        <label>{{localize "SWADE.TrademarkWeapon.Label"}}</label>
+        <span class="form-fields">
+          <select name="system.trademark" data-dtype="Number">
+            {{selectOptions
+              trademarkWeaponOptions
+              selected=item.system.trademark
+              localize=true
+            }}
+          </select>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for="{{item.uuid}}-parry">
+          {{localize 'SWADE.Parry'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id="{{item.uuid}}-parry"
+            name='system.parry'
+            type='text'
+            value='{{signedString item.system.parry}}'
+            placeholder='{{localize "SWADE.Parry"}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for='{{item.uuid}}-rof'>{{localize 'SWADE.RoF'}}</label>
+        <span class='form-fields'>
+          <input
+            id="{{item.uuid}}-rof"
+            name='system.rof'
+            type='text'
+            value='{{item.system.rof}}'
+            placeholder='{{localize "SWADE.RoF"}}'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for='{{item.uuid}}-minStr'>
+          {{localize 'SWADE.MinStrShort'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id="{{item.uuid}}-minStr"
+            name='system.minStr'
+            type='text'
+            value='{{item.system.minStr}}'
+            placeholder='{{localize "SWADE.MinStr"}}'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for='{{item.uuid}}-weight'>{{localize 'SWADE.Weight'}}</label>
+        <span class='form-fields'>
+          <input
+            id="{{item.uuid}}-weight"
+            name='system.weight'
+            type='text'
+            value='{{item.system.weight}}'
+            placeholder='{{localize "SWADE.Weight"}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for="{{item.uuid}}-notes">
+          {{localize 'SWADE.Notes'}}
+        </label>
+        <span class='form-fields'>
+          <input
+            id="{{item.uuid}}-notes"
+            type='text'
+            name='system.notes'
+            value='{{item.system.notes}}'
+            placeholder='{{localize "SWADE.Notes"}}'
+          />
+        </span>
+      </div>
+      <div class="form-group">
+        <label for="{{item.uuid}}-ammo">
+          {{localize "SWADE.Ammo"}}
+        </label>
+        <span class="form-fields">
+          <input
+            id="{{item.uuid}}-ammo"
+            type="text"
+            name="system.ammo"
+            value="{{item.system.ammo}}"
+            list="{{item.id}}-ammo"
+            data-dtype="String"
+            title="{{localize 'SWADE.ClickSuggestions'}}"
+          />
+        </span>
+      </div>
+      <div class='form-group'>
+        <label>
+          {{localize 'SWADE.ReloadType.Label'}}
+        </label>
+        <span class='form-fields'>
+          <select name='system.reloadType'>
+              {{selectOptions
+                reloadTypeOptions
+                selected=item.system.reloadType
+                localize=true
+              }}
+          </select>
+        </span>
+      </div>
+      {{#if ppReload}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-pp-reload">
+          {{localize "SWADE.ppReload"}}
+        </label>
+        <span class="form-fields">
+          <input
+            id="{{item.uuid}}-pp-reload"
+            type='text'
+            name='system.ppReloadCost'
+            value='{{item.system.ppReloadCost}}'
+            data-dtype='Number'
+          />
+        </span>
+      </div>
+      {{/if}}
+      <div class="form-group range-type">
+        <label>
+          {{localize "SWADE.Weapon.RangeType.Label"}}
+        </label>
+          <span class="form-fields">
+          {{radioBoxes "system.rangeType" rangeTypeOptions checked=item.system.rangeType localize=true}}
+        </span>
+      </div>
+      {{> 'swade.item-action-properties'}}
+      {{formGroupSimple "system.activities" stacked=true}}
+      {{> 'swade.item-bonus-damage'}}
+      <div class='form-group'>
+        <label for="{{item.uuid}}-arcane-device">
+          {{localize 'SWADE.ArcaneDevice'}}
+        </label>
+        <span class='form-fields'>
+          <input id="{{item.uuid}}-arcane-device" type='checkbox' name='system.isArcaneDevice' {{checked item.isArcaneDevice}}/>
+        </span>
+      </div>
+      <div class='form-group'>
+        <label for="{{item.uuid}}-vehicular">
+          {{localize 'SWADE.Vehicular'}}
+        </label>
+        <span class='form-fields'>
+          <input id="{{item.uuid}}-vehicular" type='checkbox' name='system.isVehicular'{{checked item.system.isVehicular}}/>
+        </span>
+      </div>
+      {{#if item.system.isVehicular}}
+        {{#if settingRules.modSlots}}
+          <div class='form-group'>
+            <label for='{{item.uuid}}-mods'>
+              {{localize 'SWADE.ModSlots'}}
+            </label>
+            <span class='form-fields'>
+              <input
+                id="{{item.uuid}}-mods"
+                name='system.mods'
+                type='number'
+                value='{{item.system.mods}}'
+                placeholder='{{localize "SWADE.ModSlots"}}'
+                data-dtype="Number"
+              />
+            </span>
+          </div>
+        {{/if}}
+      {{/if}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-heavy-weapon">
+          {{localize "SWADE.HeavyWeapon"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-heavy-weapon" type="checkbox" name="system.isHeavyWeapon" {{checked item.system.isHeavyWeapon}}/>
+        </span>
+      </div>
+      <div class="form-group">
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
+        </span>
+      </div>
+      {{> 'swade.item-templates'}}
+      {{> 'swade.item-grants'}}
+    </section>
+    {{#if item.isArcaneDevice}}
+      {{> 'swade.item-tab-powers'}}
+    {{/if}}
+    {{#if item.system.charges.hasCharges}}
+      {{> 'swade.item-tab-charges'}}
+    {{/if}}
+    {{> 'swade.item-tab-actions'}}
+    {{> 'swade.item-tab-effects'}}
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+
+  <datalist id="{{item.id}}-ammo">
+    {{#each ammoList}}
+    <option value="{{this}}" />
+    {{/each}}
+  </datalist>
+
+  <datalist id="{{item.id}}-ranges">
+    {{#each ranges}}
+    <option value="{{this}}" />
+    {{/each}}
+  </datalist>
+</section>

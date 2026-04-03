@@ -1,0 +1,297 @@
+{{#*inline 'effect-list'}}
+<li class='effect-list-label'>
+  {{localize label}}
+</li>
+<ul class='effect-list'>
+{{#each effectList as |effect|}}
+  <li 
+    data-effect-id='{{effect.id}}' 
+    data-parent-id='{{effect.parent.id}}' 
+    data-document-class='ActiveEffect' 
+    data-drag='true' 
+    class='flexrow'
+  >
+    <img src='{{effect.img}}' />
+    <span class='name'>{{effect.name}}</span>
+    <span class='controls'>
+      {{#if @root.editable}}
+      <a data-action='toggleProperty' data-toggle='disabled'>
+        <i class='fa-solid fa-power-off'></i>
+      </a>
+      {{/if}}
+      <a data-action='openEffect'>
+        <i class='fa-solid fa-edit'></i>
+      </a>
+      {{#if @root.editable}}
+      <a data-action='deleteEffect'>
+        <i class='fa-solid fa-trash'></i>
+      </a>
+      {{/if}}
+    </span>
+  </li>
+{{/each}}
+</ul>
+{{/inline}}
+<section
+  class='{{tabs.traits.tabCssClass}} flexrow'
+  data-tab='traits'
+  data-group='primary'
+>
+  <div class='left'>
+    <details class='mods' data-summary-id='mods'>
+      <summary class='section-header'>
+      {{localize 'SWADE.Mods'}}
+      {{#if showModCount}}
+        ({{system.mods.value}} / {{system.mods.max}})
+      {{/if}}
+      {{#if editable}}
+        <a class='helper-button'
+          data-action='createDocument' 
+          data-document-class='Item' 
+          data-type='gear' 
+          data-system.is-vehicular='true' 
+          data-system.equip-status='3' 
+        >
+          <i class='fa-solid fa-plus'></i>
+        </a>
+      {{/if}}
+      </summary>
+      <ul class='item-list content'>
+      {{#each gearMods as |item|}}
+        <li 
+          data-item-id='{{item.id}}' 
+          data-document-class='Item' 
+          data-drag='true' 
+          class='flexrow'
+        >
+          <img src='{{item.img}}' />
+          <a class='name' data-action='showItem'>{{item.name}}</a>
+          <span class='controls'>
+            <a data-action='openItem'>
+              <i class='fa-solid fa-edit'></i>
+            </a>
+            {{#if @root.editable}}
+            <a data-action='deleteItem'>
+              <i class='fa-solid fa-trash'></i>
+            </a>
+            {{/if}}
+          </span>
+        </li>
+      {{/each}}
+      </ul>
+    </details>
+    <details class='weapons' data-summary-id='weapons'>
+      <summary class='section-header'>
+        {{localize 'SWADE.Weapons'}}
+          {{#if editable}}
+          <a class='helper-button'
+            role="button"
+            data-action='createDocument' 
+            data-document-class='Item' 
+            data-type='weapon' 
+            data-system.is-vehicular='true' 
+            data-system.equip-status='4' 
+          >
+            <i class='fa-solid fa-plus'></i>
+          </a>
+        {{/if}}
+      </summary>
+      <ul class='item-list content'>
+      {{#each weaponMods as |item|}}
+        <li 
+          data-item-id='{{item.id}}' 
+          data-document-class='Item' 
+          data-drag='true' 
+          class='flexrow'
+        >
+          <img src='{{item.img}}' />
+          <a class='name' data-action='showItem'>{{item.name}}</a>
+          <span class='controls'>
+            <a data-action='openItem'>
+              <i class='fa-solid fa-edit'></i>
+            </a>
+            {{#if @root.editable}}
+              <a data-action='deleteItem'>
+                <i class='fa-solid fa-trash'></i>
+              </a>
+            {{/if}}
+          </span>
+        </li>
+      {{/each}}
+      </ul>
+    </details>
+  </div>
+  <div class='right'>
+    {{#if attributes.enabled}}
+      <div class='attributes'>
+        <label class='section-header'>
+          {{localize 'SWADE.Attributes'}} 
+          <a class='helper-button' data-action='manageAttributes'>
+            <i class='fa-solid fa-gear'></i>
+          </a>
+        </label>
+        <div class='attribute-list'>
+          {{#each attributes.list}}
+            <div class='form-group'>
+              <label class='attribute-label'>{{localize field.label}}</label>
+              <div class='attribute'>
+                <button
+                  type='button'
+                  data-tooltip='{{tooltip}}'
+                  data-attribute='{{field.name}}'
+                  data-action='rollAttribute'
+                >
+                  <img
+                    class='die'
+                    src='systems/swade/assets/official/dice/d{{value.die.sides}}.svg'
+                  />
+                  <span class='modifier'>
+                    {{signedString value.die.modifier}}
+                  </span>
+                </button>
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      </div>
+    {{/if}}
+    <div class='derived'>
+      <label class='section-header'>{{localize 'SWADE.Stats'}}</label>
+      <div class='flexrow'>
+        <div class='flexcol derived-stat size'>
+          <label for='{{actor.uuid}}-size' class='label'>{{localize 'SWADE.Size'}}</label>
+          <div class='flexrow'>
+            <input id='{{actor.uuid}}-size' type='number' name='system.size' value='{{system.size}}' />
+          </div>
+        </div>
+        <div class='flexcol derived-stat handling'>
+          <label for='{{actor.uuid}}-handling' class='label'>{{localize 'SWADE.Handling'}}</label>
+          <div class='flexrow'>
+            <input id='{{actor.uuid}}-handling' type='number' name='system.handling' value='{{system.handling}}' />
+          </div>
+        </div>
+        <div class='flexcol derived-stat top-speed split'>
+          <label for='{{actor.uuid}}-top-speed' class='label'>{{localize 'SWADE.Topspeed'}}</label>
+          <div class='flexrow'>
+            <input class='speed-value' id='{{actor.uuid}}-top-speed' type='number' name='system.topspeed.value' value='{{system.topspeed.value}}' />
+            <input class='speed-unit' type='text' name='system.topspeed.unit' value='{{system.topspeed.unit}}' />
+          </div>
+        </div>
+        <div class='flexcol derived-stat parry split'>
+          <label for='{{actor.uuid}}-parry' class='label'>{{localize 'SWADE.Parry'}}</label>
+          <div class='flexrow'>
+            <input id='{{actor.uuid}}-parry' class='slim' type='number' name='system.stats.parry.value' value='{{system.stats.parry.value}}' {{readonly system.details.autoCalcParry}}/>
+            <input id='{{actor.uuid}}-parry' class='slim' type='number' name='system.stats.parry.shield' value='{{system.stats.parry.shield}}' data-tooltip="TYPES.Item.shield" {{readonly system.details.autoCalcParry}}/>
+          </div>
+        </div>
+        <div class='flexcol derived-stat toughness split'>
+          <label for='{{actor.uuid}}-toughness' class='label'>{{localize 'SWADE.Tough'}}</label>
+          <div class='flexrow'>
+            <input id='{{actor.uuid}}-toughness' class='slim' type='number' name='system.toughness.total' value='{{system.toughness.total}}' />
+            <input id='{{actor.uuid}}-armor' class='slim' type='number' name='system.toughness.armor' value='{{system.toughness.armor}}' data-tooltip="TYPES.Item.armor"/>
+          </div>
+        </div>
+      </div>
+      {{#if hasEnergy}}
+        <div class='form-group energy'>
+          <label for='{{actor.uuid}}-system.energy.value' class='label'>{{localize 'SWADE.Energy.Label'}}</label>
+          <div class='form-fields'>
+            <input min="0" id='{{actor.uuid}}-system.energy.value' type='number' name='system.energy.value' placeholder="{{localize 'SWADE.Energy.Value'}}" value='{{system.energy.value}}' />
+            <input min="0" type='number' name='system.energy.max' placeholder="{{localize 'SWADE.Energy.Max'}}" value='{{system.energy.max}}' />
+          </div>
+        </div>
+      {{/if}}
+      {{#if hasAdditionalStatsFields}}
+        <div class='additional-stats'>
+          {{#each additionalStats as |attr key|}}
+            <div class='form-group'>
+              {{#if (eq attr.dtype 'Die')}}
+                <label>
+                  <button type='button' class='roll'data-action='rollAdditionalStat'  data-stat='{{key}}'>
+                    {{attr.label}}
+                  </button>
+                </label>
+                <span class='form-fields'>
+                  <input
+                    type='text'
+                    name='system.additionalStats.{{key}}.value'
+                    data-dtype='String'
+                    value='{{attr.value}}'
+                    placeholder='{{localize "SWADE.Die"}}'
+                  />
+                  <input
+                    type='text'
+                    name='system.additionalStats.{{key}}.modifier'
+                    data-dtype='String'
+                    value='{{attr.modifier}}'
+                    placeholder='{{localize "SWADE.Modifier"}}'
+                  />
+                </span>
+              {{else if (eq attr.dtype 'Boolean')}}
+                <label class='check-container'>
+                  {{attr.label}}
+                  <input
+                    type='checkbox'
+                    name='system.additionalStats.{{key}}.value'
+                    {{checked attr.value}}
+                    data-dtype='Boolean'
+                  />
+                  <span class='checkmark'></span>
+                </label>
+              {{else if (eq attr.dtype 'Selection')}}
+                <label>{{attr.label}}</label>
+                <span class="form-fields">
+                  <select name='system.additionalStats.{{key}}.value'>
+                    {{selectOptions attr.options selected=attr.value localize=true}}
+                  </select>
+                </span>
+              {{else}}
+                <label>{{attr.label}}</label>
+                <span class='form-fields'>
+                  <input
+                    type='text'
+                    name='system.additionalStats.{{key}}.value'
+                    data-dtype='{{attr.dtype}}'
+                    data-tooltip='{{attr.value}}'
+                    value='{{attr.value}}'
+                    placeholder='{{localize
+                      "SWADE.AdditionalStats.Current"
+                      stat=attr.label
+                    }}'
+                  />
+                  {{#if attr.hasMaxValue}}
+                    <input
+                      type='text'
+                      name='system.additionalStats.{{key}}.max'
+                      data-dtype='{{attr.dtype}}'
+                      value='{{attr.max}}'
+                      placeholder='{{localize
+                        "SWADE.AdditionalStats.Max"
+                        stat=attr.label
+                      }}'
+                    />
+                  {{/if}}
+                </span>
+              {{/if}}
+            </div>
+          {{/each}}
+        </div>
+      {{/if}}
+    </div>
+    <div class='effects'>
+      <label class='section-header'>
+        {{localize 'SWADE.Effects'}}  
+        {{#if editable}}
+          <a class='helper-button' data-action='openAegis'>
+            <i class='fa-solid fa-plus'></i>
+          </a>
+        {{/if}}
+      </label>
+      <ul class='effect-section'>
+        {{> effect-list label='SWADE.EffectsTemporary' effectList=effects.temporary}}
+        {{> effect-list label='SWADE.EffectsPermanent' effectList=effects.passive}}
+        {{> effect-list label='SWADE.EffectsInactive' effectList=effects.inactive}}
+      </ul>
+    </div>
+  </div>
+</section>

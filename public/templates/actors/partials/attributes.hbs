@@ -1,0 +1,124 @@
+<div class='attributes primary'>
+  <header class='header-field flexrow'>
+    <div>{{localize 'SWADE.Attributes'}}</div>
+    <div class='header-field-add'>
+      <a
+        class='attribute-manager'
+        title='{{localize "SWADE.AttributeManager.Open"}}'
+        data-action='displayAttributeManager'
+      >
+        <i class='fa-solid fa-gear'></i>
+      </a>
+    </div>
+  </header>
+  <div class='flexrow attributes-list'>
+    <div class='attribute'>
+      <div class='attribute-label'>
+        {{#if useAttributeShorts}}
+          {{localize 'SWADE.AttrAgiShort'}}
+        {{else}}
+          {{localize 'SWADE.AttrAgi'}}
+        {{/if}}
+      </div>
+      <button
+        type='button'
+        class='attribute-value flexrow'
+        title='{{localize "SWADE.Roll"}}'
+        data-action='rollAttribute'
+        data-attribute='agility'
+      >
+        <img class='die' src='systems/swade/assets/official/dice/d{{actor.system.attributes.agility.die.sides}}.svg' />
+        <span class='modifier'>
+          {{signedString actor.system.attributes.agility.die.modifier}}
+        </span>
+      </button>
+    </div>
+    <div class='attribute'>
+      <div class='attribute-label'>
+        {{#if useAttributeShorts}}
+          {{localize 'SWADE.AttrSmaShort'}}
+        {{else}}
+          {{localize 'SWADE.AttrSma'}}
+        {{/if}}
+        {{#if actor.system.attributes.smarts.animal}}
+          ({{localize 'SWADE.AnimalSmartsMarker'}})
+        {{/if}}
+      </div>
+      <button
+        type='button'
+        class='attribute-value flexrow'
+        title='{{localize "SWADE.Roll"}}'
+        data-action='rollAttribute'
+        data-attribute='smarts'
+      >
+        <img class='die' src='systems/swade/assets/official/dice/d{{actor.system.attributes.smarts.die.sides}}.svg' />
+        <span class='modifier'>
+          {{signedString actor.system.attributes.smarts.die.modifier}}
+        </span>
+      </button>
+    </div>
+    <div class='attribute'>
+      <div class='attribute-label'>
+        {{#if useAttributeShorts}}
+          {{localize 'SWADE.AttrSprShort'}}
+        {{else}}
+          {{localize 'SWADE.AttrSpr'}}
+        {{/if}}
+      </div>
+      <button
+        type='button'
+        class='attribute-value flexrow'
+        title='{{localize "SWADE.Roll"}}'
+        data-action='rollAttribute'
+        data-attribute='spirit'
+      >
+        <img class='die' src='systems/swade/assets/official/dice/d{{actor.system.attributes.spirit.die.sides}}.svg' />
+        <span class='modifier'>
+          {{signedString actor.system.attributes.spirit.die.modifier}}
+        </span>
+      </button>
+    </div>
+    <div class='attribute'>
+      <div class='attribute-label'>
+        {{#if useAttributeShorts}}
+          {{localize 'SWADE.AttrStrShort'}}
+        {{else}}
+          {{localize 'SWADE.AttrStr'}}
+        {{/if}}
+      </div>
+      <button
+        type='button'
+        class='attribute-value flexrow'
+        title='{{localize "SWADE.Roll"}}'
+        data-action='rollAttribute'
+        data-attribute='strength'
+      >
+        <img class='die' src='systems/swade/assets/official/dice/d{{actor.system.attributes.strength.die.sides}}.svg' />
+        <span class='modifier'>
+          {{signedString actor.system.attributes.strength.die.modifier}}
+        </span>
+      </button>
+    </div>
+    <div class='attribute'>
+      <div class='attribute-label'>
+        {{#if useAttributeShorts}}
+          {{localize 'SWADE.AttrVigShort'}}
+        {{else}}
+          {{localize 'SWADE.AttrVig'}}
+        {{/if}}
+      </div>
+      <button
+        type='button'
+        class='attribute-value flexrow'
+        title='{{localize "SWADE.Roll"}}'
+        data-action='rollAttribute'
+        data-attribute='vigor'
+      >
+        <img class='die' src='systems/swade/assets/official/dice/d{{actor.system.attributes.vigor.die.sides}}.svg' />
+        <span class='modifier'>
+          {{signedString actor.system.attributes.vigor.die.modifier}}
+        </span>
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,12 @@
+<section>
+  <h3>{{parent.name}}</h3>
+  <fieldset class='choice-list'>
+    <legend>{{prompt}}</legend>
+    {{#each choices as |choice|}}
+      <div>
+        <input type='radio' id='choice{{choice.value}}' name='choiceset' value='{{choice.value}}' />
+        <label for='choice{{choice.value}}' class='choice'>{{choice.name}}</label>
+      </div>
+    {{/each}}
+  </fieldset>
+</section>

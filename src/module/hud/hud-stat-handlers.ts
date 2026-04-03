@@ -26,7 +26,7 @@ export function setupHudStatHandlers(
   element: HTMLElement,
   actor: any,
   onUpdate: (() => void) | null = null,
-  token: HUDToken | null = null,
+  token: HUDToken | null = null
 ) {
   if (!element || !actor) return;
 
@@ -34,16 +34,12 @@ export function setupHudStatHandlers(
   const effectElements = element.querySelectorAll('.swadehud-effect');
   // Event delegation for dynamically added effects
   element.addEventListener('dragstart', (event: DragEvent) => {
-    const effectEl = (event.target as HTMLElement)?.closest?.(
-      '.swadehud-effect',
-    );
+    const effectEl = (event.target as HTMLElement)?.closest?.('.swadehud-effect');
     if (!effectEl) return;
     const effectId = (effectEl as HTMLElement).dataset.effectId;
     const itemId = (effectEl as HTMLElement).dataset.itemId;
     if (!effectId || !itemId || !actor) return;
-    const item = actor.getOwnedItem
-      ? actor.getOwnedItem(itemId)
-      : actor.items?.get?.(itemId);
+    const item = actor.getOwnedItem ? actor.getOwnedItem(itemId) : actor.items?.get?.(itemId);
     if (!item) return;
     const effect = item.effects?.get?.(effectId);
     if (!effect) return;
@@ -63,9 +59,7 @@ export function setupHudStatHandlers(
   });
 
   // Combat Toggle (use the token reference passed from the HUD)
-  const combatToggleBtn = element.querySelector(
-    '.swadehud-combat-toggle-clickable',
-  );
+  const combatToggleBtn = element.querySelector('.swadehud-combat-toggle-clickable');
   if (combatToggleBtn && actor) {
     combatToggleBtn.addEventListener('click', async (e: MouseEvent) => {
       e.preventDefault();
@@ -74,24 +68,19 @@ export function setupHudStatHandlers(
       // find a matching token on the canvas (prefer a controlled token).
       let tokenToUse: any = token;
 
-      const hasToggle = (t: any) =>
-        t && typeof t.toggleCombatant === 'function';
+      const hasToggle = (t: any) => t && typeof t.toggleCombatant === 'function';
 
       if (!hasToggle(tokenToUse)) {
         try {
           // Prefer a controlled token for this actor
           const controlledTokens = (canvas?.tokens?.controlled as any[]) || [];
-          const controlledMatch = controlledTokens.find(
-            (t: any) => t?.actor?.id === actor.id,
-          );
+          const controlledMatch = controlledTokens.find((t: any) => t?.actor?.id === actor.id);
           if (controlledMatch) tokenToUse = controlledMatch;
 
           // If no controlled token, fall back to any placeable token for this actor
           if (!hasToggle(tokenToUse)) {
             const placeables = (canvas?.tokens?.placeables as any[]) || [];
-            const placeableMatch = placeables.find(
-              (t: any) => t?.actor?.id === actor.id,
-            );
+            const placeableMatch = placeables.find((t: any) => t?.actor?.id === actor.id);
             if (placeableMatch) tokenToUse = placeableMatch;
           }
 
@@ -105,7 +94,6 @@ export function setupHudStatHandlers(
           }
         } catch (err) {
           // ignore canvas access errors
-          // eslint-disable-next-line no-console
           console.warn('HUD combat toggle: canvas token lookup failed', err);
         }
       }
@@ -114,12 +102,13 @@ export function setupHudStatHandlers(
         try {
           await tokenToUse.toggleCombatant();
           if (onUpdate) onUpdate();
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
           ui.notifications?.error('Failed to toggle combat state');
         }
       } else {
         ui.notifications?.error(
-          'No valid token reference for this HUD. Please open the HUD from a token on the canvas.',
+          'No valid token reference for this HUD. Please open the HUD from a token on the canvas.'
         );
       }
     });
@@ -146,8 +135,7 @@ export function setupHudStatHandlers(
           </div>
         </form>
       `;
-        const dialogClass =
-          foundry.applications?.api?.DialogV2 || window.Dialog;
+        const dialogClass = foundry.applications?.api?.DialogV2 || Dialog;
         const dialog = new dialogClass({
           window: { title: 'Soak' },
           content: content,
@@ -178,7 +166,7 @@ export function setupHudStatHandlers(
                         {
                           ap: ap,
                           isHeavyWeapon: false,
-                        },
+                        }
                       );
                       await damageRoll.evaluate();
                       const chatMessage = await SwadeChatMessage.create({
@@ -190,25 +178,17 @@ export function setupHudStatHandlers(
                       // Programmatically click Apply Damage button
                       setTimeout(async () => {
                         if (chatMessage) {
-                          const messageElement = document.querySelector(
-                            `[data-message-id="${chatMessage.id}"]`,
-                          );
+                          const messageElement = document.querySelector(`[data-message-id="${chatMessage.id}"]`);
                           if (messageElement) {
-                            const damageButton =
-                              messageElement.querySelector('.calculate-wounds');
+                            const damageButton = messageElement.querySelector('.calculate-wounds');
                             if (damageButton) {
                               // Find the token on the canvas
-                              const actorToken =
-                                canvas?.tokens?.placeables?.find(
-                                  (t: any) => t.actor?.id === actor.id,
-                                );
+                              const actorToken = canvas?.tokens?.placeables?.find((t: any) => t.actor?.id === actor.id);
                               // Foundry Token API: must be instance of Token and have control
                               if (
                                 actorToken &&
-                                (actorToken as any).constructor?.name ===
-                                  'Token' &&
-                                typeof (actorToken as any).control ===
-                                  'function' &&
+                                (actorToken as any).constructor?.name === 'Token' &&
+                                typeof (actorToken as any).control === 'function' &&
                                 !(actorToken as any).controlled
                               ) {
                                 await (actorToken as any).control({
@@ -222,8 +202,7 @@ export function setupHudStatHandlers(
                               });
                               damageButton.dispatchEvent(clickEvent);
                               setTimeout(() => {
-                                if (typeof chatMessage.delete === 'function')
-                                  chatMessage.delete();
+                                if (typeof chatMessage.delete === 'function') chatMessage.delete();
                               }, 1000);
                             }
                           }
@@ -232,7 +211,7 @@ export function setupHudStatHandlers(
                     }
                   } catch (error) {
                     ui.notifications?.error(
-                      'Failed to roll damage. Please ensure SWADE system is active and properly loaded.',
+                      'Failed to roll damage. Please ensure SWADE system is active and properly loaded.'
                     );
                     console.error('HUD soak error:', error);
                   }
@@ -248,7 +227,6 @@ export function setupHudStatHandlers(
           modal: true,
         });
         // dialog.render is intentionally used for compatibility with Foundry's Application API.
-        // eslint-disable-next-line deprecation/deprecation
         dialog.render(true);
       } catch (error) {
         ui.notifications?.error('Failed to open soak dialog.');
@@ -264,8 +242,7 @@ export function setupHudStatHandlers(
       e.preventDefault();
       e.stopPropagation();
       try {
-        if (typeof actor.toggleStatusEffect === 'function')
-          await actor.toggleStatusEffect('incapacitated');
+        if (typeof actor.toggleStatusEffect === 'function') await actor.toggleStatusEffect('incapacitated');
         if (onUpdate) onUpdate();
       } catch (error) {
         ui.notifications?.error('Failed to toggle incapacitated status.');
@@ -275,9 +252,7 @@ export function setupHudStatHandlers(
   }
 
   // Power Points (all arcane types)
-  const ppIndicators = element.querySelectorAll(
-    '.swadehud-pp-indicator.swadehud-stat-clickable',
-  );
+  const ppIndicators = element.querySelectorAll('.swadehud-pp-indicator.swadehud-stat-clickable');
   const powerPointsRaw = actor?.system?.powerPoints || {};
   ppIndicators.forEach((el) => {
     let statPath = (el as HTMLElement).getAttribute('data-stat-path');
@@ -290,46 +265,23 @@ export function setupHudStatHandlers(
         const arcaneFromTemplate = parts[2];
         // Find the real key in actor data (case-insensitive)
         const realArcaneKey =
-          Object.keys(powerPointsRaw).find(
-            (k) => k.toLowerCase() === arcaneFromTemplate.toLowerCase(),
-          ) || arcaneFromTemplate;
+          Object.keys(powerPointsRaw).find((k) => k.toLowerCase() === arcaneFromTemplate.toLowerCase()) ||
+          arcaneFromTemplate;
         parts[2] = realArcaneKey;
         statPath = parts.join('.');
       }
     }
-    if (statPath)
-      setupAddSubtractClicks(
-        el as HTMLElement,
-        actor,
-        statPath,
-        min,
-        max,
-        onUpdate,
-      );
+    if (statPath) setupAddSubtractClicks(el as HTMLElement, actor, statPath, min, max, onUpdate);
   });
 
   // Bennies
-  const bennyStat = element.querySelector(
-    '[data-stat-path="system.bennies.value"]',
-  );
-  if (bennyStat)
-    setupAddSubtractClicks(
-      bennyStat as HTMLElement,
-      actor,
-      'system.bennies.value',
-      0,
-      null,
-      onUpdate,
-    );
+  const bennyStat = element.querySelector('[data-stat-path="system.bennies.value"]');
+  if (bennyStat) setupAddSubtractClicks(bennyStat as HTMLElement, actor, 'system.bennies.value', 0, null, onUpdate);
 
   // Conviction
-  const convictionStat = element.querySelector(
-    '.swadehud-conviction-clickable',
-  );
+  const convictionStat = element.querySelector('.swadehud-conviction-clickable');
   if (convictionStat) {
-    const starIcon = convictionStat.querySelector(
-      '.swadehud-bottomstat__icon i',
-    );
+    const starIcon = convictionStat.querySelector('.swadehud-bottomstat__icon i');
     if (starIcon) {
       // Remove existing handler if present
       const existingHandlers = elementHandlers.get(starIcon as HTMLElement);
@@ -341,8 +293,7 @@ export function setupHudStatHandlers(
         e.preventDefault();
         e.stopPropagation();
         try {
-          if (typeof actor.toggleConviction === 'function')
-            await actor.toggleConviction();
+          if (typeof actor.toggleConviction === 'function') await actor.toggleConviction();
         } catch (error) {
           ui.notifications?.error('Failed to toggle conviction.');
           console.error('HUD conviction error:', error);
@@ -357,9 +308,7 @@ export function setupHudStatHandlers(
         click: clickHandler,
       });
     }
-    const valueSpan = convictionStat.querySelector(
-      '.swadehud-bottomstat__value',
-    );
+    const valueSpan = convictionStat.querySelector('.swadehud-bottomstat__value');
     if (valueSpan) {
       // Remove existing handlers if present
       const existingHandlers = elementHandlers.get(valueSpan as HTMLElement);
@@ -437,7 +386,7 @@ export function setupHudStatHandlers(
       }
       newPaceStat.setAttribute(
         'title',
-        `Pace: ${base.charAt(0).toUpperCase() + base.slice(1)} (Left click: roll running, Right click: cycle)`,
+        `Pace: ${base.charAt(0).toUpperCase() + base.slice(1)} (Left click: roll running, Right click: cycle)`
       );
     };
 
@@ -447,10 +396,7 @@ export function setupHudStatHandlers(
       newPaceStat.removeEventListener('click', existingHandlers.click);
     }
     if (existingHandlers?.contextmenu) {
-      newPaceStat.removeEventListener(
-        'contextmenu',
-        existingHandlers.contextmenu,
-      );
+      newPaceStat.removeEventListener('contextmenu', existingHandlers.contextmenu);
     }
     if (existingHandlers?.auxclick) {
       newPaceStat.removeEventListener('auxclick', existingHandlers.auxclick);
@@ -460,8 +406,7 @@ export function setupHudStatHandlers(
       e.preventDefault();
       e.stopPropagation();
       try {
-        if (e.button === 0 && typeof actor.rollRunningDie === 'function')
-          await actor.rollRunningDie();
+        if (e.button === 0 && typeof actor.rollRunningDie === 'function') await actor.rollRunningDie();
       } catch (error) {
         ui.notifications?.error('Failed to roll running die.');
         console.error('HUD pace roll error:', error);
@@ -476,8 +421,7 @@ export function setupHudStatHandlers(
           .split(',')
           .map((s) => s.trim())
           .filter(Boolean);
-        const currentBase =
-          newPaceStat.getAttribute('data-current-base') || 'ground';
+        const currentBase = newPaceStat.getAttribute('data-current-base') || 'ground';
         if (paceTypes.length > 1) {
           let currentIndex = paceTypes.indexOf(currentBase);
           if (currentIndex === -1) currentIndex = 0;
@@ -525,36 +469,25 @@ export function setupHudStatHandlers(
   // (e.g. wounds, fatigue, other numeric circles). We skip items that were
   // already wired above (powerPoints, bennies, conviction).
   try {
-    const statElements = Array.from(
-      element.querySelectorAll('[data-stat-path]'),
-    ) as HTMLElement[];
+    const statElements = Array.from(element.querySelectorAll('[data-stat-path]')) as HTMLElement[];
     for (const statEl of statElements) {
       const statPath = statEl.getAttribute('data-stat-path');
       if (!statPath) continue;
       // Skip powerPoints (handled specially above)
       if (statPath.startsWith('system.powerPoints.')) continue;
       // Skip bennies and conviction which have their own handlers
-      if (
-        statPath === 'system.bennies.value' ||
-        statPath === 'system.conviction.value'
-      )
-        continue;
+      if (statPath === 'system.bennies.value' || statPath === 'system.conviction.value') continue;
 
       const min = Number(statEl.getAttribute('data-stat-min')) || 0;
       const maxAttr = statEl.getAttribute('data-stat-max');
-      const max =
-        maxAttr !== null && maxAttr !== undefined ? Number(maxAttr) : null;
+      const max = maxAttr !== null && maxAttr !== undefined ? Number(maxAttr) : null;
 
       // Attach add/subtract clicks for generic stat paths
       setupAddSubtractClicks(statEl, actor, statPath, min, max, onUpdate);
     }
   } catch (err) {
     // Non-fatal: don't break the HUD if this fails
-    // eslint-disable-next-line no-console
-    console.warn(
-      'setupHudStatHandlers: failed to attach generic data-stat-path handlers',
-      err,
-    );
+    console.warn('setupHudStatHandlers: failed to attach generic data-stat-path handlers', err);
   }
 }
 
@@ -562,10 +495,7 @@ function getNestedProperty(obj: any, path: string) {
   return path.split('.').reduce((current, key) => current?.[key], obj);
 }
 
-export function debounce<T extends (...args: any[]) => void>(
-  func: T,
-  wait: number,
-): T {
+export function debounce<T extends (...args: any[]) => void>(func: T, wait: number): T {
   let timeout: ReturnType<typeof setTimeout>;
   return function (this: any, ...args: any[]) {
     clearTimeout(timeout);
@@ -579,7 +509,7 @@ export function setupAddSubtractClicks(
   statPath: string,
   min = 0,
   max: number | null = null,
-  onUpdate: (() => void) | null = null,
+  onUpdate: (() => void) | null = null
 ) {
   if (!element || !actor) return;
 
@@ -604,19 +534,16 @@ export function setupAddSubtractClicks(
       event.stopPropagation();
       if (event.button === 2) return;
       if (statPath === 'system.bennies.value') {
-        if (event.button === 0 && typeof actor.spendBenny === 'function')
-          await actor.spendBenny();
+        if (event.button === 0 && typeof actor.spendBenny === 'function') await actor.spendBenny();
         if (onUpdate) onUpdate();
       } else if (statPath === 'system.conviction.value') {
-        if (event.button === 0 && typeof actor.toggleConviction === 'function')
-          await actor.toggleConviction();
+        if (event.button === 0 && typeof actor.toggleConviction === 'function') await actor.toggleConviction();
         if (onUpdate) onUpdate();
       } else if (statPath.startsWith('system.powerPoints.')) {
         const parts = statPath.split('.');
         const arcane = parts[2];
         const property = parts[3];
-        const currentPowerPoints =
-          foundry.utils.getProperty(actor, 'system.powerPoints') || {};
+        const currentPowerPoints = foundry.utils.getProperty(actor, 'system.powerPoints') || {};
         const arcaneData = {
           ...(currentPowerPoints[arcane] || { value: 0, max: 0 }),
         };
@@ -624,10 +551,7 @@ export function setupAddSubtractClicks(
         let newValue;
         if (event.button === 0) {
           // Left click: increment
-          newValue = Math.min(
-            arcaneData.max || max || Infinity,
-            currentValue + 1,
-          );
+          newValue = Math.min(arcaneData.max || max || Infinity, currentValue + 1);
         } else if (event.button === 2) {
           // Right click: decrement
           newValue = Math.max(min, currentValue - 1);
@@ -643,11 +567,7 @@ export function setupAddSubtractClicks(
       } else {
         const currentValue = getNestedProperty(actor, statPath) || 0;
         let newValue;
-        if (event.button === 0)
-          newValue =
-            max !== null && max > 0
-              ? Math.min(max, currentValue + 1)
-              : currentValue + 1;
+        if (event.button === 0) newValue = max !== null && max > 0 ? Math.min(max, currentValue + 1) : currentValue + 1;
         else return;
         if (newValue !== currentValue) {
           await actor.update({ [statPath]: newValue });
@@ -675,10 +595,7 @@ export function setupAddSubtractClicks(
             if (onUpdate) onUpdate();
           } else {
             const currentValue = getNestedProperty(actor, statPath) || 0;
-            const newValue =
-              max !== null && max > 0
-                ? Math.min(max, currentValue + 1)
-                : currentValue + 1;
+            const newValue = max !== null && max > 0 ? Math.min(max, currentValue + 1) : currentValue + 1;
             if (newValue !== currentValue) {
               await actor.update({ [statPath]: newValue });
               if (onUpdate) onUpdate();

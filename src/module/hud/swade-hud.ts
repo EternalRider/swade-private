@@ -1,16 +1,17 @@
 import SwadeActorHUD from '../apps/SwadeActorHUD';
+import SwadeToken from '../canvas/SwadeToken';
 import {
+  clearDescriptionCache,
+  clearTemplateCache,
+  getDescriptionCacheStats,
+  getEnrichedDescription,
+  getTemplateCacheStats,
   initializeDescriptionCache,
   initializeTemplateCache,
-  clearDescriptionCache,
-  getDescriptionCacheStats,
-  clearTemplateCache,
-  getTemplateCacheStats,
-  getEnrichedDescription,
 } from '../hud/hud-context';
 import {
-  handleSwadeHUDTokenDeleted,
   getHudApp,
+  handleSwadeHUDTokenDeleted,
   hideSwadeHUD,
   isSwadePC,
   switchHudToToken,
@@ -71,13 +72,12 @@ Hooks.once('canvasReady', () => {
  * Handles token control changes for the SWADE HUD.
  * Implements multi-token support - keeps HUD open when switching between controlled tokens.
  * @function
- * @param {any} token - The token being controlled.
+ * @param {SwadeToken} token - The token being controlled.
  * @param {boolean} controlled - Whether the token is controlled.
  */
 // The project's fvtt typings mark Hooks.on as deprecated; this usage is intentional and
 // compatible with the runtime Foundry API. Suppress the deprecation lint for this hook.
-// eslint-disable-next-line deprecation/deprecation
-Hooks.on('controlToken', async (token: any, controlled: boolean) => {
+Hooks.on('controlToken', async (token: SwadeToken, controlled: boolean) => {
   try {
     if (!isSwadePC(token)) return;
 
@@ -93,11 +93,9 @@ Hooks.on('controlToken', async (token: any, controlled: boolean) => {
     // After any token control change, check if HUD should be closed
     setTimeout(() => {
       const controlledTokens = canvas.tokens?.controlled || [];
-      const swadeControlledTokens = controlledTokens.filter((t: any) =>
-        isSwadePC(t),
-      );
+      const swadeControlledTokens = controlledTokens.filter((t: any) => isSwadePC(t));
 
-      if (swadeControlledTokens.length === 0 && getHudApp()) {
+      if (swadeControlledTokens.length === 0 && getHudApp()?.closeOnTokenUnselected) {
         // No more controlled SWADE tokens, close HUD
         hideSwadeHUD();
       }
@@ -125,7 +123,7 @@ Hooks.once('ready', () => {
   // Add console commands for easy access
   (window as any).toggleSwadeHUD = toggleSwadeHUD;
   (window as any).toggleSwadeHUDProper = toggleSwadeHUD;
-
+  (window as any).getSwadeHUD = getHudApp;
   (window as any).hideSwadeHUD = hideSwadeHUD;
 
   // Expose the proper toggle function for macros and keybindings
@@ -149,8 +147,7 @@ Hooks.once('ready', () => {
     const testItem = {
       id: 'test-item',
       system: {
-        description:
-          '<p>This is a test description with <strong>bold</strong> text.</p>',
+        description: '<p>This is a test description with <strong>bold</strong> text.</p>',
         _stats: { modified: Date.now() },
       },
     };

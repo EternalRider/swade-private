@@ -1,43 +1,28 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { PotentialSource } from '../../../globals';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import type SwadeItem from '../../documents/item/SwadeItem';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
+import { ChargesData } from '../fields';
 import * as migrations from './_migration';
 import * as shims from './_shims';
 import { SwadeBaseItemData } from './base';
 import { actions, category, favorite, templates } from './common';
-import {
-  Actions,
-  Category,
-  Favorite,
-  Templates,
-} from './item-common.interface';
-import type SwadeItem from '../../documents/item/SwadeItem';
-import { ChargesData } from '../fields';
+import { Actions, Category, Favorite, Templates } from './item-common.interface';
 
 declare namespace ActionData {
-  interface Schema
-    extends SwadeBaseItemData.Schema,
-      Favorite,
-      Category,
-      Templates,
-      Charges,
-      Actions {
+  interface Schema extends SwadeBaseItemData.Schema, Favorite, Category, Templates, Actions {
     hidden: foundry.data.fields.BooleanField<{
       initial: boolean;
       label: string;
       hint: string;
-    }>,
+    }>;
     charges: foundry.data.fields.EmbeddedDataField<typeof ChargesData>;
   }
   interface BaseData extends SwadeBaseItemData.BaseData {}
   interface DerivedData extends SwadeBaseItemData.DerivedData {}
 }
 
-class ActionData extends SwadeBaseItemData<
-  ActionData.Schema,
-  ActionData.BaseData,
-  ActionData.DerivedData
-> {
+class ActionData extends SwadeBaseItemData<ActionData.Schema, ActionData.BaseData, ActionData.DerivedData> {
   static override defineSchema(): ActionData.Schema {
     const fields = foundry.data.fields;
     return {
@@ -57,6 +42,7 @@ class ActionData extends SwadeBaseItemData<
 
   static override migrateData(source: PotentialSource<ActionData>) {
     migrations.renameActionProperties(source);
+    migrations.migrateChargesToArray(source);
     return super.migrateData(source);
   }
 
@@ -67,8 +53,8 @@ class ActionData extends SwadeBaseItemData<
   declare enrichedDescription?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -76,18 +62,10 @@ class ActionData extends SwadeBaseItemData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    return await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/action-embeds.hbs',
-      ['item-embed', 'action'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    return await createEmbedElement(this, 'systems/swade/templates/embeds/action-embeds.hbs', ['item-embed', 'action']);
   }
 
   protected _applyShims() {
@@ -101,44 +79,30 @@ class ActionData extends SwadeBaseItemData<
 
   #triggerActivityUpdate() {
     const items =
-      this.parent.actor?.items.filter(
-        (i) => 'activities' in i.system && i.system.activities.has(this.swid),
-      ) ?? [];
+      this.parent.actor?.items.filter((i) => 'activities' in i.system && i.system.activities.has(this.swid)) ?? [];
     for (const item of items) {
       item._safePrepareData();
-      item.sheet.render();
+      item.sheet?.render();
     }
   }
 
   protected override _onUpdate(
-    changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<
-        ActionData.Schema,
-        SwadeItem
-      >
-    >,
+    changed: DeepPartial<foundry.abstract.TypeDataModel.ParentAssignmentType<ActionData.Schema, SwadeItem>>,
     options: Item.Database.OnUpdateOperation,
-    userId: string,
+    userId: string
   ): void {
     super._onUpdate(changed, options, userId);
-    if (foundry.utils.hasProperty(changed, 'system.actions'))
-      this.#triggerActivityUpdate();
+    if (foundry.utils.hasProperty(changed, 'system.actions')) this.#triggerActivityUpdate();
   }
   protected override _onCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      ActionData.Schema,
-      SwadeItem
-    >,
+    data: foundry.abstract.TypeDataModel.ParentAssignmentType<ActionData.Schema, SwadeItem>,
     options: Item.Database.OnCreateOperation,
-    userId: string,
+    userId: string
   ): void {
     super._onCreate(data, options, userId);
     this.#triggerActivityUpdate();
   }
-  protected override _onDelete(
-    options: Item.Database.OnDeleteOperation,
-    userId: string,
-  ): void {
+  protected override _onDelete(options: Item.Database.OnDeleteOperation, userId: string): void {
     super._onDelete(options, userId);
     this.#triggerActivityUpdate();
   }

@@ -1,0 +1,31 @@
+<p>{{localize 'SWADE.ActionCard'}}</p>
+<fieldset style='margin-bottom: 3px;'>
+  <div style='grid-column 1/-1;'>
+    <input type='radio' name='action-card' value='none' {{checked noneSelected}} />
+    <label>No Card</label>
+  </div>
+  <div style='display: grid; grid-template-columns: repeat(4, 1fr);'>
+    {{#each cardList}}
+      {{#unless isJoker}}
+        <span data-tooltip='{{name}}' class='selectable-card'>
+          <input type='radio' name='action-card' value='{{id}}' data-is-joker='{{isJoker}}' {{checked isDealt}} />
+          <label style='{{color}} {{isAvailable}}'>
+            {{{cardString}}}
+          </label>
+        </span>
+      {{/unless}}
+    {{/each}}
+  </div>
+  <div style='display: grid; grid-template-columns: repeat({{numberOfJokers}}, 1fr); justify-items: center;'>
+    {{#each cardList}}
+      {{#if isJoker}}
+        <span data-tooltip='{{name}}' class='selectable-card'>
+          <input type='radio' name='action-card' value='{{id}}' data-is-joker='{{isJoker}}' {{checked isDealt}} />
+          <label for=''>
+            {{{cardString}}}
+          </label>
+        </span>
+      {{/if}}
+    {{/each}}
+  </div>
+</fieldset>

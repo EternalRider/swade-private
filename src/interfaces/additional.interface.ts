@@ -1,7 +1,7 @@
-import { ACTIVE_EFFECT_MODES } from '@league-of-foundry-developers/foundry-vtt-types/src/foundry/common/constants.mjs';
+import { ValueOf } from 'fvtt-types/utils';
 import { ActionType, AdditionalStatType, ChargeRechargeType } from '../globals';
 import { constants } from '../module/constants';
-import { ValueOf } from '@league-of-foundry-developers/foundry-vtt-types/utils';
+import { FormulaField } from '../module/data/fields/FormulaField';
 
 export interface PrototypeAdditionalStat {
   dtype: AdditionalStatType;
@@ -80,5 +80,5 @@ export interface DerivedModifier {
    *  UPGRADE: 4;
    *  OVERRIDE: 5;
    */
-  mode?: ValueOf<typeof ACTIVE_EFFECT_MODES>;
+  mode?: ValueOf<typeof CONST.ACTIVE_EFFECT_MODES>;
 }

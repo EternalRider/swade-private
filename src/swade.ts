@@ -11,11 +11,7 @@ import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import SwadeActorHUD from './module/apps/SwadeActorHUD';
-import {
-  SwadeActorTweaks,
-  SwadeDocumentTweaks,
-  SwadeItemTweaks,
-} from './module/apps/SwadeDocumentTweaks';
+import { SwadeActorTweaks, SwadeDocumentTweaks, SwadeItemTweaks } from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import SwadeTokenRuler from './module/canvas/SwadeTokenRuler';
@@ -42,14 +38,11 @@ import { registerAuraHooks } from './module/hooks/AuraHooks';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import { rollItemMacro } from './module/hooks/hotbarDrop';
+import './module/hud/swade-hud';
 import { registerKeybindings } from './module/keybindings';
 import * as migrations from './module/migration/migration';
 import { preloadHandlebarsTemplates } from './module/preloadTemplates';
-import {
-  register3DBennySettings,
-  registerSettingRules,
-  registerSettings,
-} from './module/settings';
+import { register3DBennySettings, registerSettingRules, registerSettings } from './module/settings';
 import CharacterSheet from './module/sheets/CharacterSheet';
 import { GroupSheet } from './module/sheets/GroupSheet';
 import SwadeItemSheetV2 from './module/sheets/SwadeItemSheetV2';
@@ -61,10 +54,13 @@ import SwadeChatLog from './module/sidebar/SwadeChatLog';
 import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
-import './module/hud/swade-hud';
 import {
   deepFreeze,
+  getDefaultAttackModifiers,
   getItemsBySwid,
+  getRankFromAdvance,
+  getRankFromAdvanceAsString,
+  getScaleName,
   getStatusEffectDataById,
   slugify,
 } from './module/util';
@@ -98,6 +94,10 @@ const swadeAPI: SwadeGame = {
     getStatusEffectDataById,
     slugify,
     getItemsBySwid,
+    getRankFromAdvance,
+    getScaleName,
+    getRankFromAdvanceAsString,
+    getDefaultAttackModifiers,
   },
   compendiumArt: {
     map: new Map<string, ArtworkMapping>(),
@@ -154,10 +154,7 @@ Hooks.once('init', () => {
   CONFIG.Combat.dataModels = data.combat.combatConfig;
   CONFIG.Combatant.dataModels = data.combat.combatantConfig;
   CONFIG.CombatantGroup.dataModels = data.combat.combatantGroupConfig;
-  foundry.utils.mergeObject(
-    CONFIG.RegionBehavior.dataModels,
-    data.region.config,
-  );
+  foundry.utils.mergeObject(CONFIG.RegionBehavior.dataModels, data.region.config);
   CONFIG.RegionBehavior.typeIcons.attackModifiers = 'fa-solid fa-sliders';
 
   //register custom object classes
@@ -170,8 +167,7 @@ Hooks.once('init', () => {
   SwadeTokenRuler.applySWADEMovementConfig();
 
   // Increase initiative decimal precision, as we add/subtract tiny amounts for holding, interrupting etc.
-  if (CONFIG.Combat.initiative.decimals < 7)
-    CONFIG.Combat.initiative.decimals = 7;
+  if (CONFIG.Combat.initiative.decimals < 7) CONFIG.Combat.initiative.decimals = 7;
 
   //register custom sidebar tabs
   CONFIG.ui.combat = SwadeCombatTracker;
@@ -224,51 +220,44 @@ Hooks.once('init', () => {
     type: foundry.canvas.perception.DetectionMode.DETECTION_TYPES.OTHER,
   });
 
-  CONFIG.Canvas.visionModes.infraVision =
-    new foundry.canvas.perception.VisionMode({
-      id: 'infraVision',
-      label: 'SWADE.Vision.Infravision',
-      canvas: {
-        shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
-        uniforms: {
-          saturation: -0.5,
-          tint: InfravisionBackgroundVisionShader.COLOR_TINT,
-        },
+  CONFIG.Canvas.visionModes.infraVision = new foundry.canvas.perception.VisionMode({
+    id: 'infraVision',
+    label: 'SWADE.Vision.Infravision',
+    canvas: {
+      shader: foundry.canvas.rendering.shaders.ColorAdjustmentsSamplerShader,
+      uniforms: {
+        saturation: -0.5,
+        tint: InfravisionBackgroundVisionShader.COLOR_TINT,
       },
-      lighting: {
-        background: {
-          visibility:
-            foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
-        },
-        illumination: {
-          visibility:
-            foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
-        },
-        coloration: {
-          visibility:
-            foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
-        },
+    },
+    lighting: {
+      background: {
+        visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
       },
-      vision: {
-        darkness: { adaptive: false },
-        defaults: {
-          attenuation: 0,
-          brightness: 0.5,
-          saturation: -0.5,
-          contrast: 0,
-        },
-        background: { shader: InfravisionBackgroundVisionShader },
+      illumination: {
+        visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
       },
-    });
+      coloration: {
+        visibility: foundry.canvas.perception.VisionMode.LIGHTING_VISIBILITY.DISABLED,
+      },
+    },
+    vision: {
+      darkness: { adaptive: false },
+      defaults: {
+        attenuation: 0,
+        brightness: 0.5,
+        saturation: -0.5,
+        contrast: 0,
+      },
+      background: { shader: InfravisionBackgroundVisionShader },
+    },
+  });
 
   CONFIG.Actor.compendiumIndexFields.push('system.wildcard');
   CONFIG.Item.compendiumIndexFields.push('system.swid');
 
   // @ts-expect-error Yes we're calling a protected function
-  foundry.appv1.sheets.JournalTextPageSheet._converter.setOption(
-    'tables',
-    true,
-  );
+  foundry.appv1.sheets.JournalTextPageSheet._converter.setOption('tables', true);
 
   //register custom Handlebars helpers
   registerCustomHelpers();
@@ -290,19 +279,13 @@ Hooks.once('init', () => {
   registerEnrichers();
 
   // Register sheets
-  foundry.documents.collections.Actors.unregisterSheet(
-    'core',
-    foundry.appv1.sheets.ActorSheet,
-  );
-  foundry.documents.collections.Items.unregisterSheet(
-    'core',
-    foundry.appv1.sheets.ItemSheet,
-  );
+  foundry.documents.collections.Actors.unregisterSheet('core', foundry.appv1.sheets.ActorSheet);
+  foundry.documents.collections.Items.unregisterSheet('core', foundry.appv1.sheets.ItemSheet);
   foundry.applications.apps.DocumentSheetConfig.unregisterSheet(
     CONFIG.Token.documentClass,
     'core',
     foundry.applications.sheets.TokenConfig,
-    {},
+    {}
   );
 
   foundry.documents.collections.Actors.registerSheet('swade', GroupSheet, {
@@ -310,15 +293,11 @@ Hooks.once('init', () => {
     makeDefault: true,
     label: 'SWADE.GroupSheet',
   });
-  foundry.documents.collections.Actors.registerSheet(
-    'swade',
-    SwadeVehicleSheetV2,
-    {
-      types: ['vehicle'],
-      makeDefault: true,
-      label: 'SWADE.VehicleSheet',
-    },
-  );
+  foundry.documents.collections.Actors.registerSheet('swade', SwadeVehicleSheetV2, {
+    types: ['vehicle'],
+    makeDefault: true,
+    label: 'SWADE.VehicleSheet',
+  });
 
   foundry.documents.collections.Actors.registerSheet('swade', CharacterSheet, {
     types: ['character', 'npc'],
@@ -348,21 +327,12 @@ Hooks.once('init', () => {
     ],
     label: 'SWADE.ItemSheet',
   });
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(
-    JournalEntryPage,
-    'swade',
-    JournalHeadquartersPageSheet,
-    {
-      types: ['headquarters'],
-      makeDefault: true,
-      label: 'SWADE.HeadquartersSheet',
-    },
-  );
-  foundry.applications.apps.DocumentSheetConfig.registerSheet(
-    TokenDocument,
-    'swade',
-    SwadeTokenConfig,
-  );
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(JournalEntryPage, 'swade', JournalHeadquartersPageSheet, {
+    types: ['headquarters'],
+    makeDefault: true,
+    label: 'SWADE.HeadquartersSheet',
+  });
+  foundry.applications.apps.DocumentSheetConfig.registerSheet(TokenDocument, 'swade', SwadeTokenConfig);
 
   // Register Tours
   registerSWADETours();
@@ -410,10 +380,7 @@ Hooks.on('renderUserConfig', SwadeCoreHooks.onRenderUserConfig);
 /* ------------------------------------ */
 Hooks.on('renderActorDirectory', SwadeCoreHooks.onRenderActorDirectory);
 Hooks.on('renderSettings', SwadeCoreHooks.onRenderSettings);
-Hooks.on(
-  'renderCompendiumDirectory',
-  SwadeCoreHooks.onRenderCompendiumDirectory,
-);
+Hooks.on('renderCompendiumDirectory', SwadeCoreHooks.onRenderCompendiumDirectory);
 
 /* ------------------------------------ */
 /* Context Options    				          */
@@ -421,10 +388,7 @@ Hooks.on(
 Hooks.on('getUserContextOptions', SwadeCoreHooks.onGetUserContextOptions);
 Hooks.on('getActorContextOptions', SwadeCoreHooks.onGetActorContextOptions);
 Hooks.on('getCardsContextOptions', SwadeCoreHooks.onGetCardsContextOptions);
-Hooks.on(
-  'getCompendiumContextOptions',
-  SwadeCoreHooks.onGetCompendiumContextOptions,
-);
+Hooks.on('getCompendiumContextOptions', SwadeCoreHooks.onGetCompendiumContextOptions);
 
 /* ------------------------------------ */
 /* Update Hooks              	          */
@@ -457,17 +421,15 @@ Hooks.once('init', () => {
     }
 
     // Get the first owned character token
-    const ownedTokens = canvas.tokens.placeables.filter(
-      (t) => t.actor?.isOwner && t.actor?.type === 'character',
-    );
-    if (ownedTokens.length === 0) {
+    const ownedTokens = canvas.tokens?.placeables.filter((t) => t.actor?.isOwner && t.actor?.type === 'character');
+    if (ownedTokens?.length === 0) {
       console.error(
         'SWADE HUD: No owned character tokens found. Available tokens:',
-        canvas.tokens.placeables.map((t) => ({
+        canvas.tokens?.placeables.map((t) => ({
           name: t.name,
           actorType: t.actor?.type,
           isOwner: t.actor?.isOwner,
-        })),
+        }))
       );
       return;
     }
@@ -475,11 +437,7 @@ Hooks.once('init', () => {
     const token = ownedTokens[0];
 
     try {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const HUDClass =
-        SwadeActorHUD ||
-        (window as any).SwadeActorHUD ||
-        game?.swade?.hud?.SwadeActorHUD;
+      const HUDClass = SwadeActorHUD || (window as any).SwadeActorHUD || game?.swade?.hud?.SwadeActorHUD;
       if (!HUDClass) {
         console.error('SWADE HUD: SwadeActorHUD class not found');
         return;
@@ -507,12 +465,17 @@ Hooks.once('ready', () => {
 /* ------------------------------------ */
 
 /** Dice So Nice*/
+//@ts-expect-error Hook name
 Hooks.once('diceSoNiceInit', SwadeIntegrationHooks.onDiceSoNiceInit);
+//@ts-expect-error Hook name
 Hooks.once('diceSoNiceReady', SwadeIntegrationHooks.onDiceSoNiceReady);
+//@ts-expect-error Hook name
 Hooks.on('diceSoNiceRollStart', SwadeIntegrationHooks.onDiceSoNiceRollStart);
 
 /** Developer Mode */
+//@ts-expect-error Hook name
 Hooks.once('devModeReady', SwadeIntegrationHooks.onDevModeReady);
 
 /** Item Piles */
+//@ts-expect-error Hook name
 Hooks.once('item-piles-ready', SwadeIntegrationHooks.onItemPilesReady);

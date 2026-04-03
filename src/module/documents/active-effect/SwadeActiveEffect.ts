@@ -20,13 +20,10 @@ declare global {
 }
 
 export default class SwadeActiveEffect<
-  Subtype extends ActiveEffect.SubType = ActiveEffect.SubType,
+  Subtype extends ActiveEffect.Sub.Type = ActiveEffect.Sub.Type,
 > extends ActiveEffect<Subtype> {
   static override defaultName(
-    context: foundry.abstract.Document.DefaultNameContext<
-      'ActiveEffect',
-      NonNullable<ActiveEffect.Parent>
-    > = {},
+    context: foundry.abstract.Document.DefaultNameContext<'ActiveEffect', NonNullable<ActiveEffect.Parent>> = {}
   ): string {
     // Base active effect should just be called "Active Effect"
     if (!('type' in context) || context.type === 'base') {
@@ -40,7 +37,7 @@ export default class SwadeActiveEffect<
   get affectsItems() {
     const affectedItems = new Array<SwadeItem>();
     this.changes.forEach((c: ActiveEffect.ChangeData) =>
-      affectedItems.push(...this._getAffectedItems(this.parent!, c)),
+      affectedItems.push(...this._getAffectedItems(this.parent!, c))
     );
     return affectedItems.length > 0;
   }
@@ -58,8 +55,7 @@ export default class SwadeActiveEffect<
   get actor(): SwadeActor | undefined {
     const parent = this.parent;
     if (parent instanceof SwadeActor) return parent;
-    if (parent instanceof SwadeItem && parent.actor instanceof SwadeActor)
-      return parent.actor;
+    if (parent instanceof SwadeItem && parent.actor instanceof SwadeActor) return parent.actor;
   }
 
   get expiresAtStartOfTurn(): boolean {
@@ -103,8 +99,7 @@ export default class SwadeActiveEffect<
    */
   static ITEM_REGEXP = /@([a-zA-Z0-9]+)\{(.+)\}\[([\S.]+)\]/;
 
-  static ATTR_REGEXP =
-    /system\.attributes\.(agility|smarts|spirit|strength|vigor)\.die\.modifier/;
+  static ATTR_REGEXP = /system\.attributes\.(agility|smarts|spirit|strength|vigor)\.die\.modifier/;
 
   static GLOBAL_REGEXP = /system\.stats\.globalMods\.(\w+)/;
 
@@ -121,30 +116,12 @@ export default class SwadeActiveEffect<
         }
 
         //fix up effects that had an action related key
-        change.key = change.key.replaceAll(
-          'system.actions.skillMod',
-          'system.actions.traitMod',
-        );
-        change.key = change.key.replaceAll(
-          'system.actions.skill',
-          'system.actions.trait',
-        );
-        change.key = change.key.replaceAll(
-          'system.stats.speed.value',
-          'system.pace',
-        );
-        change.key = change.key.replaceAll(
-          'system.stats.speed.adjusted',
-          'system.pace',
-        );
-        change.key = change.key.replaceAll(
-          'system.stats.speed.runningDie',
-          'system.pace.running.die',
-        );
-        change.key = change.key.replaceAll(
-          'system.stats.speed.runningMod',
-          'system.pace.running.mod',
-        );
+        change.key = change.key.replaceAll('system.actions.skillMod', 'system.actions.traitMod');
+        change.key = change.key.replaceAll('system.actions.skill', 'system.actions.trait');
+        change.key = change.key.replaceAll('system.stats.speed.value', 'system.pace');
+        change.key = change.key.replaceAll('system.stats.speed.adjusted', 'system.pace');
+        change.key = change.key.replaceAll('system.stats.speed.runningDie', 'system.pace.running.die');
+        change.key = change.key.replaceAll('system.stats.speed.runningMod', 'system.pace.running.mod');
         change.key = change.key.replaceAll('flags.swade.auras', 'system.auras');
       }
     }
@@ -152,13 +129,7 @@ export default class SwadeActiveEffect<
     const flags = data.flags?.swade;
 
     if (flags) {
-      const keys = [
-        'removeEffect',
-        'expiration',
-        'loseTurnOnHold',
-        'favorite',
-        'conditionalEffect',
-      ];
+      const keys = ['removeEffect', 'expiration', 'loseTurnOnHold', 'favorite', 'conditionalEffect'];
       const flags = data.flags.swade;
       data.system ??= {};
 
@@ -179,11 +150,7 @@ export default class SwadeActiveEffect<
     const ptMatch = change.key.match(SwadeActiveEffect.PT_REGEXP);
     if (itemMatch) {
       this._handleItemMatch(itemMatch, change, doc);
-    } else if (
-      attrMatch &&
-      change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
-      doc instanceof SwadeActor
-    ) {
+    } else if (attrMatch && change.mode === CONST.ACTIVE_EFFECT_MODES.ADD && doc instanceof SwadeActor) {
       this._handleAttributeMatch(attrMatch, change, doc);
     } else if (globalMatch && doc instanceof SwadeActor) {
       this._handleGlobalModifierMatch(globalMatch, change, doc);
@@ -194,10 +161,7 @@ export default class SwadeActiveEffect<
     }
   }
 
-  private _getAffectedItems(
-    parent: SwadeActor | SwadeItem,
-    change: ActiveEffect.ChangeData,
-  ) {
+  private _getAffectedItems(parent: SwadeActor | SwadeItem, change: ActiveEffect.ChangeData) {
     const items = new Array<SwadeItem>();
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     if (!match) return items;
@@ -205,13 +169,8 @@ export default class SwadeActiveEffect<
     const type = match[1].trim().toLowerCase();
     const name = match[2].trim();
     //filter the items down, according to type and name/id
-    const collection =
-      parent instanceof SwadeItem ? (parent.parent?.items ?? []) : parent.items;
-    items.push(
-      ...collection.filter(
-        (i) => i.type === type && (i.name === name || i.id === name),
-      ),
-    );
+    const collection = parent instanceof SwadeItem ? (parent.parent?.items ?? []) : parent.items;
+    items.push(...collection.filter((i) => i.type === type && (i.name === name || i.id === name)));
     return items;
   }
 
@@ -221,35 +180,25 @@ export default class SwadeActiveEffect<
    */
   private _removeEffectsFromItems(parent: SwadeActor | SwadeItem) {
     const affectedItems = new Array<SwadeItem>();
-    this.changes.forEach((c) =>
-      affectedItems.push(...this._getAffectedItems(parent, c)),
-    );
+    this.changes.forEach((c) => affectedItems.push(...this._getAffectedItems(parent, c)));
     for (const item of affectedItems) {
       for (const change of this.changes as ActiveEffect.ChangeData[]) {
         const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
         if (!match) continue;
         const key = match[3].trim();
         const type = match[1].trim().toLowerCase();
-        if (
-          key === 'system.die.modifier' &&
-          type === 'skill' &&
-          change.mode === CONST.ACTIVE_EFFECT_MODES.ADD
-        ) {
+        if (key === 'system.die.modifier' && type === 'skill' && change.mode === CONST.ACTIVE_EFFECT_MODES.ADD) {
           foundry.utils.setProperty(item, 'system.effects', []);
         } else {
           //restore original data from source
           item.reset();
         }
       }
-      if (item.sheet?.rendered) item.sheet.render(true);
+      if (item.sheet?.rendered) item.sheet.render({ force: true });
     }
   }
 
-  private _updateTraitRollEffects(
-    effectsArray: RollModifier[],
-    value: number | string,
-    ignore = false,
-  ): boolean {
+  private _updateTraitRollEffects(effectsArray: RollModifier[], value: number | string, ignore = false): boolean {
     if (!this.id) {
       // Handling null ID - don't want to make un-deletable override
       console.warn('No ID found!');
@@ -263,10 +212,7 @@ export default class SwadeActiveEffect<
     };
     // Technically doesn't handle an effect that adds to the same item multiple times,
     // but necessary to avoid duplication on refresh
-    const splice: RollModifier | null = effectsArray.findSplice(
-      (e) => e.effectID === this.id,
-      modifier,
-    );
+    const splice: RollModifier | null = effectsArray.findSplice((e) => e.effectID === this.id, modifier);
     if (!splice) effectsArray.push(modifier);
     return true;
   }
@@ -283,18 +229,14 @@ export default class SwadeActiveEffect<
       const effect = foundry.utils.mergeObject(
         statusEffect,
         { statuses: [id], ...mutation },
-        { performDeletions: true },
+        { performDeletions: true }
       );
       toCreate.push(effect);
     }
     await this.actor?.createEmbeddedDocuments('ActiveEffect', toCreate);
   }
 
-  private _handleItemMatch(
-    match: RegExpMatchArray,
-    change: ActiveEffect.ChangeData,
-    doc: SwadeActor | SwadeItem,
-  ) {
+  private _handleItemMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor | SwadeItem) {
     //get the properties from the match
     const key = match[3].trim();
     const value = change.value;
@@ -325,61 +267,39 @@ export default class SwadeActiveEffect<
     }
   }
 
-  private _handleAttributeMatch(
-    match: RegExpMatchArray,
-    change: ActiveEffect.ChangeData,
-    doc: SwadeActor,
-  ) {
+  private _handleAttributeMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
     const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
     const effectKey = 'system.attributes.' + match[1] + '.effects';
-    if (!(effectKey in overrides))
-      overrides[effectKey] = new Array<RollModifier>();
+    if (!(effectKey in overrides)) overrides[effectKey] = new Array<RollModifier>();
     this._updateTraitRollEffects(overrides[effectKey], change.value);
     // NOT calling super.apply because normal apply doesn't handle objects
     foundry.utils.setProperty(doc, effectKey, overrides[effectKey]);
     doc.overrides = foundry.utils.expandObject(overrides);
   }
 
-  private _handleGlobalModifierMatch(
-    match: RegExpMatchArray,
-    change: ActiveEffect.ChangeData,
-    doc: SwadeActor,
-  ) {
+  private _handleGlobalModifierMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
     if (doc.system instanceof GroupData) return; // Really shouldn't be a group
-    if (
-      change.mode === CONST.ACTIVE_EFFECT_MODES.ADD &&
-      doc.system.stats.globalMods.hasOwnProperty(match[1])
-    ) {
+    if (change.mode === CONST.ACTIVE_EFFECT_MODES.ADD && doc.system.stats.globalMods[match[1]] !== undefined) {
       const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
       const effectKey = 'system.stats.globalMods.' + match[1];
-      if (!(effectKey in overrides))
-        overrides[effectKey] = new Array<RollModifier>();
+      if (!(effectKey in overrides)) overrides[effectKey] = new Array<RollModifier>();
       this._updateTraitRollEffects(overrides[effectKey], change.value, false);
       // NOT calling super.apply because normal apply doesn't handle objects
       foundry.utils.setProperty(doc, effectKey, overrides[effectKey]);
       doc.overrides = foundry.utils.expandObject(overrides);
     } else {
-      Logger.warn(
-        'Invalid Global Modifier ' + change.key + 'on effect ' + this.id,
-      );
+      Logger.warn('Invalid Global Modifier ' + change.key + 'on effect ' + this.id);
     }
   }
 
-  private _handlePTModifierMatch(
-    match: RegExpMatchArray,
-    change: ActiveEffect.ChangeData,
-    doc: SwadeActor,
-  ) {
+  private _handlePTModifierMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
     // Really shouldn't be a group
     if (doc.system instanceof GroupData) return;
     if (change.mode === CONST.ACTIVE_EFFECT_MODES.CUSTOM) {
       super.apply(doc, change);
       return;
     }
-    const autoCalc =
-      match[1] === 'parry'
-        ? doc.system.details.autoCalcParry
-        : doc.system.details.autoCalcToughness;
+    const autoCalc = match[1] === 'parry' ? doc.system.details.autoCalcParry : doc.system.details.autoCalcToughness;
     const target =
       match[2] === 'armor'
         ? 'armorEffects' // Armor gets its own display
@@ -408,14 +328,10 @@ export default class SwadeActiveEffect<
     }
 
     const expiration = this.system.expiration;
-    const startOfTurnAuto =
-      expiration === constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto;
-    const startOfTurnPrompt =
-      expiration === constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt;
-    const endOfTurnAuto =
-      expiration === constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto;
-    const endOfTurnPrompt =
-      expiration === constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt;
+    const startOfTurnAuto = expiration === constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto;
+    const startOfTurnPrompt = expiration === constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt;
+    const endOfTurnAuto = expiration === constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto;
+    const endOfTurnPrompt = expiration === constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt;
 
     if (startOfTurnAuto || endOfTurnAuto) {
       await this.delete();
@@ -426,8 +342,7 @@ export default class SwadeActiveEffect<
 
   isExpired(pointInTurn: 'start' | 'end'): boolean {
     const isRightPointInTurn =
-      (pointInTurn === 'start' && this.expiresAtStartOfTurn) ||
-      (pointInTurn === 'end' && this.expiresAtEndOfTurn);
+      (pointInTurn === 'start' && this.expiresAtStartOfTurn) || (pointInTurn === 'end' && this.expiresAtEndOfTurn);
     const remaining = this.duration?.remaining ?? 0;
     return isRightPointInTurn && remaining < 1;
   }
@@ -473,7 +388,7 @@ export default class SwadeActiveEffect<
   protected override async _onUpdate(
     changed: ActiveEffect.UpdateData,
     options: ActiveEffect.Database.OnUpdateOperation,
-    userId: string,
+    userId: string
   ) {
     await super._onUpdate(changed, options, userId);
     if (this.system.loseTurnOnHold) {
@@ -481,9 +396,7 @@ export default class SwadeActiveEffect<
       if (!this.actor || !activeCombat) return;
       // If the Actor is a Token, get the combatant by the Token ID instead of Actor ID because Tokens share Actor IDs. Otherwise, get the combatant by Actor ID.
       const combatant = this.actor.isToken
-        ? activeCombat?.getCombatantsByToken(
-            this.actor.token?.id as string,
-          )?.[0]
+        ? activeCombat?.getCombatantsByToken(this.actor.token?.id as string)?.[0]
         : activeCombat?.getCombatantsByActor(this.actor.id as string)?.[0];
       if (combatant?.system.roundHeld) {
         await combatant?.update({ 'system.turnLost': true });
@@ -495,7 +408,7 @@ export default class SwadeActiveEffect<
   protected override async _preUpdate(
     changed: ActiveEffect.UpdateData,
     options: ActiveEffect.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     super._preUpdate(changed, options, user);
     //return early if the parent isn't an actor or we're not actually affecting items
@@ -504,10 +417,7 @@ export default class SwadeActiveEffect<
     }
   }
 
-  protected override async _preDelete(
-    options: ActiveEffect.Database.PreDeleteOptions,
-    user: User.Implementation,
-  ) {
+  protected override async _preDelete(options: ActiveEffect.Database.PreDeleteOptions, user: User.Implementation) {
     super._preDelete(options, user);
     const parent = this.parent;
     //remove the effects from the item
@@ -528,7 +438,7 @@ export default class SwadeActiveEffect<
   protected override async _preCreate(
     data: ActiveEffect.CreateData,
     options: ActiveEffect.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ): Promise<boolean | void> {
     //make sure active effects can't be added to group actors
     if (this.parent?.type === 'group') return false;
@@ -572,19 +482,14 @@ export default class SwadeActiveEffect<
       }
       if (this.system.loseTurnOnHold) {
         if (combatant.roundHeld) {
-          await Promise.allSettled([
-            combatant.update({ 'system.turnLost': true }),
-            combatant.toggleHold(),
-          ]);
+          await Promise.allSettled([combatant.update({ 'system.turnLost': true }), combatant.toggleHold()]);
         }
       }
     }
 
     //Update wild attack damage based on a flag
     if (this.statuses.has('wild-attack')) {
-      const damageModIndex = this.changes.findIndex(
-        (c) => c.key === 'system.stats.globalMods.damage',
-      );
+      const damageModIndex = this.changes.findIndex((c) => c.key === 'system.stats.globalMods.damage');
       const newDamage = this.actor?.getFlag('swade', 'wildAttackDamage');
       if (['number', 'string'].includes(typeof newDamage)) {
         const newChanges = foundry.utils.deepClone(this.changes);
@@ -597,7 +502,7 @@ export default class SwadeActiveEffect<
   protected override _onCreate(
     data: ActiveEffect.CreateData,
     options: ActiveEffect.Database.OnCreateOperation,
-    userId: string,
+    userId: string
   ): void {
     super._onCreate(data, options, userId);
     if (userId === game.userId) this._applyRelatedEffects();
@@ -606,9 +511,7 @@ export default class SwadeActiveEffect<
   protected override _displayScrollingStatus(enabled: boolean) {
     super._displayScrollingStatus(enabled);
     const tokens = (this.target as SwadeActor)?.getActiveTokens(true);
-    const isNegative = CONFIG.SWADE.negativeStatusEffects.includes(
-      this.statusId ?? '',
-    );
+    const isNegative = CONFIG.SWADE.negativeStatusEffects.includes(this.statusId ?? '');
 
     const negativeColor = '#D41159';
     const positiveColor = '#1A85FF';

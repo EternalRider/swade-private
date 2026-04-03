@@ -1,57 +1,60 @@
 import type { AnyObject, ValueOf } from 'fvtt-types/utils';
-import {
-  DerivedModifier,
-  RollModifier,
-} from '../../../interfaces/additional.interface';
+import { DerivedModifier, RollModifier } from '../../../interfaces/additional.interface';
 import { SWADE } from '../../config';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
-import { createEnrichedTextEmbed, createEmbedElement } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed } from '../../util';
 import { LocalDocumentField } from '../fields/LocalDocumentField';
 import { MemberField } from '../fields/MemberField';
-import { ShieldData, WeaponData } from '../item';
+import { ShieldData } from '../item/shield';
+import { WeaponData } from '../item/weapon';
 import { boundTraitDie, makeTraitDiceFields } from '../shared';
 import * as migrations from './_migration';
-import { SwadeBaseActorData, TokenSize } from './base/base';
+import { SwadeBaseActorData, type TokenSize } from './base/base';
 
 declare namespace VehicleData {
-  interface Schema
-    extends SwadeBaseActorData.Schema,
-      ReturnType<typeof createVehicleSchema> {}
+  interface Schema extends SwadeBaseActorData.Schema, ReturnType<typeof createVehicleSchema> {}
   interface BaseData extends SwadeBaseActorData.BaseData {
     attributes: {
       agility: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       smarts: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       spirit: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       strength: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       vigor: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
     };
     stats: {
       globalMods: {
-        attack: Array<DerivedModifier>;
-        damage: Array<DerivedModifier>;
-        ap: Array<DerivedModifier>;
-        agility: Array<DerivedModifier>;
-        smarts: Array<DerivedModifier>;
-        spirit: Array<DerivedModifier>;
-        strength: Array<DerivedModifier>;
-        vigor: Array<DerivedModifier>;
-        trait: Array<DerivedModifier>;
+        attack: DerivedModifier[];
+        damage: DerivedModifier[];
+        ap: DerivedModifier[];
+        agility: DerivedModifier[];
+        smarts: DerivedModifier[];
+        spirit: DerivedModifier[];
+        strength: DerivedModifier[];
+        vigor: DerivedModifier[];
+        trait: DerivedModifier[];
+        attackRanged: DerivedModifier[];
+        attackMelee: DerivedModifier[];
+        gangUp: DerivedModifier[];
+        targetAttack: DerivedModifier[];
+        targetAttackRanged: DerivedModifier[];
+        targetAttackMelee: DerivedModifier[];
+        targetDamage: DerivedModifier[];
       };
       parry: {
-        sources: Array<DerivedModifier>;
-        effects: Array<DerivedModifier>;
+        sources: DerivedModifier[];
+        effects: DerivedModifier[];
         value: number;
       };
     };
@@ -63,7 +66,7 @@ declare namespace VehicleData {
     };
     crew: {
       required: number;
-      members: Array<CrewMember>;
+      members: CrewMember[];
     };
   }
 
@@ -88,15 +91,15 @@ declare namespace VehicleData {
 
 function validateCrewMember(
   value: any,
-  _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>,
+  _options: foundry.data.fields.DataField.ValidationOptions<foundry.data.fields.DataField>
 ) {
-  const actor = fromUuidSync(value.uuid);
+  const actor = fromUuidSync(value.uuid) as SwadeActor | null;
   // Optional chaining `actor.type` so that on game load, when `fromUuidSync` can only return null, this doesn't throw.
   if (['vehicle', 'group'].includes(actor?.type)) {
     return new foundry.data.validation.DataModelValidationFailure({
       unresolved: true,
       invalidValue: value,
-      message: `Cannot contain an actor of type ${actor.type}!`,
+      message: `Cannot contain an actor of type ${actor?.type}!`,
     });
   }
 }
@@ -117,7 +120,7 @@ function createVehicleSchema() {
           },
           {
             label: 'SWADE.AttrAgi',
-          },
+          }
         ),
         // HC Haunted Car & Sentient Vehicles
         smarts: new fields.SchemaField(
@@ -127,7 +130,7 @@ function createVehicleSchema() {
               label: 'SWADE.VehicleAttributes.Smarts',
             }),
           },
-          { label: 'SWADE.AttrSma' },
+          { label: 'SWADE.AttrSma' }
         ),
         // HC Haunted Car & Sentient Vehicles
         spirit: new fields.SchemaField(
@@ -137,7 +140,7 @@ function createVehicleSchema() {
               label: 'SWADE.VehicleAttributes.Spirit',
             }),
           },
-          { label: 'SWADE.AttrSpr' },
+          { label: 'SWADE.AttrSpr' }
         ),
         strength: new fields.SchemaField(
           {
@@ -151,7 +154,7 @@ function createVehicleSchema() {
               label: 'SWADE.VehicleAttributes.Strength',
             }),
           },
-          { label: 'SWADE.AttrStr' },
+          { label: 'SWADE.AttrStr' }
         ),
         vigor: new fields.SchemaField(
           {
@@ -160,10 +163,10 @@ function createVehicleSchema() {
               label: 'SWADE.VehicleAttributes.Vigor',
             }),
           },
-          { label: 'SWADE.AttrVig' },
+          { label: 'SWADE.AttrVig' }
         ),
       },
-      { label: 'SWADE.Attributes' },
+      { label: 'SWADE.Attributes' }
     ),
     size: new fields.NumberField({
       initial: 0,
@@ -197,7 +200,7 @@ function createVehicleSchema() {
         }),
         unit: new fields.StringField({ label: 'SWADE.SpeedUnit' }),
       },
-      { label: 'SWADE.Topspeed' },
+      { label: 'SWADE.Topspeed' }
     ),
     description: new fields.HTMLField({
       initial: '',
@@ -209,7 +212,7 @@ function createVehicleSchema() {
         total: new fields.NumberField({ initial: 0, label: 'SWADE.Tough' }),
         armor: new fields.NumberField({ initial: 0, label: 'SWADE.Armor' }),
       },
-      { label: 'SWADE.Tough' },
+      { label: 'SWADE.Tough' }
     ),
     wounds: new fields.SchemaField(
       {
@@ -231,7 +234,7 @@ function createVehicleSchema() {
           label: 'SWADE.IgnWounds',
         }),
       },
-      { label: 'SWADE.Wounds' },
+      { label: 'SWADE.Wounds' }
     ),
     stats: new fields.SchemaField({
       parry: new fields.SchemaField(
@@ -253,7 +256,7 @@ function createVehicleSchema() {
             label: 'SWADE.Modifier',
           }),
         },
-        { label: 'SWADE.Parry' },
+        { label: 'SWADE.Parry' }
       ),
     }),
     energy: new fields.SchemaField(
@@ -272,7 +275,7 @@ function createVehicleSchema() {
         }),
         enabled: new fields.BooleanField({ label: 'SWADE.Energy.Enable' }),
       },
-      { label: 'SWADE.Energy.Label' },
+      { label: 'SWADE.Energy.Label' }
     ),
     crew: new fields.SchemaField(
       {
@@ -285,7 +288,7 @@ function createVehicleSchema() {
               label: 'SWADE.MaxLabel',
             }),
           },
-          { label: 'SWADE.RequiredCrew' },
+          { label: 'SWADE.RequiredCrew' }
         ),
         optional: new fields.SchemaField(
           {
@@ -302,7 +305,7 @@ function createVehicleSchema() {
               label: 'SWADE.MaxLabel',
             }),
           },
-          { label: 'SWADE.Passengers' },
+          { label: 'SWADE.Passengers' }
         ),
         members: new fields.ArrayField(
           new MemberField(
@@ -310,10 +313,8 @@ function createVehicleSchema() {
               role: new fields.StringField({
                 initial: constants.CREW_ROLE.GUNNER,
                 choices: {
-                  [constants.CREW_ROLE.OPERATOR]:
-                    'SWADE.Vehicle.Crew.Roles.Operator',
-                  [constants.CREW_ROLE.GUNNER]:
-                    'SWADE.Vehicle.Crew.Roles.Gunner',
+                  [constants.CREW_ROLE.OPERATOR]: 'SWADE.Vehicle.Crew.Roles.Operator',
+                  [constants.CREW_ROLE.GUNNER]: 'SWADE.Vehicle.Crew.Roles.Gunner',
                   [constants.CREW_ROLE.OTHER]: 'SWADE.Vehicle.Crew.Roles.Other',
                 },
                 label: 'SWADE.Vehicle.Crew.Role',
@@ -322,14 +323,14 @@ function createVehicleSchema() {
               weapons: new fields.ArrayField(
                 new LocalDocumentField(SwadeItem, {
                   types: ['weapon'],
-                }),
+                })
               ),
             },
-            { validate: validateCrewMember },
-          ),
+            { validate: validateCrewMember }
+          )
         ),
       },
-      { label: 'SWADE.Crew' },
+      { label: 'SWADE.Crew' }
     ),
     driver: new fields.SchemaField(
       {
@@ -342,7 +343,7 @@ function createVehicleSchema() {
           label: 'SWADE.AltSkill',
         }),
       },
-      { label: 'SWADE.Operator' },
+      { label: 'SWADE.Operator' }
     ),
     status: new fields.SchemaField(
       {
@@ -357,7 +358,7 @@ function createVehicleSchema() {
           label: 'SWADE.Vuln',
         }),
       },
-      { label: 'SWADE.Status' },
+      { label: 'SWADE.Status' }
     ),
     details: new fields.SchemaField(
       {
@@ -366,7 +367,7 @@ function createVehicleSchema() {
           hint: 'SWADE.AutoCalcParry',
         }),
       },
-      { label: 'SWADE.Details' },
+      { label: 'SWADE.Details' }
     ),
     initiative: new fields.SchemaField(
       {
@@ -383,7 +384,7 @@ function createVehicleSchema() {
           initial: '',
         }),
       },
-      { label: 'SWADE.Init' },
+      { label: 'SWADE.Init' }
     ),
     cargo: new fields.SchemaField({
       max: new fields.NumberField({ initial: 0, label: 'SWADE.MaxCargo' }),
@@ -432,10 +433,7 @@ class VehicleData<
 
   get operators(): (SwadeActor<VehicleData.CrewActorType> | null)[] {
     return this.crew.members
-      .filter(
-        (m: VehicleData.CrewMember) =>
-          !!m.actor && m.role === constants.CREW_ROLE.OPERATOR,
-      )
+      .filter((m: VehicleData.CrewMember) => !!m.actor && m.role === constants.CREW_ROLE.OPERATOR)
       .map((m: VehicleData.CrewMember) => m.actor);
   }
 
@@ -443,9 +441,7 @@ class VehicleData<
     return this.operators[0] ?? null;
   }
 
-  async rollManeuverCheck(
-    actor: SwadeActor<VehicleData.CrewActorType> | null = this.operator,
-  ) {
+  async rollManeuverCheck(actor: SwadeActor<VehicleData.CrewActorType> | null = this.operator) {
     //Return early if no driver was found
     if (!actor) return;
 
@@ -457,10 +453,7 @@ class VehicleData<
     const wounds = this.parent.calcWoundPenalties();
 
     //Handling is capped at a certain penalty
-    const totalHandling = Math.max(
-      handling + wounds,
-      SWADE.vehicles.maxHandlingPenalty,
-    );
+    const totalHandling = Math.max(handling + wounds, SWADE.vehicles.maxHandlingPenalty);
 
     //Find the operating skill
     const skill = actor.itemTypes.skill.find((i) => i.name === skillName);
@@ -487,6 +480,13 @@ class VehicleData<
       strength: new Array<DerivedModifier>(),
       vigor: new Array<DerivedModifier>(),
       trait: new Array<DerivedModifier>(),
+      attackRanged: new Array<DerivedModifier>(),
+      attackMelee: new Array<DerivedModifier>(),
+      gangUp: new Array<DerivedModifier>(),
+      targetAttack: new Array<DerivedModifier>(),
+      targetAttackRanged: new Array<DerivedModifier>(),
+      targetAttackMelee: new Array<DerivedModifier>(),
+      targetDamage: new Array<DerivedModifier>(),
     };
     this.stats.parry.sources = new Array<DerivedModifier>();
     this.stats.parry.effects = new Array<DerivedModifier>();
@@ -499,9 +499,7 @@ class VehicleData<
     }
     this.mods.value = 0;
     this.cargo.value = 0;
-    this.crew.members = this.crew.members
-      .sort((a, b) => a.sort - b.sort)
-      .map(this._mapCrewMember.bind(this));
+    this.crew.members = this.crew.members.sort((a, b) => a.sort - b.sort).map(this._mapCrewMember.bind(this));
     this.crew.required.value = this.crew.members.length;
   }
 
@@ -517,33 +515,23 @@ class VehicleData<
     this.scale = this.parent.calcScale(this.size!);
     this.mods.value += this.parent.items.reduce((total: number, i) => {
       // probably need to check for equip status too
-      if (
-        'mods' in i.system &&
-        i.system.isVehicular &&
-        i.system.equipStatus > constants.EQUIP_STATE.CARRIED
-      ) {
+      if ('mods' in i.system && i.system.isVehicular && i.system.equipStatus > constants.EQUIP_STATE.CARRIED) {
         return total + (i.system.mods ?? 0);
       }
       return total;
     }, 0);
     this.cargo.items = this.#prepareCargo();
-    this.cargo.value = this.cargo.items.reduce(
-      (acc, item: SwadeItem<VehicleData.CargoItemType>) => {
-        return acc + (item.system.quantity ?? 0) * (item.system.weight ?? 0);
-      },
-      0,
-    );
+    this.cargo.value = this.cargo.items.reduce((acc, item: SwadeItem<VehicleData.CargoItemType>) => {
+      return acc + (item.system.quantity ?? 0) * (item.system.weight ?? 0);
+    }, 0);
 
-    if (this.details.autoCalcParry)
-      this.stats.parry.value = this.parent.calcParry();
+    if (this.details.autoCalcParry) this.stats.parry.value = this.parent.calcParry();
   }
 
   override getParryBaseSkill() {
     const skillCandidates = this.operator?.itemTypes.skill ?? [];
     return (skillCandidates.find((s) => s.name === this.driver.skill) ||
-      skillCandidates.find((s) => s.name === this.driver.skillAlternative)) as
-      | SwadeItem<'skill'>
-      | undefined;
+      skillCandidates.find((s) => s.name === this.driver.skillAlternative)) as SwadeItem<'skill'> | undefined;
   }
 
   calcParry(): number {
@@ -596,19 +584,14 @@ class VehicleData<
     }
 
     //add equipped weapons
-    const ambidextrous = this.parent.getFlag('swade', 'ambidextrous') as
-      | undefined
-      | boolean;
+    const ambidextrous = this.parent.getFlag('swade', 'ambidextrous') as undefined | boolean;
     for (const weapon of itemTypes.weapon) {
       if (!(weapon.system instanceof WeaponData)) continue;
       let parryBonus = 0;
 
       if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.OFF_HAND) {
         // only add parry bonus if it's in the main hand or actor is ambidextrous
-        if (
-          Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED ||
-          ambidextrous
-        )
+        if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED || ambidextrous)
           parryBonus += weapon.system.parry ?? 0;
 
         //add trademark weapon bonus
@@ -626,25 +609,18 @@ class VehicleData<
     return parryTotal;
   }
 
-  getCrewMemberForWeapon(
-    weapon: SwadeItem<'weapon'>,
-  ): SwadeActor<VehicleData.CrewActorType> | undefined {
+  getCrewMemberForWeapon(weapon: SwadeItem<'weapon'>): SwadeActor<VehicleData.CrewActorType> | undefined {
     if (weapon.type !== 'weapon') return;
     const user = this.crew.members
-      .filter((m: VehicleData.CrewMember) =>
-        m.weapons.map((i) => i.id).includes(weapon.id),
-      )
-      .find(
-        (m: VehicleData.CrewMember) =>
-          m.actor?.type === 'npc' || m.actor?.isOwner,
-      )?.actor;
+      .filter((m: VehicleData.CrewMember) => m.weapons.map((i) => i.id).includes(weapon.id))
+      .find((m: VehicleData.CrewMember) => m.actor?.type === 'npc' || m.actor?.isOwner)?.actor;
     return user;
   }
 
   override async toEmbed(
     this: VehicleData,
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
@@ -652,18 +628,13 @@ class VehicleData<
     }
 
     config.caption = false;
-    this.enrichedDescription =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.description,
-        {
-          ...options,
-        },
-      );
-    const embed = await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/vehicle-embeds.hbs',
-      ['actor-embed', 'vehicle'],
-    );
+    this.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(this.description, {
+      ...options,
+    });
+    const embed = await createEmbedElement(this, 'systems/swade/templates/embeds/vehicle-embeds.hbs', [
+      'actor-embed',
+      'vehicle',
+    ]);
 
     if (embed) {
       // See src/globals.d.ts for docs
@@ -673,9 +644,7 @@ class VehicleData<
     return embed;
   }
 
-  override getRollData(
-    this: VehicleData<VehicleData.Schema>,
-  ): Record<string, number | string> {
+  override getRollData(this: VehicleData<VehicleData.Schema>): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       topspeed: this.topspeed.value || 0,
@@ -700,8 +669,7 @@ class VehicleData<
   #prepareCargo(): SwadeItem<VehicleData.CargoItemType>[] {
     const itemTypes = this.parent.itemTypes;
     const notMod = (i: Item.OfType<'gear' | 'weapon'>) =>
-      !i.system.isVehicular ||
-      i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
+      !i.system.isVehicular || i.system.equipStatus! < constants.EQUIP_STATE.EQUIPPED;
     return [
       ...itemTypes.gear.filter(notMod),
       ...itemTypes.weapon.filter(notMod),

@@ -159,8 +159,8 @@ SWADE:
   Effects: Effets actifs
   Hindrances: Handicaps
   MajHind: Handicap majeur
-  Major: "(majeur)"
-  Minor: "(mineur)"
+  Major: '(majeur)'
+  Minor: '(mineur)'
   Edges: Atouts
   ArcBack: Arcanes
   Req: Prérequis
@@ -272,7 +272,7 @@ SWADE:
   Items: Objets
   Max: Max.
   Curr: Actuel
-  DSNNone: "- Aucun -"
+  DSNNone: '- Aucun -'
   Reload: Recharger
   Refresh: Rafraîchir cette carte
   Ammo: Munitions
@@ -768,7 +768,7 @@ SWADE:
       Title: Confirmer
     Header: Contenu
     Toggle: Cocher pour utiliser la table des matières du Compendium
-  CustomWildDie: "- Dé Joker spécial -"
+  CustomWildDie: '- Dé Joker spécial -'
   DieSides: Faces du dé
   EffectWizard:
     EnterSkill:
@@ -1698,7 +1698,7 @@ ITEM:
   TypeConsumable: Consommable
 CARD:
   TypeAdventure: " Cartes d'aventure"
-  TypePoker: " Cartes de poker"
+  TypePoker: ' Cartes de poker'
 Actor: Acteur
 Vehicles: Véhicules
 Ground Vehicles: Véhicules terrestres

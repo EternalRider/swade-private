@@ -1,0 +1,46 @@
+<section class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{!-- Sheet Header --}}
+  {{> 'swade.item-header'}}
+
+  {{!-- Sidebar --}}
+  <section class='sheet-sidebar'>
+    {{> 'swade.item-additional-stats'}}
+  </section>
+
+  {{!-- Sheet Tab Navigation --}}
+  {{> "templates/generic/tab-navigation.hbs"}}
+
+  {{!-- Main Section --}}
+  <section class='sheet-body'>
+    {{> 'swade.item-tab-description'}}
+    <section class='{{tabs.properties.tabCssClass}}' data-group='{{tabs.properties.group}}' data-tab='{{tabs.properties.id}}'>
+      {{formGroupSimple "system.hidden"}}
+      {{> 'swade.item-action-properties'}}
+      {{> 'swade.item-bonus-damage'}}
+      <div class="form-group">
+        <label for="{{item.uuid}}-has-charges">
+          {{localize "SWADE.HasCharges"}}
+        </label>
+        <span class="form-fields">
+          <input id="{{item.uuid}}-has-charges" type="checkbox" name="system.charges.hasCharges" {{checked item.system.charges.hasCharges}}/>
+        </span>
+      </div>
+      {{> 'swade.item-templates'}}
+    </section>
+    {{#if item.system.charges.hasCharges}}
+      {{> 'swade.item-tab-charges'}}
+    {{/if}}
+    {{> 'swade.item-tab-actions'}}
+    {{> 'swade.item-tab-effects'}}
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</section>

@@ -1,0 +1,61 @@
+<section>
+  <header class='header'>
+    <h1>{{deckName}}</h1>
+    <button type='button' class='add-card' data-action='addCard'>
+      <i class='fa-solid fa-lg fa-plus'></i>
+      {{localize 'DOCUMENT.Card'}}
+    </button>
+  </header>
+  <section class='body'>
+    <ul class='card-list'>
+      {{#each cards as |card|}}
+        <li class='flexrow'>
+          <img
+            class='card-face'
+            src='{{card.currentFace.img}}'
+            alt='{{card.name}}'
+            data-id='{{card.id}}'
+            data-action='showCard'
+            loading='lazy'
+          />
+          <span class='flexcol card-details'>
+            <span class='form-group'>
+              <label for='{{card.uuid}}-name'>{{localize 'Name'}}</label>
+              <span class='form-fields'>
+                <input id='{{card.uuid}}-name' type='text' name='card.{{card.id}}.name' value='{{card.name}}' />
+              </span>
+            </span>
+            <span class='form-group'>
+              <label for='{{card.uuid}}-face'>
+                {{localize 'SWADE.CardFace'}}
+              </label>
+              <span class='form-fields'>
+                <file-picker name='card.{{card.id}}.img' value='{{card.currentFace.img}}' type='image' />
+              </span>
+            </span>
+            <span class='form-group'>
+              <label>{{localize 'SWADE.CardSuit'}}</label>
+              <span class='form-fields'>
+                <select data-dtype='Number' name='card.{{card.id}}.suitValue'>
+                  {{selectOptions @root.suitOptions selected=card.system.suit localize=true}}
+                </select>
+              </span>
+            </span>
+            <span class='form-group'>
+              <label>{{localize 'SWADE.CardValue'}}</label>
+              <span class='form-fields'>
+                <select data-dtype='Number' name='card.{{card.id}}.cardValue'>
+                  {{selectOptions @root.cardValues selected=card.value localize=true}}
+                </select>
+              </span>
+            </span>
+            <button type='button' data-action='deleteCard' data-id='{{card.id}}'>
+              <i class='fa-solid fa-trash'></i>
+              {{localize 'Delete'}}
+            </button>
+          </span>
+        </li>
+      {{/each}}
+    </ul>
+  </section>
+</section>

@@ -7,7 +7,6 @@
     }
   }
   summary {
-    display: flex;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
@@ -22,8 +21,7 @@
       content: '';
       border-width: 0.4em;
       border-style: solid;
-      border-color: transparent transparent transparent
-        var(--color-text-primary);
+      border-color: transparent transparent transparent var(--color-text-primary);
       position: absolute;
       left: -1rem;
       transform: rotate(0);

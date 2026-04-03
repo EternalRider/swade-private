@@ -6,11 +6,9 @@ import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
 
-import { DamageRoll } from '../../dice/DamageRoll';
-import { TraitRoll } from '../../dice/TraitRoll';
-import { Logger } from '../../Logger';
+import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import ItemCardService from '../../models/ItemCardService';
-import { VehicleData } from '../actor';
+import { VehicleData } from '../actor/vehicle';
 
 declare namespace ItemCardData {
   interface Schema extends foundry.data.fields.DataSchema {
@@ -56,8 +54,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
   get macros(): { id: string; uuid: string }[] {
     if (!this._item) return [];
-    const additionalActions: ItemActions =
-      foundry.utils.getProperty(this._item, 'system.actions.additional') || {};
+    const additionalActions = foundry.utils.getProperty(this._item, 'system.actions.additional') || ({} as ItemActions);
     return Object.entries(additionalActions)
       .filter(([_k, v]) => v.type === constants.ACTION_TYPE.MACRO)
       .map(([k, v]) => {
@@ -69,11 +66,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     return this._item?.parent ?? null;
   }
 
-  async renderHTML({
-    canDelete = false,
-    canClose = false,
-    ..._rest
-  } = {}): Promise<HTMLElement> {
+  async renderHTML({ canDelete = false, canClose = false, ..._rest } = {}): Promise<HTMLElement> {
     this._item = fromUuidSync(this.uuid) as SwadeItem | null;
 
     let content: string;
@@ -98,48 +91,34 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   protected _attachButtonListeners(html: HTMLElement) {
     html
       .querySelectorAll<HTMLButtonElement>('button[data-action]')
-      .forEach((btn) =>
-        btn.addEventListener('click', (ev) =>
-          this._handleButtonClick(ev, btn, html),
-        ),
-      );
+      .forEach((btn) => btn.addEventListener('click', (ev) => this._handleButtonClick(ev, btn, html)));
 
-    html
-      .querySelector<HTMLElement>('.card-header .item-name')
-      ?.addEventListener('click', () => {
-        html
-          .querySelector<HTMLElement>('.card-content')
-          ?.classList.toggle('expanded');
-      });
+    html.querySelector<HTMLElement>('.card-header .item-name')?.addEventListener('click', () => {
+      html.querySelector<HTMLElement>('.card-content')?.classList.toggle('expanded');
+    });
   }
 
-  protected override prepareDerivedData(this: ItemCardData) {
+  override prepareDerivedData(this: ItemCardData) {
     if (!this.#hookId) {
-      this.#hookId = Hooks.on('updateItem', async (item: SwadeItem) => {
+      this.#hookId = Hooks.on('updateItem', (item) => {
         if (item.uuid === this.uuid) this._refreshMessage();
       });
     }
   }
 
-  protected async _handleButtonClick(
-    event: MouseEvent,
-    btn: HTMLButtonElement,
-    html: HTMLElement,
-  ) {
+  protected async _handleButtonClick(event: MouseEvent, btn: HTMLButtonElement, html: HTMLElement) {
     event.preventDefault();
     const action = btn.dataset.action as string;
 
     if (!this._item || !action) return;
 
-    const actionObj = foundry.utils.getProperty(
-      this._item,
-      'system.actions.additional.' + action,
-    ) as ItemAction | undefined;
+    const actionObj = foundry.utils.getProperty(this._item, 'system.actions.additional.' + action) as
+      | ItemAction
+      | undefined;
 
     const actor = this._getActor(actionObj);
     if (!actor) return;
 
-    let roll: TraitRoll | DamageRoll | null = null;
     const additionalMods = this.#handler.gatherRollModifiers({
       item: this._item,
       html,
@@ -156,51 +135,30 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
         break;
       case 'reload':
         await this._item.reload();
-        await this._refreshMessage();
         break;
       case 'consume':
         await this._item.consume();
-        await this._refreshMessage();
         break;
       case 'pp-adjust':
         await this.#handler.handlePowerPoints(this._item, actor, btn, html);
-        await this._refreshMessage();
         break;
       case 'damage':
-        roll = await this.#handler.handleDamageAction(
-          this._item,
-          actor,
-          additionalMods,
-        );
+        await this.#handler.handleDamageAction(this._item, actor, additionalMods);
         break;
       case 'formula':
-        roll = await this.#handler.handleFormulaAction(
-          this._item,
-          actor,
-          additionalMods,
-          html,
-        );
+        await this.#handler.handleFormulaAction(this._item, actor, additionalMods, html);
         break;
       case 'arcane-device':
-        roll = await actor.makeArcaneDeviceSkillRoll(
-          foundry.utils.getProperty(this._item, 'system.arcaneSkillDie'),
+        await actor.makeArcaneDeviceSkillRoll(
+          foundry.utils.getProperty(this._item, 'system.arcaneSkillDie') as TraitDie
         );
         break;
       default:
         // No need to call the hook here, as handleAdditionalActions already calls the hook
         // This is so an external API can directly use handleAdditionalActions to use an action and still fire the hook
-        roll = await this.#handler.handleAdditionalAction(
-          this._item,
-          actor,
-          actionObj,
-          action,
-          additionalMods,
-        );
+        await this.#handler.handleAdditionalAction(this._item, actor, actionObj, action, additionalMods);
         break;
     }
-
-    //Only refresh the card if there is a roll and the item isn't a power
-    if (roll && this._item.type !== 'power') await this._refreshMessage();
   }
 
   protected _getActor(action?: ItemAction): SwadeActor | null {
@@ -208,15 +166,11 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
     //If the item's parent is a vehicle swap in the operator
     if (actor?.system instanceof VehicleData) {
-      if (this._item.type === 'weapon') {
-        actor = actor.system.getCrewMemberForWeapon(this._item) ?? null;
-        if (!actor) {
-          Logger.warn('Could not retrieve an assigned user for this weapon.', {
-            toast: true,
-          });
-        }
+      if (this._item?.type === 'weapon') {
+        const gunner = actor.system.getCrewMemberForWeapon(this._item!);
+        actor = gunner ?? actor.system.operator ?? actor;
       } else {
-        actor = actor.system.operator;
+        actor = actor.system.operator ?? actor;
       }
     }
 
@@ -250,30 +204,28 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   }
 
   protected _magazineTooltip(html: HTMLElement) {
-    const magazine = html.querySelector<HTMLElement>(
-      '.swade.chat-card .magazine',
-    );
+    if (!this._item) return;
+    const magazine = html.querySelector<HTMLElement>('.swade.chat-card .magazine');
 
     magazine?.addEventListener('mouseenter', async () => {
+      let enriched: string;
       const loadedAmmo = this._item?.getFlag('swade', 'loadedAmmo');
+      if (loadedAmmo) {
+        enriched = await await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          `<h4>${loadedAmmo?.name}</h4>${loadedAmmo.system?.description ?? ''}`,
+          {
+            relativeTo: this._item!,
+            rollData: this._item!.getRollData(),
+            secrets: this._item!.isOwner,
+          }
+        );
+      } else {
+        enriched = game.i18n.localize('SWADE.Magazine.NoneLoaded');
+      }
 
-      const enriched = loadedAmmo
-        ? await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            `<h4>${loadedAmmo?.name}</h4>${loadedAmmo?.system!.description ?? ''}`,
-            {
-              relativeTo: this._item,
-              rollData: this._item?.getRollData() ?? {},
-              secrets: this._item?.isOwner,
-            },
-          )
-        : game.i18n.localize('SWADE.Magazine.NoneLoaded');
+      const html = foundry.utils.parseHTML('<span>' + enriched + '</span>');
 
-      const content = foundry.utils.parseHTML('<span>' + enriched + '</span>');
-
-      game.tooltip.activate(magazine, {
-        html: content as HTMLElement,
-        cssClass: 'themed theme-dark',
-      });
+      game.tooltip.activate(magazine, { html, cssClass: 'themed theme-dark' });
     });
   }
 
@@ -283,18 +235,12 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     for (const macro of this.macros) {
       const doc = (await fromUuid(macro.uuid)) as Macro | null;
       if (doc?.canExecute) continue;
-      html
-        .querySelectorAll<HTMLButtonElement>(
-          `button[data-action="${macro.id}"]`,
-        )
-        .forEach((btn) => {
-          btn.remove();
-          hiddenCounter++;
-        });
+      html.querySelectorAll<HTMLButtonElement>(`button[data-action="${macro.id}"]`).forEach((btn) => {
+        btn.remove();
+        hiddenCounter++;
+      });
     }
-    const macroButtonsTotal = html.querySelectorAll<HTMLButtonElement>(
-      '.card-buttons.macros button',
-    ).length;
+    const macroButtonsTotal = html.querySelectorAll<HTMLButtonElement>('.card-buttons.macros button').length;
     //if all macros have been hidden, then also hide the header
     if (macroButtonsTotal <= hiddenCounter) {
       html.querySelector<HTMLElement>('.card-buttons.macros')?.remove();
@@ -305,7 +251,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     const data = await this._item!.getChatData();
     return foundry.applications.handlebars.renderTemplate(
       'systems/swade/templates/chat/item-card.hbs',
-      data,
+      data
     ) as Promise<string>;
   }
 
@@ -313,12 +259,8 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     return `<p>Item with UUID <code>${this.uuid}</code> could not be found</p>`;
   }
 
-  protected _getBaseMessageData(
-    canDelete: boolean,
-    canClose: boolean,
-  ): ChatMessage.MessageData {
-    const isWhisper = !!this.parent.whisper.length;
-
+  protected _getBaseMessageData(canDelete: boolean, canClose: boolean): ChatMessage.MessageData {
+    const isWhisper = this.parent.whisper.length;
     // Construct message data
     const messageData: ChatMessage.MessageData = {
       canDelete,
@@ -334,26 +276,22 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
         isWhisper ? 'whisper' : null,
       ].filterJoin(' '),
       isWhisper,
-      whisperTo: this.parent.whisper
-        .map((u) => game.users.get(u)?.name)
-        .filterJoin(', '),
+      whisperTo: this.parent.whisper.map((u) => game.users.get(u)?.name).filterJoin(', '),
     };
     return messageData;
   }
 
   /** Create a standard foundry message shell */
-  protected async _renderMessageShell(
-    content: string,
-    canDelete: boolean,
-    canClose: boolean,
-  ): Promise<HTMLElement> {
+  protected async _renderMessageShell(content: string, canDelete: boolean, canClose: boolean): Promise<HTMLElement> {
     const messageData = this._getBaseMessageData(canDelete, canClose);
-    messageData.message.content = content;
-    const template = await foundry.applications.handlebars.renderTemplate(
-      CONFIG.ChatMessage.template,
-      messageData,
-    );
-    return foundry.utils.parseHTML(template) as HTMLElement;
+    // Render with empty content to prevent bare <li> in descriptions from
+    // breaking the root <li> during HTML parsing, then inject via innerHTML
+    messageData.message.content = '';
+    const template = await foundry.applications.handlebars.renderTemplate(CONFIG.ChatMessage.template, messageData);
+    const html = foundry.utils.parseHTML(template) as HTMLElement;
+    const contentEl = html.querySelector('.message-content');
+    if (contentEl) contentEl.innerHTML = content;
+    return html;
   }
 
   protected async _refreshMessage() {

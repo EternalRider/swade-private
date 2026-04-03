@@ -1,0 +1,36 @@
+{{#if charges}}
+  <div class='charges-summary'>
+    <ul class='charge-list'>
+      <li class='charge-row'>
+        <span><strong>{{localize "SWADE.Name"}}</strong></span>
+        <span><strong>{{localize "SWADE.RechargeType"}}</strong></span>
+        <span><strong>{{localize "SWADE.Charges"}}</strong></span>
+      </li>
+      {{#each charges}}
+        <li class='charge-row'>
+          <span>{{charge.name}}</span>
+          <span>{{localize rechargeType}}</span>
+          <span class='charge-fields'>
+            <input
+              type='number'
+              name="value"
+              value='{{charge.value}}'
+              placeholder='1'
+              data-charge-id='{{charge.id}}' />
+            <strong class="flex-separator">/</strong>
+            <input
+              type='number'
+              name="max"
+              value='{{charge.max}}'
+              placeholder='1'
+              data-charge-id='{{charge.id}}'
+              {{disabled (and (eq ../system.subtype 'battery') (eq @index 0))}}/>
+              <button type='button' class='charge-recharge-manual invisible{{#if (eq charge.rechargeType "finite")}} no-recharge{{/if}}' data-action='rechargeManual' title='{{localize "SWADE.Recharge"}}' data-charge-id='{{charge.id}}'>
+                <i class='fas fa-rotate-right'></i>
+              </button>
+          </span>
+        </li>
+      {{/each}}
+    </ul>
+  </div>
+{{/if}}

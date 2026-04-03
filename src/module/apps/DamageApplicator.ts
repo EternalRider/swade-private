@@ -50,10 +50,7 @@ export async function damageApplicator(message: SwadeChatMessage) {
 }
 
 // Function for translating damage to Wounds.
-export async function calcWounds(
-  targetUuid: string,
-  damageContext: DamageContext,
-) {
+export async function calcWounds(targetUuid: string, damageContext: DamageContext) {
   const actor = await fromUuid(targetUuid);
 
   if (!(actor instanceof SwadeActor)) return;
@@ -117,13 +114,7 @@ export async function calcWounds(
    * @param {number} woundsInflicted        The amount of wounds that will be inflicted
    * @param {Status} statusToApply          The resulting status that would be applied
    */
-  const permit = Hooks.call(
-    'swadePreCalcWounds',
-    actor,
-    damageContext,
-    woundsInflicted,
-    statusToApply,
-  );
+  const permit = Hooks.call('swadePreCalcWounds', actor, damageContext, woundsInflicted, statusToApply);
 
   if (permit !== false) {
     // Trigger Soak prompt.
@@ -131,10 +122,7 @@ export async function calcWounds(
   }
 }
 
-function removeButtons(
-  buttons: foundry.applications.api.DialogV2.Button<any>[],
-  actions: string[],
-) {
+function removeButtons(buttons: foundry.applications.api.DialogV2.Button<any>[], actions: string[]) {
   for (const action of actions) {
     const index = buttons.findIndex((button) => button.action === action);
     if (index !== -1) buttons.splice(index, 1);
@@ -146,46 +134,34 @@ async function soakPrompt(
   actor: SwadeActor,
   damageContext: DamageContext,
   woundsInflicted: number,
-  statusToApply: Status,
+  statusToApply: Status
 ) {
   const speaker = ChatMessage.getSpeaker({ actor });
   const name = speaker.alias;
 
   // Set singular Wound or plural Wounds for chat message
   const woundsText = `${woundsInflicted} ${
-    woundsInflicted > 1
-      ? game.i18n.localize('SWADE.Wounds')
-      : game.i18n.localize('SWADE.Wound')
+    woundsInflicted > 1 ? game.i18n.localize('SWADE.Wounds') : game.i18n.localize('SWADE.Wound')
   }`;
   // Text for Wounds about to be taken.
-  let message = game.i18n.format(
-    'SWADE.DamageApplicator.WoundsAboutToBeTaken',
-    {
-      name: name,
-      wounds: woundsText,
-    },
-  );
+  let message = game.i18n.format('SWADE.DamageApplicator.WoundsAboutToBeTaken', {
+    name: name,
+    wounds: woundsText,
+  });
 
   // Create a title and prompt variable to be assigned later.
   let title = '';
   let prompt = '';
-
   // Create a collection of buttons with an adjust button included by default.
   const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] = [
     {
       action: 'adjust',
-      label: game.i18n.localize(
-        'SWADE.DamageApplicator.SoakDialog.AdjustDamage',
-      ),
+      label: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.AdjustDamage'),
       icon: '<i class="fas fa-plus-minus"></i>',
       callback: async (_event: PointerEvent, button: HTMLButtonElement) => {
         const html = button.form!;
-        damageContext.damage.ap = Number(
-          html.querySelector<HTMLInputElement>('#ap')?.value,
-        );
-        damageContext.damage.total = Number(
-          html.querySelector<HTMLInputElement>('#damage')?.value,
-        );
+        damageContext.damage.ap = Number(html.querySelector<HTMLInputElement>('#ap')?.value);
+        damageContext.damage.total = Number(html.querySelector<HTMLInputElement>('#damage')?.value);
         // Calculate the Wounds.
         await calcWounds(actor.uuid, damageContext);
       },
@@ -200,29 +176,21 @@ async function soakPrompt(
         const existingWounds = actor.system.wounds.value;
         const maxWounds = actor.system.wounds.max;
         const totalWounds = existingWounds + woundsInflicted;
-        const newWoundsValue =
-          totalWounds < maxWounds ? totalWounds : maxWounds;
+        const newWoundsValue = totalWounds < maxWounds ? totalWounds : maxWounds;
         await actor.update({ 'system.wounds.value': newWoundsValue });
         if (totalWounds > maxWounds) {
-          await applyIncapacitated(actor);
+          await chooseIncapacitationOrDefeat(actor);
         } else {
           await applyShaken(actor);
           await ChatMessage.create({
-            content: game.i18n.format(
-              'SWADE.DamageApplicator.Result.IsShakenWithWounds',
-              {
-                name: name,
-                wounds: woundsText,
-              },
-            ),
+            content: game.i18n.format('SWADE.DamageApplicator.Result.IsShakenWithWounds', {
+              name: name,
+              wounds: woundsText,
+            }),
             speaker: speaker,
           });
         }
-        if (
-          actor.isWildcard &&
-          game.settings.get('swade', 'grittyDamage') &&
-          !damageContext.doubleShaken
-        ) {
+        if (actor.isWildcard && game.settings.get('swade', 'grittyDamage') && !damageContext.doubleShaken) {
           await rollInjuryTable();
         }
         /**
@@ -270,12 +238,9 @@ async function soakPrompt(
       icon: '<i class="fas fa-check"></i>',
       callback: async () => {
         await ChatMessage.create({
-          content: game.i18n.format(
-            'SWADE.DamageApplicator.Result.NoSignificantDamage',
-            {
-              name: name,
-            },
-          ),
+          content: game.i18n.format('SWADE.DamageApplicator.Result.NoSignificantDamage', {
+            name: name,
+          }),
           speaker: speaker,
         });
 
@@ -297,13 +262,7 @@ async function soakPrompt(
       icon: '<i class="fas fa-droplet-slash"></i>',
       callback: async () => {
         actor.spendBenny();
-        await attemptSoak(
-          actor,
-          woundsInflicted,
-          statusToApply,
-          woundsText,
-          damageContext,
-        );
+        await attemptSoak(actor, woundsInflicted, statusToApply, woundsText, damageContext);
       },
     },
     {
@@ -312,13 +271,7 @@ async function soakPrompt(
       icon: '<i class="fas fa-droplet-slash"></i>',
       callback: async () => {
         game.user?.spendBenny();
-        await attemptSoak(
-          actor,
-          woundsInflicted,
-          statusToApply,
-          woundsText,
-          damageContext,
-        );
+        await attemptSoak(actor, woundsInflicted, statusToApply, woundsText, damageContext);
       },
     },
     {
@@ -326,13 +279,7 @@ async function soakPrompt(
       label: game.i18n.localize('SWADE.DamageApplicator.SoakDialog.Free'),
       icon: '<i class="fas fa-droplet-slash"></i>',
       callback: async () => {
-        await attemptSoak(
-          actor,
-          woundsInflicted,
-          statusToApply,
-          woundsText,
-          damageContext,
-        );
+        await attemptSoak(actor, woundsInflicted, statusToApply, woundsText, damageContext);
       },
     },
   ];
@@ -352,10 +299,7 @@ async function soakPrompt(
     removeButtons(buttons, ['take', 'soakBenny', 'soakGmBenny', 'soakFree']);
 
     // Set the title
-    title = game.i18n.format(
-      'SWADE.DamageApplicator.SoakDialog.UnwoundedTitle',
-      { name: name },
-    );
+    title = game.i18n.format('SWADE.DamageApplicator.SoakDialog.UnwoundedTitle', { name: name });
 
     // If the status is Shaken...
     if (statusToApply === Status.SHAKEN) {
@@ -363,10 +307,7 @@ async function soakPrompt(
       removeButtons(buttons, ['accept']);
 
       // Set the prompt text.
-      prompt = game.i18n.format(
-        'SWADE.DamageApplicator.SoakDialog.ShakenPrompt',
-        { name: name },
-      );
+      prompt = game.i18n.format('SWADE.DamageApplicator.SoakDialog.ShakenPrompt', { name: name });
       // Set the default button to Apply Shaken
       defaultButton = 'applyShaken';
     } else if (statusToApply === Status.NONE) {
@@ -374,10 +315,7 @@ async function soakPrompt(
       removeButtons(buttons, ['applyShaken']);
 
       // If there is no damage applied at all, change prompt to unharmed.
-      prompt = game.i18n.format(
-        'SWADE.DamageApplicator.SoakDialog.UnharmedPrompt',
-        { name: name },
-      );
+      prompt = game.i18n.format('SWADE.DamageApplicator.SoakDialog.UnharmedPrompt', { name: name });
       defaultButton = 'accept';
     }
   } else {
@@ -386,10 +324,7 @@ async function soakPrompt(
       name: name,
     });
     // Set the prompt text to Wounded text
-    prompt = game.i18n.format(
-      'SWADE.DamageApplicator.SoakDialog.WoundedPrompt',
-      { name: name, wounds: woundsText },
-    );
+    prompt = game.i18n.format('SWADE.DamageApplicator.SoakDialog.WoundedPrompt', { name: name, wounds: woundsText });
 
     // Since status to apply is Wounded delete Apply Shaken and Accept buttons
     removeButtons(buttons, ['applyShaken', 'accept']);
@@ -407,12 +342,13 @@ async function soakPrompt(
   const adjustDamage = new Handlebars.SafeString(
     game.i18n.format('SWADE.DamageApplicator.AdjustDamagePrompt', {
       name: name,
-    }),
+    })
   );
-  const content = await foundry.applications.handlebars.renderTemplate(
-    'systems/swade/templates/apps/damage/soak.hbs',
-    { damageContext, adjustDamage, prompt: new Handlebars.SafeString(prompt) },
-  );
+  const content = await foundry.applications.handlebars.renderTemplate('systems/swade/templates/apps/damage/soak.hbs', {
+    damageContext,
+    adjustDamage,
+    prompt: new Handlebars.SafeString(prompt),
+  });
   foundry.applications.api.DialogV2.wait({
     window: {
       title: title,
@@ -430,19 +366,16 @@ async function attemptSoak(
   statusToApply: Status,
   woundsText: string,
   damageContext: DamageContext,
-  bestSoakAttempt: number = 0,
+  bestSoakAttempt = 0,
   options?: {
     reroll?: boolean;
-  },
+  }
 ) {
   if (actor.system instanceof VehicleData) {
     // No handling for vehicle soaks... yet
-    return ui.notifications.warn(
-      'SWADE.DamageApplicator.SoakDialog.NoVehicleSoak',
-      {
-        localize: true,
-      },
-    );
+    return ui.notifications.warn('SWADE.DamageApplicator.SoakDialog.NoVehicleSoak', {
+      localize: true,
+    });
   }
   const soakModifiers: RollModifier[] = [
     {
@@ -468,9 +401,7 @@ async function attemptSoak(
   });
 
   if (game.dice3d) {
-    game.dice3d
-      .waitFor3DAnimationByMessageID(vigorRoll?.messageId)
-      .then(() => applySoak());
+    game.dice3d.waitFor3DAnimationByMessageID(vigorRoll?.messageId).then(() => applySoak());
   } else {
     applySoak();
   }
@@ -527,134 +458,95 @@ async function attemptSoak(
       }`;
 
       // Build default buttons
-      const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] =
-        [
-          {
-            action: 'take',
-            label: game.i18n.format(
-              'SWADE.DamageApplicator.RerollSoakDialog.TakeWounds',
-              {
-                wounds: woundsRemainingText,
-              },
-            ),
-            icon: '<i class="fas fa-droplet"></i>',
-            default: true,
-            callback: async () => {
-              // Construct text for the new Wounds value to be accepted (singular or plural Wounds).
-              const newWoundsValueText = `${newWoundsValue} ${
-                newWoundsValue > 1 || newWoundsValue === 0 // newWoundsValue should never be zero here
-                  ? game.i18n.localize('SWADE.Wounds')
-                  : game.i18n.localize('SWADE.Wound')
-              }`;
-              // Update Wounds on the Actor
-              await actor.update({
-                'system.wounds.value': newWoundsValue,
+      const buttons: foundry.applications.api.DialogV2.Button<Promise<void>>[] = [
+        {
+          action: 'take',
+          label: game.i18n.format('SWADE.DamageApplicator.RerollSoakDialog.TakeWounds', {
+            wounds: woundsRemainingText,
+          }),
+          icon: '<i class="fas fa-droplet"></i>',
+          default: true,
+          callback: async () => {
+            // Construct text for the new Wounds value to be accepted (singular or plural Wounds).
+            const newWoundsValueText = `${newWoundsValue} ${
+              newWoundsValue > 1 || newWoundsValue === 0 // newWoundsValue should never be zero here
+                ? game.i18n.localize('SWADE.Wounds')
+                : game.i18n.localize('SWADE.Wound')
+            }`;
+            // Update Wounds on the Actor
+            await actor.update({
+              'system.wounds.value': newWoundsValue,
+            });
+            // Apply status effects based on Shaken or Incapacitated.
+            if (totalWounds > maxWounds) {
+              // If their total Wounds is greater than their max Wounds, apply Status Effects: Incapacitated.
+              await chooseIncapacitationOrDefeat(actor);
+            } else {
+              // If their total Wounds not greater than their max Wounds, apply Status Effects: Shaken.
+              await applyShaken(actor);
+              message = game.i18n.format('SWADE.DamageApplicator.Result.IsShakenWithWounds', {
+                name: name,
+                wounds: newWoundsValueText,
               });
-              // Apply status effects based on Shaken or Incapacitated.
-              if (totalWounds > maxWounds) {
-                // If their total Wounds is greater than their max Wounds, apply Status Effects: Incapacitated.
-                await applyIncapacitated(actor);
-              } else {
-                // If their total Wounds not greater than their max Wounds, apply Status Effects: Shaken.
-                await applyShaken(actor);
-                message = game.i18n.format(
-                  'SWADE.DamageApplicator.Result.IsShakenWithWounds',
-                  {
-                    name: name,
-                    wounds: newWoundsValueText,
-                  },
-                );
-              }
-              // Output Chat Message.
-              if (message) {
-                await ChatMessage.create({
-                  content: message,
-                  speaker: speaker,
-                });
-              }
+            }
+            // Output Chat Message.
+            if (message) {
+              await ChatMessage.create({
+                content: message,
+                speaker: speaker,
+              });
+            }
 
-              // If Gritty Damage is in play, roll on the Injury Table.
-              if (
-                actor.isWildcard &&
-                game.settings.get('swade', 'grittyDamage') &&
-                !damageContext.doubleShaken
-              ) {
-                await rollInjuryTable();
-              }
+            // If Gritty Damage is in play, roll on the Injury Table.
+            if (actor.isWildcard && game.settings.get('swade', 'grittyDamage') && !damageContext.doubleShaken) {
+              await rollInjuryTable();
+            }
 
-              /**
-               * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
-               * @category Hooks
-               * @param {SwadeActor} actor            The actor taking the damage
-               * @param {DamageContext} damageContext Additional information people calling the hook might need
-               */
-              damageContext.status = statusToApply;
-              damageContext.wounds.applied = woundsRemaining;
-              damageContext.wounds.taken = newWoundsValue - existingWounds;
-              damageContext.wounds.soaked = Math.min(
-                woundsSoaked,
-                woundsInflicted,
-              );
+            /**
+             * A hook event that is fired after damage has been applied, intended for things like other injury table conditions
+             * @category Hooks
+             * @param {SwadeActor} actor            The actor taking the damage
+             * @param {DamageContext} damageContext Additional information people calling the hook might need
+             */
+            damageContext.status = statusToApply;
+            damageContext.wounds.applied = woundsRemaining;
+            damageContext.wounds.taken = newWoundsValue - existingWounds;
+            damageContext.wounds.soaked = Math.min(woundsSoaked, woundsInflicted);
 
-              Hooks.call('swadeTakeDamage', actor, damageContext);
-            },
+            Hooks.call('swadeTakeDamage', actor, damageContext);
           },
-          {
-            action: 'rerollBenny',
-            label: game.i18n.localize(
-              'SWADE.DamageApplicator.RerollSoakDialog.Benny',
-            ),
-            icon: '<i class="fas fa-dice"></i>',
-            callback: async () => {
-              actor.spendBenny();
-              await attemptSoak(
-                actor,
-                woundsInflicted,
-                statusToApply,
-                woundsText,
-                damageContext,
-                woundsRemaining,
-                { reroll: true },
-              );
-            },
+        },
+        {
+          action: 'rerollBenny',
+          label: game.i18n.localize('SWADE.DamageApplicator.RerollSoakDialog.Benny'),
+          icon: '<i class="fas fa-dice"></i>',
+          callback: async () => {
+            actor.spendBenny();
+            await attemptSoak(actor, woundsInflicted, statusToApply, woundsText, damageContext, woundsRemaining, {
+              reroll: true,
+            });
           },
-          {
-            action: 'rerollGmBenny',
-            label: game.i18n.localize(
-              'SWADE.DamageApplicator.RerollSoakDialog.GMBenny',
-            ),
-            icon: '<i class="fas fa-dice"></i>',
-            callback: async () => {
-              game.user?.spendBenny();
-              await attemptSoak(
-                actor,
-                woundsInflicted,
-                statusToApply,
-                woundsText,
-                damageContext,
-                woundsRemaining,
-                { reroll: true },
-              );
-            },
+        },
+        {
+          action: 'rerollGmBenny',
+          label: game.i18n.localize('SWADE.DamageApplicator.RerollSoakDialog.GMBenny'),
+          icon: '<i class="fas fa-dice"></i>',
+          callback: async () => {
+            game.user?.spendBenny();
+            await attemptSoak(actor, woundsInflicted, statusToApply, woundsText, damageContext, woundsRemaining, {
+              reroll: true,
+            });
           },
-          {
-            action: 'rerollFree',
-            label: game.i18n.localize(
-              'SWADE.DamageApplicator.RerollSoakDialog.Free',
-            ),
-            icon: '<i class="fas fa-dice"></i>',
-            callback: async () => {
-              await attemptSoak(
-                actor,
-                woundsInflicted,
-                statusToApply,
-                woundsText,
-                damageContext,
-                woundsRemaining,
-              );
-            },
+        },
+        {
+          action: 'rerollFree',
+          label: game.i18n.localize('SWADE.DamageApplicator.RerollSoakDialog.Free'),
+          icon: '<i class="fas fa-dice"></i>',
+          callback: async () => {
+            await attemptSoak(actor, woundsInflicted, statusToApply, woundsText, damageContext, woundsRemaining);
           },
-        ];
+        },
+      ];
       // Is the Actor a Wild Card out of Bennies?
       const actorHasBennies = actor.isWildcard && actor.bennies > 0;
       // Is the User a GM?
@@ -667,37 +559,28 @@ async function attemptSoak(
       // If the user is a GM and does not have Bennies, delete the button for spending GM Bennies.
       if (!gmHasBennies) removeButtons(buttons, ['rerollGmBenny']);
 
-      let content = game.i18n.format(
-        'SWADE.DamageApplicator.RerollSoakDialog.Prompt',
-        {
-          name: name,
-          wounds: woundsRemainingText,
-        },
-      );
+      let content = game.i18n.format('SWADE.DamageApplicator.RerollSoakDialog.Prompt', {
+        name: name,
+        wounds: woundsRemainingText,
+      });
 
       // Crit fail check to deny rerolling soaks. Per RAW Extras can't soak,
       //  so no need to handle the confirmation die
       if (vigorRoll?.isCritfail && !game.settings.get('swade', 'dumbLuck')) {
         removeButtons(buttons, ['rerollBenny', 'rerollGmBenny', 'rerollFree']);
 
-        content = game.i18n.format(
-          'SWADE.DamageApplicator.RerollSoakDialog.PromptCritFail',
-          {
-            name: name,
-            wounds: woundsRemainingText,
-          },
-        );
+        content = game.i18n.format('SWADE.DamageApplicator.RerollSoakDialog.PromptCritFail', {
+          name: name,
+          wounds: woundsRemainingText,
+        });
       }
 
       // Create and render Dialog.
       foundry.applications.api.DialogV2.wait({
         window: {
-          title: game.i18n.format(
-            'SWADE.DamageApplicator.RerollSoakDialog.Title',
-            {
-              name: name,
-            },
-          ),
+          title: game.i18n.format('SWADE.DamageApplicator.RerollSoakDialog.Title', {
+            name: name,
+          }),
         },
         content: content,
         buttons: buttons,
@@ -717,6 +600,38 @@ async function applyShaken(actor: SwadeActor) {
 }
 
 // Function for applying the Incapacitated Status Effect
+// Helper used by various workflows which need to mark an actor as defeated
+// without running the full bleed‑out logic.
+async function markDefeated(actor: SwadeActor) {
+  // Remove any temporary effects so they don't linger.
+  const toDelete = actor.effects.filter((e) => e.isTemporary).map((e) => e.id!);
+  if (toDelete.length) await actor.deleteEmbeddedDocuments('ActiveEffect', toDelete);
+
+  // Apply the defeated overlay effect.
+  await actor.toggleActiveEffect(CONFIG.specialStatusEffects.DEFEATED, {
+    overlay: true,
+  });
+
+  // Mark every combatant token as defeated as well.
+  const tokens = actor.getActiveTokens();
+  const toUpdate: Record<string, unknown>[] = [];
+  for (const token of tokens) {
+    if (!token.combatant) continue;
+    toUpdate.push({ _id: token.combatant.id, defeated: true });
+  }
+  if (toUpdate.length) {
+    await game.combat?.updateEmbeddedDocuments('Combatant', toUpdate as any);
+  }
+
+  // Send a chat message letting everyone know what happened.
+  const speaker = ChatMessage.getSpeaker({ actor });
+  const name = speaker.alias;
+  await ChatMessage.create({
+    content: game.i18n.format('SWADE.DamageApplicator.Incapacitation.MarkedDefeated', { name }),
+    speaker,
+  });
+}
+
 async function applyIncapacitated(actor: SwadeActor) {
   const speaker = ChatMessage.getSpeaker({ actor });
   const name = speaker.alias;
@@ -729,21 +644,16 @@ async function applyIncapacitated(actor: SwadeActor) {
       options: { active: true, overlay: true },
     });
   }
+
   if (Hooks.call('swadeIncapacitation', actor, statuses) && actor.isWildcard) {
-    let resistRoll: number = await resistInjury(actor);
-    const ignoreBleedOut =
-      game.settings.get('swade', 'heroesNeverDie') ||
-      actor.getFlag('swade', 'ignoreBleedOut');
-    if (ignoreBleedOut && resistRoll === constants.ROLL_RESULT.CRITFAIL)
-      resistRoll = constants.ROLL_RESULT.FAIL;
+    let resistRoll = await resistInjury(actor);
+    const ignoreBleedOut = game.settings.get('swade', 'heroesNeverDie') || actor.getFlag('swade', 'ignoreBleedOut');
+    if (ignoreBleedOut && resistRoll === constants.ROLL_RESULT.CRITFAIL) resistRoll = constants.ROLL_RESULT.FAIL;
     let message = '';
     const statusBleedingOut = getStatusEffectDataById('bleeding-out');
     switch (resistRoll) {
       case constants.ROLL_RESULT.CRITFAIL:
-        message = game.i18n.format(
-          'SWADE.DamageApplicator.Incapacitation.Dies',
-          { name: name },
-        );
+        message = game.i18n.format('SWADE.DamageApplicator.Incapacitation.Dies', { name: name });
         break;
       case constants.ROLL_RESULT.FAIL:
         await rollInjuryTable();
@@ -751,13 +661,11 @@ async function applyIncapacitated(actor: SwadeActor) {
           ignoreBleedOut
             ? 'SWADE.DamageApplicator.Incapacitation.PermanentInjuryHND'
             : 'SWADE.DamageApplicator.Incapacitation.PermanentInjury',
-          { name: name },
+          { name: name }
         );
         // If there's an Status Effect data for Bleeding Out.
         if (statusBleedingOut && !ignoreBleedOut) {
-          const incapIndex = statuses.findIndex(
-            (s) => s.effectData.id === 'incapacitated',
-          );
+          const incapIndex = statuses.findIndex((s) => s.effectData.id === 'incapacitated');
           statuses[incapIndex].options.overlay = false;
           statuses.push({
             effectData: statusBleedingOut,
@@ -767,17 +675,11 @@ async function applyIncapacitated(actor: SwadeActor) {
         break;
       case constants.ROLL_RESULT.SUCCESS:
         await rollInjuryTable();
-        message = game.i18n.format(
-          'SWADE.DamageApplicator.Incapacitation.TemporaryInjury',
-          { name: name },
-        );
+        message = game.i18n.format('SWADE.DamageApplicator.Incapacitation.TemporaryInjury', { name: name });
         break;
       default: // Raises
         await rollInjuryTable();
-        message = game.i18n.format(
-          'SWADE.DamageApplicator.Incapacitation.ShortInjury',
-          { name: name },
-        );
+        message = game.i18n.format('SWADE.DamageApplicator.Incapacitation.ShortInjury', { name: name });
         break;
     }
     await ChatMessage.create({ content: message, speaker: speaker });
@@ -787,40 +689,32 @@ async function applyIncapacitated(actor: SwadeActor) {
   });
 }
 
-async function resistInjury(
-  actor: SwadeActor,
-  bestRoll: number = constants.ROLL_RESULT.CRITFAIL,
-): Promise<number> {
+async function resistInjury(actor: SwadeActor, bestRoll: number = constants.ROLL_RESULT.CRITFAIL): Promise<number> {
   const speaker = ChatMessage.getSpeaker({ actor });
   const name = speaker.alias;
 
   const vigorRoll = await actor.rollAttribute('vigor', {
-    title: game.i18n.localize(
-      'SWADE.DamageApplicator.Incapacitation.InjuryRoll',
-    ),
-    flavour: game.i18n.localize(
-      'SWADE.DamageApplicator.Incapacitation.InjuryRoll',
-    ),
+    title: game.i18n.localize('SWADE.DamageApplicator.Incapacitation.InjuryRoll'),
+    flavour: game.i18n.localize('SWADE.DamageApplicator.Incapacitation.InjuryRoll'),
     isRerollable: false,
   });
 
   const result: number = vigorRoll?.successes ?? constants.ROLL_RESULT.FAIL;
 
-  if (result > constants.ROLL_RESULT.SUCCESS)
-    return constants.ROLL_RESULT.RAISE;
-  else if (result === constants.ROLL_RESULT.CRITFAIL)
-    return constants.ROLL_RESULT.CRITFAIL;
+  // If the roll is a raisefail/critfail we don't show any dialog at all.
+  if (result > constants.ROLL_RESULT.SUCCESS) return constants.ROLL_RESULT.RAISE;
+  else if (result === constants.ROLL_RESULT.CRITFAIL) return constants.ROLL_RESULT.CRITFAIL;
 
   bestRoll = Math.max(bestRoll, result);
 
   const incapLabel: string = game.i18n.localize(
     result === constants.ROLL_RESULT.SUCCESS
       ? 'SWADE.DamageApplicator.Incapacitation.TakeSuccess'
-      : 'SWADE.DamageApplicator.Incapacitation.TakeFail',
+      : 'SWADE.DamageApplicator.Incapacitation.TakeFail'
   );
 
   // Build default buttons
-  const buttons: foundry.applications.api.DialogV2.Button<Object>[] = [
+  const buttons: foundry.applications.api.DialogV2.Button[] = [
     {
       action: 'take',
       label: incapLabel,
@@ -830,19 +724,15 @@ async function resistInjury(
     },
     {
       action: 'rerollBenny',
-      label: game.i18n.localize(
-        'SWADE.DamageApplicator.RerollSoakDialog.Benny',
-      ),
+      label: game.i18n.localize('SWADE.DamageApplicator.RerollSoakDialog.Benny'),
       icon: '<i class="fas fa-dice"></i>',
       callback: () => new Object({ reroll: true, who: actor }),
     },
     {
       action: 'rerollGmBenny',
-      label: game.i18n.localize(
-        'SWADE.DamageApplicator.RerollSoakDialog.GMBenny',
-      ),
+      label: game.i18n.localize('SWADE.DamageApplicator.RerollSoakDialog.GMBenny'),
       icon: '<i class="fas fa-dice"></i>',
-      callback: () => new Object({ reroll: false, who: game.user }),
+      callback: () => new Object({ reroll: true, who: game.user }),
     },
     {
       action: 'rerollFree',
@@ -863,38 +753,69 @@ async function resistInjury(
   // If the user is a GM and does not have Bennies, delete the button for spending GM Bennies.
   if (!gmHasBennies) removeButtons(buttons, ['rerollGmBenny']);
 
-  const dialogResult: RerollDialogReturn =
-    await foundry.applications.api.DialogV2.wait({
-      window: {
-        title: game.i18n.format('SWADE.DamageApplicator.Incapacitation.Title', {
-          name: name,
-        }),
-      },
-      content: game.i18n.format(
-        'SWADE.DamageApplicator.Incapacitation.Prompt',
-        {
-          name: name,
-        },
-      ),
-      buttons: buttons,
-      classes: appCssClasses,
-    });
+  const dialogResult: RerollDialogReturn = (await foundry.applications.api.DialogV2.wait({
+    window: {
+      title: game.i18n.format('SWADE.DamageApplicator.Incapacitation.Title', {
+        name: name,
+      }),
+    },
+    content: game.i18n.format('SWADE.DamageApplicator.Incapacitation.Prompt', {
+      name: name,
+    }),
+    buttons: buttons,
+    classes: appCssClasses,
+  })) as RerollDialogReturn;
 
   if (dialogResult.reroll) {
     if (dialogResult.who) dialogResult.who?.spendBenny();
-    const newRoll = await resistInjury(actor, bestRoll);
-    if (newRoll === constants.ROLL_RESULT.CRITFAIL) return newRoll;
-    bestRoll = Math.max(newRoll, bestRoll);
+    const newRollRes = await resistInjury(actor, bestRoll);
+    if (newRollRes === constants.ROLL_RESULT.CRITFAIL) return newRollRes;
+    bestRoll = Math.max(newRollRes, bestRoll);
   }
   return bestRoll;
+}
+
+async function chooseIncapacitationOrDefeat(actor: SwadeActor) {
+  const speaker = ChatMessage.getSpeaker({ actor });
+  const name = speaker.alias;
+  const result = await foundry.applications.api.DialogV2.wait({
+    window: {
+      title: game.i18n.format('SWADE.DamageApplicator.Incapacitation.Title', {
+        name: name,
+      }),
+    },
+    content: game.i18n.format('SWADE.DamageApplicator.Incapacitation.Prompt', {
+      name: name,
+    }),
+    buttons: [
+      {
+        action: 'rollIncap',
+        label: game.i18n.localize('SWADE.DamageApplicator.Incapacitation.InjuryRoll'),
+        icon: '<i class="fas fa-dice"></i>',
+        default: true,
+        callback: () => 'roll',
+      },
+      {
+        action: 'defeat',
+        label: game.i18n.localize('SWADE.DamageApplicator.Incapacitation.DefeatTitle'),
+        icon: '<i class="fas fa-skull"></i>',
+        callback: () => 'defeat',
+      },
+    ],
+    classes: appCssClasses,
+  });
+
+  if (result === 'defeat') {
+    await markDefeated(actor);
+    return;
+  }
+  await applyIncapacitated(actor);
 }
 
 // Function for rolling on the Injury Table.
 async function rollInjuryTable() {
   // Get the Injury Table from settings.
-  const injuryTable = (await fromUuid(
-    game.settings.get('swade', 'injuryTable'),
-  )) as RollTable;
+  const injuryTable = (await fromUuid(game.settings.get('swade', 'injuryTable'))) as RollTable;
   // If a table is found, draw from the table.
   if (injuryTable) {
     await injuryTable.draw();

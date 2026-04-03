@@ -1,0 +1,52 @@
+<section class='main-grid {{cssClass}}' autocomplete='off'>
+  <figure class='grid-under gu-1'></figure>
+  <figure class='grid-under gu-2'></figure>
+  <figure class='grid-under gu-3'></figure>
+  <figure class='grid-under gu-4'></figure>
+
+  {{!-- Sheet Header --}}
+  {{> 'swade.item-header'}}
+
+  {{!-- Sidebar --}}
+  <section class='sheet-sidebar'>
+    {{formGroupSimple "system.rank" rootId=item.uuid}}
+    {{formGroupSimple "system.pp" rootId=item.uuid label="SWADE.PPShort"}}
+    {{formGroupSimple "system.range" rootId=item.uuid source=true}}
+    {{formGroupSimple "system.duration" rootId=item.uuid}}
+    {{formGroupSimple "system.damage" rootId=item.uuid}}
+    {{formGroupSimple "system.ap" rootId=item.uuid}}
+    {{formGroupSimple "system.arcane" rootId=item.uuid}}
+    <hr>
+    {{> 'swade.item-additional-stats'}}
+  </section>
+
+  {{!-- Sheet Tab Navigation --}}
+  {{> "templates/generic/tab-navigation.hbs"}}
+
+  {{!-- Main Section --}}
+  <section class='sheet-body'>
+    {{> 'swade.item-tab-description'}}
+    <section class='{{tabs.properties.tabCssClass}}' data-group='{{tabs.properties.group}}' data-tab='{{tabs.properties.id}}'>
+      <div class="form-group">
+        <label for="{{item.uuid}}-innate">
+          {{localize "SWADE.InnatePower"}}
+        </label>
+        <span class='form-fields'>
+          <input id="{{item.uuid}}-innate" type='checkbox' name='system.innate' {{checked item.system.innate}}/>
+        </span>
+      </div>
+      {{> 'swade.item-templates'}}
+      <hr>
+      {{> 'swade.item-action-properties'}}
+      {{formGroupSimple "system.activities" stacked=true}}
+      {{> 'swade.item-bonus-damage'}}
+    </section>
+    {{> 'swade.item-tab-actions'}}
+    {{> 'swade.item-tab-effects'}}
+  </section>
+
+  <figure class='grid-cover gc-1'></figure>
+  <figure class='grid-cover gc-2'></figure>
+  <figure class='grid-cover gc-3'></figure>
+  <figure class='grid-cover gc-4'></figure>
+</section>

@@ -1,7 +1,9 @@
+@use 'variables';
+
 .headquarters-journal,
 .journal-entry-page.headquarters {
-  --section-header-color: #{$header-text};
-  --section-header-size: #{$section-header};
+  --section-header-color: #{variables.$header-text};
+  --section-header-size: #{variables.$section-header};
   --section-header-font: 'Anton', 'Signika', sans-serif;
 
   .section-header {
@@ -10,7 +12,7 @@
     color: var(--section-header-color);
     text-align: center;
     &.hq-form-part {
-      font-size: $medium-font;
+      font-size: variables.$medium-font;
     }
   }
   .editor-wrapper {

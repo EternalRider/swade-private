@@ -1,5 +1,4 @@
-export default class SwadeTokenConfig extends foundry.applications.sheets
-  .TokenConfig {
+export default class SwadeTokenConfig extends foundry.applications.sheets.TokenConfig {
   override async _preparePartContext(partId, context, options) {
     await super._preparePartContext(partId, context, options);
     if (partId !== 'resources') return context;
@@ -16,17 +15,14 @@ export default class SwadeTokenConfig extends foundry.applications.sheets
         for (const currPath of splitPath.slice(0, i)) {
           currSchema = currSchema?.get?.(currPath);
         }
-        if (currSchema?.label.length)
-          fullLabel.push(game.i18n.localize(currSchema.label));
+        if (currSchema?.label.length) fullLabel.push(game.i18n.localize(currSchema.label));
         else if (!currSchema) fullLabel.push(splitPath[i - 1]);
       }
       if (fullLabel.length) currData.label = fullLabel.join(': ');
     }
 
     // Special handling for Additional Stats, Power Points, and Encumbrance
-    for (const [key, value] of Object.entries(
-      sourceSystem.additionalStats ?? {},
-    )) {
+    for (const [key, value] of Object.entries(sourceSystem.additionalStats ?? {})) {
       if (value.dtype !== 'Number') continue;
       context.barAttributes.push({
         group: game.i18n.localize('SWADE.AddStats'),
@@ -49,9 +45,7 @@ export default class SwadeTokenConfig extends foundry.applications.sheets
       });
 
     // Final sort
-    context.barAttributes.sort((a, b) =>
-      a.group === b.group ? a.label.compare(b.label) : a.group.compare(b.group),
-    );
+    context.barAttributes.sort((a, b) => (a.group === b.group ? a.label.compare(b.label) : a.group.compare(b.group)));
     return context;
   }
 }

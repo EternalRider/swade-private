@@ -69,6 +69,12 @@ SWADE:
     Strength: Strength and linked Skills
     Vigor: Vigor and linked Skills
     Attack: All Attacks
+    TargetAttack: Target Attack
+    TargetAttackRanged: Target Attack (Ranged)
+    TargetAttackMelee: Target Attack (Melee)
+    TargetDamage: Target Damage
+    GangUp: Gang Up
+    TargetGangUp: Target Gang Up Modifier
     Damage: All Damage
     AP: All Armor Piercing
   ArcaneSkill: Arcane Skill
@@ -159,6 +165,8 @@ SWADE:
   ApOver: Action AP
   Resist: Resist
   ResistRolls: Resistance Rolls
+  ResistRoll: Roll Resist
+  ResistRollName: 'Roll Resist: {name}'
   MacroActor:
     Default: Default
     Self: Self
@@ -320,6 +328,7 @@ SWADE:
   RollMode: Roll Mode
   RollExample: eg. +1d6x or -2
   Roll: Roll
+  RollName: 'Roll {name}'
   RollNoun: Roll
   RollRaise: Roll Raise
   GroupRoll: Group Roll
@@ -334,6 +343,7 @@ SWADE:
   Scale: Scale
   ScaleDifference: Scale Difference
   PickACard: Pick a card for {name}
+  GMOverride: GM Override
   NoCardsLeft: >-
     There are not enough cards left in the deck! Only {current} of {needed}
     needed cards are available. Reset the deck or reduce number of combatants.
@@ -437,6 +447,7 @@ SWADE:
   CustomWildDie: '- Custom Wild Die -'
   Subtract: Subtract
   DmgRolls: Damage Rolls
+  NoAcing: No Acing
   SubtractPPDesc: Subtract PP Cost from the available PP
   AddPPDesc: Add PP Cost to the available PP
   RightClickZoom: '[Right-Click] to Zoom'
@@ -549,6 +560,8 @@ SWADE:
     Long: Long Range
     Extreme: Extreme Range
   GangUp: Ganging Up
+  GangUpDamage: Gang Up
+  GangUpHint: Automatically applies Gang Up bonus to damage
   ModOther: Other Modifiers
   ModTrait: Trait Modifiers
   ModAttack: Attack Modifiers
@@ -595,6 +608,7 @@ SWADE:
   Unfavorite: Remove favorite
   Equip: Equip
   RollDamage: Roll Damage
+  RollDamageName: 'Roll Damage: {name}'
   SystemLinks:
     Changelog: Changelog
     Wiki: Wiki
@@ -644,6 +658,36 @@ SWADE:
   Background: Background
   ID: ID
   SortNum: Sorting Number
+  HUD:
+    RollTooltip: Click to roll {name}
+    ExpandTooltip: Click to expand
+    ViewCharacterTooltip: View Character Description
+    WoundsTooltip: 'Wounds (Left click: -1, Right click: +1)'
+    SoakTooltip: Click to Soak Damage
+    OpenSheetTooltip: Left click to open full character sheet
+    FatigueTooltip: 'Fatigue (Left click: -1, Right click: +1)'
+    IncapacitatedTooltip: Click to Toggle Incapacitated
+    PaceTooltip: 'Pace: {pace} (Left click: roll running, Right click: cycle)'
+    ParryTooltip: 'Parry (Modifier: {mod}, Shield: {shield})'
+    SizeTooltip: 'Size: {size} ({scale})'
+    ToughTooltip: 'Toughness (Modifier: {mod}, Armor: {armor})'
+    ConvictionTooltip: 'Conviction (Left click: activate, Right click: +1)'
+    BenniesTooltip: 'Bennies (Left click: -1, Right click: +1)'
+    CombatStateTooltip: Toggle Combat State (Click to toggle)
+    RunMacroTooltip: 'Run Macro: {name}'
+    ReloadTooltip: 'Reload: {name}'
+    UseConsumableTooltip: 'Use: {name}'
+    RemoveTooltip: Remove {name}
+    AddTooltip: Add {name}
+    RemoveAllConditionsTooltip: Remove all active conditions
+    RemoveAllConditionsLabel: Clear All
+    AENoEffects: No effects found
+    AEToggleTooltip: Toggle {name}
+    AERounds: 'Rounds: {rounds}'
+    AEToggle: Toggle {name}
+    AEToggleInherited: Cannot toggle inherited effect
+    AEDragToApplyName: Drag to apply {name}
+    PowerPPTooltip: 'Power Points: {pp}/{ppmax} (Left click: -1, Right click: +1)'
   ActiveEffects:
     Add: Add Active Effect
     Source: Source
@@ -953,21 +997,27 @@ SWADE:
     Cone:
       Short: Cone
       Long: Cone Template
+      Place: Place Cone Template
     SmallCone:
       Short: Sm Cone
       Long: Small Cone Template
+      Place: Place Small Cone Template
     Stream:
       Short: Stream
       Long: Stream Template
+      Place: Place Stream Template
     Small:
       Short: SBT
       Long: Small Blast Template
+      Place: Place Small Blast Template
     Medium:
       Short: MBT
       Long: Medium Blast Template
+      Place: Place Medium Blast Template
     Large:
       Short: LBT
       Long: Large Blast Template
+      Place: Place Large Blast Template
     Available: Available Templates
     Possible: Possible Templates
   CompendiumTOC:
@@ -1126,6 +1176,9 @@ SWADE:
       ShortInjury: >-
         <p><strong>{name}</strong> suffers an injury that will go away in 24
         hours, or when all Wounds are healed (whichever is sooner).</p>
+      DefeatTitle: Mark Defeated
+      MarkedDefeated: >-
+        <p><strong>{name}</strong> has been marked defeated without bleeding out.</p>
       TakeFail: Suffer a permanent injury
       TakeSuccess: Suffer an injury that goes away when all wounds are healed
       Title: Reroll injury severity for {name}?

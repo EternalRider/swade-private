@@ -1,4 +1,4 @@
-import { createEnrichedTextEmbed, createEmbedElement, slugify } from '../../util';
+import { createEmbedElement, createEnrichedTextEmbed, slugify } from '../../util';
 import type { SkillData } from '../item';
 import { CreatureData } from './base/creature';
 import { WildCardDataSchema } from './base/creature.schemas';
@@ -42,24 +42,18 @@ export class CharacterData extends CreatureData<
       const coreSkillsPack = game.settings.get('swade', 'coreSkillsCompendium');
       // Set compendium source, including a fallback to the system compendium of the required one cannot be found
       const pack = (game.packs.get(coreSkillsPack) ??
-        game.packs.get('swade.skills')) as CompendiumCollection<'Item'>;
+        game.packs.get('swade.skills')) as foundry.documents.collections.CompendiumCollection<'Item'>;
 
       if (!pack) return; // Critical fallback point, simply skip core skills if neither pack can be located
 
       const skillIndex = await pack.getDocuments();
 
-      const skills: foundry.abstract.TypeDataModel.ParentAssignmentType<
-        SkillData.Schema,
-        Item.OfType<'skill'>
-      >[] = Array();
+      const skills: foundry.abstract.TypeDataModel.ParentAssignmentType<SkillData.Schema, Item.OfType<'skill'>>[] = [];
 
       // Create core skills not in compendium (for custom skill names entered by the user)
       for (const skillName of coreSkills) {
         const skill = skillIndex.find(
-          (skill) =>
-            skill.type === 'skill' &&
-            (skillName === skill.name ||
-              slugify(skillName) === skill.system.swid),
+          (skill) => skill.type === 'skill' && (skillName === skill.name || slugify(skillName) === skill.system.swid)
         );
 
         if (skill) {
@@ -83,10 +77,7 @@ export class CharacterData extends CreatureData<
       // Add the Untrained skill (from the compendium if it exists there, else as a bare skill)
       const untrained = game.i18n.localize('SWADE.Unskilled');
       const untrainedSkill = skillIndex.find(
-        (skill) =>
-          skill.type === 'skill' &&
-          (untrained === skill.name ||
-            slugify(untrained) === skill.system.swid),
+        (skill) => skill.type === 'skill' && (untrained === skill.name || slugify(untrained) === skill.system.swid)
       );
       if (untrainedSkill) {
         skills.push(untrainedSkill.toObject());
@@ -111,12 +102,9 @@ export class CharacterData extends CreatureData<
   }
 
   protected override async _preCreate(
-    createData: foundry.abstract.TypeDataModel.ParentAssignmentType<
-      CharacterData.Schema,
-      Actor.OfType<'character'>
-    >,
+    createData: foundry.abstract.TypeDataModel.ParentAssignmentType<CharacterData.Schema, Actor.OfType<'character'>>,
     options: Actor.Database.PreCreateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preCreate(createData, options, user);
     if (allowed === false) return false;
@@ -130,10 +118,7 @@ export class CharacterData extends CreatureData<
     await this.#addCoreSkills();
 
     //Handle starting currency
-    if (
-      !this.parent._stats.compendiumSource &&
-      !this.parent._stats.duplicateSource
-    ) {
+    if (!this.parent._stats.compendiumSource && !this.parent._stats.duplicateSource) {
       this.updateSource({ 'details.currency': this.#startingCurrency });
     }
   }
@@ -141,51 +126,42 @@ export class CharacterData extends CreatureData<
   declare enrichedBiography?: string;
 
   override async toEmbed(
-    config: TextEditor.DocumentHTMLEmbedConfig,
-    options: TextEditor.EnrichmentOptions,
+    config: foundry.applications.ux.TextEditor.DocumentHTMLEmbedConfig,
+    options: foundry.applications.ux.TextEditor.EnrichmentOptions
   ): Promise<HTMLElement | HTMLCollection | null> {
     // If description=true, render only the description
     if (config.description === true) {
-      return createEnrichedTextEmbed(
-        this.details.biography.value || '',
-        config,
-        options,
-      );
+      return createEnrichedTextEmbed(this.details.biography.value || '', config, options);
     }
 
     config.caption = false;
 
     // Enrich biography text
-    this.enrichedBiography =
-      await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        this.details.biography.value,
-        { ...options },
-      );
+    this.enrichedBiography = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+      this.details.biography.value,
+      { ...options }
+    );
 
     // Combine weapons and armor into a displayable gear array
-    const displayableGear = this.parent.itemTypes.armor.concat(
-      this.parent.itemTypes.weapon,
-    );
+    const displayableGear = this.parent.itemTypes.armor.concat(this.parent.itemTypes.weapon);
     foundry.utils.setProperty(this, 'displayableGear', displayableGear);
 
     // Enrich and strip ability descriptions to plain text
     if (this.parent.itemTypes.ability) {
       for (const ability of this.parent.itemTypes.ability) {
-        const enrichedHTML =
-          await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-            ability.system.description,
-            { ...options },
-          );
+        const enrichedHTML = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+          ability.system.description,
+          { ...options }
+        );
         ability.plainTextDescription = enrichedHTML.replace(/<[^>]*>/g, ''); // Strip HTML tags
       }
     }
 
     // Create the embed element
-    const embed = await createEmbedElement(
-      this,
-      'systems/swade/templates/embeds/actor-embeds.hbs',
-      ['actor-embed', 'character'],
-    );
+    const embed = await createEmbedElement(this, 'systems/swade/templates/embeds/actor-embeds.hbs', [
+      'actor-embed',
+      'character',
+    ]);
 
     if (embed) {
       // See src/globals.d.ts for docs

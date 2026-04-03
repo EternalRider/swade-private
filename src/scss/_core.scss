@@ -1,3 +1,5 @@
+@use 'variables';
+
 body.theme-light .application {
   --background: url(/ui/parchment.jpg) repeat;
 }
@@ -17,17 +19,17 @@ body.theme-light .application {
 }
 
 .theme-dark img.wildcard-icon {
-  content: url('assets/ui/wildcard.svg');
+  content: url('/assets/ui/wildcard.svg');
 }
 
 .theme-light img.wildcard-icon {
-  content: url('assets/ui/wildcard-dark.svg');
+  content: url('/assets/ui/wildcard-dark.svg');
 }
 
 #players ol li.player .bennies-count {
   flex-grow: 0;
   flex-basis: var(--font-size-24);
-  background: url('assets/icons/plain-circle.svg') no-repeat center;
+  background: url('/assets/icons/plain-circle.svg') no-repeat center;
   color: black;
   font-weight: 900;
   overflow: hidden;
@@ -76,7 +78,7 @@ body.theme-light .application {
     flex: none;
     & + .dialog-button,
     button {
-      margin-top: $small-spacing;
+      margin-top: variables.$small-spacing;
     }
   }
 }

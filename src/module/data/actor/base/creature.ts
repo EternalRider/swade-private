@@ -1,26 +1,15 @@
 import { DeepPartial } from 'fvtt-types/utils';
 import { Advance } from '../../../../interfaces/Advance.interface';
-import {
-  DerivedModifier,
-  RollModifier,
-} from '../../../../interfaces/additional.interface';
+import { DerivedModifier, RollModifier } from '../../../../interfaces/additional.interface';
 import { SWADE } from '../../../config';
 import { constants } from '../../../constants';
 import type SwadeActor from '../../../documents/actor/SwadeActor';
 import type SwadeItem from '../../../documents/item/SwadeItem';
-import {
-  addUpModifiers,
-  getRankFromAdvanceAsString,
-  getScaleName,
-  signedNumberString,
-} from '../../../util';
+import { addUpModifiers, getRankFromAdvanceAsString, getScaleName, signedNumberString } from '../../../util';
 import { PaceSchemaField } from '../../fields/PaceSchemaField';
-import { ShieldData, WeaponData } from '../../item';
-import {
-  boundTraitDie,
-  makeDiceField,
-  makeTraitDiceFields,
-} from '../../shared';
+import { ShieldData } from '../../item/shield';
+import { WeaponData } from '../../item/weapon';
+import { boundTraitDie, makeDiceField, makeTraitDiceFields } from '../../shared';
 import * as migration from '../_migration';
 import * as quarantine from '../_quarantine';
 import * as shims from '../_shims';
@@ -30,51 +19,57 @@ import { WildCardDataSchema } from './creature.schemas';
 const fields = foundry.data.fields;
 
 declare namespace CreatureData {
-  interface Schema
-    extends SwadeBaseActorData.Schema,
-      ReturnType<typeof creatureSchema> {}
+  interface Schema extends SwadeBaseActorData.Schema, ReturnType<typeof creatureSchema> {}
 
   type BaseData = {
     attributes: {
       agility: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       smarts: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       spirit: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       strength: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
       vigor: {
-        effects: Array<RollModifier>;
+        effects: RollModifier[];
       };
     };
     stats: {
       scale: number;
       toughness: {
-        sources: Array<DerivedModifier>;
-        effects: Array<DerivedModifier>;
-        armorEffects: Array<DerivedModifier>;
+        sources: DerivedModifier[];
+        effects: DerivedModifier[];
+        armorEffects: DerivedModifier[];
       };
       parry: {
-        sources: Array<DerivedModifier>;
-        effects: Array<DerivedModifier>;
+        sources: DerivedModifier[];
+        effects: DerivedModifier[];
       };
+      gangUpDamage: boolean;
       globalMods: {
-        trait: Array<DerivedModifier>;
-        agility: Array<DerivedModifier>;
-        smarts: Array<DerivedModifier>;
-        spirit: Array<DerivedModifier>;
-        strength: Array<DerivedModifier>;
-        vigor: Array<DerivedModifier>;
-        attack: Array<DerivedModifier>;
-        damage: Array<DerivedModifier>;
-        ap: Array<DerivedModifier>;
-        bennyTrait: Array<DerivedModifier>;
-        bennyDamage: Array<DerivedModifier>;
+        trait: DerivedModifier[];
+        agility: DerivedModifier[];
+        smarts: DerivedModifier[];
+        spirit: DerivedModifier[];
+        strength: DerivedModifier[];
+        vigor: DerivedModifier[];
+        attack: DerivedModifier[];
+        damage: DerivedModifier[];
+        ap: DerivedModifier[];
+        bennyTrait: DerivedModifier[];
+        bennyDamage: DerivedModifier[];
+        attackRanged: DerivedModifier[];
+        attackMelee: DerivedModifier[];
+        targetAttack: DerivedModifier[];
+        targetAttackRanged: DerivedModifier[];
+        targetAttackMelee: DerivedModifier[];
+        targetDamage: DerivedModifier[];
+        gangUp: DerivedModifier[];
       };
     };
   };
@@ -97,6 +92,14 @@ declare namespace CreatureData {
 }
 
 function creatureSchema() {
+  const toughnessTraitChoices = Object.entries(SWADE.attributes).reduce(
+    (choices, [key, value]) => {
+      choices[key] = value.long;
+      return choices;
+    },
+    {} as Record<string, string>
+  );
+
   return {
     attributes: new fields.SchemaField(
       {
@@ -110,7 +113,7 @@ function creatureSchema() {
               label: 'SWADE.AnimalSmarts',
             }),
           },
-          { label: 'SWADE.AttrSma' },
+          { label: 'SWADE.AttrSma' }
         ),
         spirit: new fields.SchemaField(
           {
@@ -121,7 +124,7 @@ function creatureSchema() {
               label: 'SWADE.EffectCallbacks.Shaken.UnshakeModifier',
             }),
           },
-          { label: 'SWADE.AttrSpr' },
+          { label: 'SWADE.AttrSpr' }
         ),
         strength: new fields.SchemaField(
           {
@@ -132,7 +135,7 @@ function creatureSchema() {
               label: 'SWADE.EncumbranceSteps',
             }),
           },
-          { label: 'SWADE.AttrStr' },
+          { label: 'SWADE.AttrStr' }
         ),
         vigor: new fields.SchemaField(
           {
@@ -158,10 +161,10 @@ function creatureSchema() {
               }),
             }),
           },
-          { label: 'SWADE.AttrVig' },
+          { label: 'SWADE.AttrVig' }
         ),
       },
-      { label: 'SWADE.Attributes' },
+      { label: 'SWADE.Attributes' }
     ),
     pace: new PaceSchemaField(),
     stats: new fields.SchemaField(
@@ -185,7 +188,7 @@ function creatureSchema() {
               label: 'SWADE.Modifier',
             }),
           },
-          { label: 'SWADE.Tough' },
+          { label: 'SWADE.Tough' }
         ),
         parry: new fields.SchemaField(
           {
@@ -206,15 +209,20 @@ function creatureSchema() {
               label: 'SWADE.Modifier',
             }),
           },
-          { label: 'SWADE.Parry' },
+          { label: 'SWADE.Parry' }
         ),
         size: new fields.NumberField({
           initial: 0,
           integer: true,
           label: 'SWADE.Size',
         }),
+        gangUpDamage: new fields.BooleanField({
+          initial: false,
+          label: 'SWADE.GangUpDamage',
+          hint: 'SWADE.GangUpHint',
+        }),
       },
-      { label: 'SWADE.Stats' },
+      { label: 'SWADE.Stats' }
     ),
     details: new fields.SchemaField(
       {
@@ -222,9 +230,21 @@ function creatureSchema() {
           initial: true,
           hint: 'SWADE.InclArmor',
         }),
+        toughnessTrait: new fields.StringField({
+          initial: 'vigor',
+          blank: false,
+          nullable: false,
+          choices: toughnessTraitChoices,
+          label: 'SWADE.Attribute',
+        }),
         autoCalcParry: new fields.BooleanField({
           initial: true,
           hint: 'SWADE.AutoCalcParry',
+        }),
+        parryBaseSwid: new fields.StringField({
+          initial: '',
+          label: 'SWADE.Settings.ParryBase.Name',
+          hint: 'SWADE.Settings.ParryBase.Hint',
         }),
         archetype: new fields.StringField({
           initial: '',
@@ -254,7 +274,7 @@ function creatureSchema() {
               label: 'SWADE.Biography',
             }),
           },
-          { label: 'SWADE.Biography' },
+          { label: 'SWADE.Biography' }
         ),
         species: new fields.SchemaField(
           {
@@ -264,7 +284,7 @@ function creatureSchema() {
               label: 'SWADE.Ancestry',
             }),
           },
-          { label: 'SWADE.Ancestry' },
+          { label: 'SWADE.Ancestry' }
         ),
         currency: new fields.NumberField({
           initial: 0,
@@ -284,7 +304,7 @@ function creatureSchema() {
             }),
             'wild-die': makeDiceField(6, 'SWADE.WealthDie.WildSides'),
           },
-          { label: 'SWADE.WealthDie.Label' },
+          { label: 'SWADE.WealthDie.Label' }
         ),
         conviction: new fields.SchemaField(
           {
@@ -296,21 +316,18 @@ function creatureSchema() {
               label: 'SWADE.ConvictionActive',
             }),
           },
-          { label: 'SWADE.Conv' },
+          { label: 'SWADE.Conv' }
         ),
       },
-      { label: 'SWADE.Details' },
+      { label: 'SWADE.Details' }
     ),
-    powerPoints: new fields.TypedObjectField(
-      CreatureData.makePowerPointsSchema(),
-      {
-        initial: {
-          general: CreatureData.makePowerPointsSchema().getInitialValue(),
-        },
-        required: true,
-        label: 'SWADE.PP',
+    powerPoints: new fields.TypedObjectField(CreatureData.makePowerPointsSchema(), {
+      initial: {
+        general: CreatureData.makePowerPointsSchema().getInitialValue(),
       },
-    ),
+      required: true,
+      label: 'SWADE.PP',
+    }),
     fatigue: new fields.SchemaField(
       {
         value: new fields.NumberField({
@@ -327,7 +344,7 @@ function creatureSchema() {
           label: 'SWADE.IgnFatigue',
         }),
       },
-      { label: 'SWADE.Fatigue' },
+      { label: 'SWADE.Fatigue' }
     ),
     woundsOrFatigue: new fields.SchemaField(
       {
@@ -336,7 +353,7 @@ function creatureSchema() {
           label: 'SWADE.IgnFatigueWounds',
         }),
       },
-      { label: 'SWADE.FatigueWounds' },
+      { label: 'SWADE.FatigueWounds' }
     ),
     advances: new fields.SchemaField(
       {
@@ -384,10 +401,10 @@ function creatureSchema() {
               label: 'SWADE.Rank',
             }),
           }),
-          { label: 'SWADE.Adv' },
+          { label: 'SWADE.Adv' }
         ),
       },
-      { label: 'SWADE.Adv' },
+      { label: 'SWADE.Adv' }
     ),
     status: new fields.SchemaField(
       {
@@ -403,7 +420,7 @@ function creatureSchema() {
         isBound: new fields.BooleanField({ label: 'SWADE.Bound' }),
         isIncapacitated: new fields.BooleanField({ label: 'SWADE.Incap' }),
       },
-      { label: 'SWADE.Status' },
+      { label: 'SWADE.Status' }
     ),
     initiative: new fields.SchemaField(
       {
@@ -420,14 +437,13 @@ function creatureSchema() {
           initial: '',
         }),
       },
-      { label: 'SWADE.Init' },
+      { label: 'SWADE.Init' }
     ),
   };
 }
 
 class CreatureData<
-  Schema extends CreatureData.Schema &
-    WildCardDataSchema = CreatureData.Schema & WildCardDataSchema,
+  Schema extends CreatureData.Schema & WildCardDataSchema = CreatureData.Schema & WildCardDataSchema,
   BaseData extends CreatureData.BaseData = CreatureData.BaseData,
   DerivedData extends CreatureData.DerivedData = CreatureData.DerivedData,
 > extends SwadeBaseActorData<Schema, BaseData, DerivedData> {
@@ -438,10 +454,7 @@ class CreatureData<
     };
   }
 
-  protected static wildcardData = (
-    baseBennies: number,
-    maxWounds: number,
-  ): WildCardDataSchema => ({
+  protected static wildcardData = (baseBennies: number, maxWounds: number): WildCardDataSchema => ({
     bennies: new fields.SchemaField(
       {
         value: new fields.NumberField({
@@ -457,7 +470,7 @@ class CreatureData<
           label: 'SWADE.BenniesMaxNum',
         }),
       },
-      { label: 'SWADE.Bennies' },
+      { label: 'SWADE.Bennies' }
     ),
     wounds: new fields.SchemaField(
       {
@@ -480,7 +493,7 @@ class CreatureData<
           label: 'SWADE.IgnWounds',
         }),
       },
-      { label: 'SWADE.Wounds' },
+      { label: 'SWADE.Wounds' }
     ),
   });
 
@@ -500,7 +513,7 @@ class CreatureData<
           label: 'SWADE.MaxPP',
         }),
       },
-      { label: 'SWADE.PP' },
+      { label: 'SWADE.PP' }
     );
   };
 
@@ -519,10 +532,7 @@ class CreatureData<
   }
 
   override get tokenSize(): TokenSize {
-    const value = Math.max(
-      1,
-      Math.floor((this as CreatureData).stats.size! / 4) + 1,
-    );
+    const value = Math.max(1, Math.floor((this as CreatureData).stats.size! / 4) + 1);
     return { width: value, height: value };
   }
 
@@ -581,6 +591,13 @@ class CreatureData<
       ap: new Array<DerivedModifier>(),
       bennyTrait: new Array<DerivedModifier>(),
       bennyDamage: new Array<DerivedModifier>(),
+      attackRanged: new Array<DerivedModifier>(),
+      attackMelee: new Array<DerivedModifier>(),
+      targetAttack: new Array<DerivedModifier>(),
+      targetAttackRanged: new Array<DerivedModifier>(),
+      targetAttackMelee: new Array<DerivedModifier>(),
+      targetDamage: new Array<DerivedModifier>(),
+      gangUp: new Array<DerivedModifier>(),
     };
   }
 
@@ -597,10 +614,7 @@ class CreatureData<
     //handle advances
     const advances = this.advances;
     if (advances.mode === 'expanded') {
-      const advRaw = foundry.utils.getProperty(
-        this._source,
-        'advances.list',
-      ) as Advance[];
+      const advRaw = foundry.utils.getProperty(this._source, 'advances.list') as Advance[];
       const list = new Collection<Advance>();
       advRaw.forEach((adv) => list.set(adv.id, adv));
       const activeAdvances = list.filter((a) => !a.planned).length;
@@ -613,16 +627,11 @@ class CreatureData<
     this.stats.scale = this.parent.calcScale(this.stats.size!);
 
     //handle carry capacity
-    foundry.utils.setProperty(
-      this,
-      'details.encumbrance.value',
-      this.parent.calcInventoryWeight(),
-    );
-    foundry.utils.setProperty(
-      this,
-      'details.encumbrance.max',
-      this.parent.calcMaxCarryCapacity(),
-    );
+    foundry.utils.setProperty(this, 'details.encumbrance.value', this.parent.calcInventoryWeight());
+    foundry.utils.setProperty(this, 'details.encumbrance.max', this.parent.calcMaxCarryCapacity());
+
+    // Call hook before pace calculation to allow modules to adjust encumbrance.max
+    Hooks.callAll('swadeActorPrepareDerivedData', this.parent);
 
     this.#preparePace();
 
@@ -661,10 +670,13 @@ class CreatureData<
   }
 
   override getParryBaseSkill() {
-    return this.parent.getSingleItemBySwid(
-      game.settings.get('swade', 'parryBaseSwid'),
-      'skill',
-    );
+    const actorParryBaseSwid = (this.details.parryBaseSwid ?? '').trim().toLowerCase();
+    const defaultParryBaseSwid = String(game.settings.get('swade', 'parryBaseSwid') ?? '')
+      .trim()
+      .toLowerCase();
+    const parryBaseSwid = actorParryBaseSwid || defaultParryBaseSwid;
+
+    return this.parent.getSingleItemBySwid(parryBaseSwid, 'skill');
   }
 
   calcParry(): number {
@@ -717,19 +729,14 @@ class CreatureData<
     }
 
     //add equipped weapons
-    const ambidextrous = this.parent.getFlag('swade', 'ambidextrous') as
-      | undefined
-      | boolean;
+    const ambidextrous = this.parent.getFlag('swade', 'ambidextrous') as undefined | boolean;
     for (const weapon of itemTypes.weapon) {
       if (!(weapon.system instanceof WeaponData)) continue;
       let parryBonus = 0;
 
       if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.OFF_HAND) {
         // only add parry bonus if it's in the main hand or actor is ambidextrous
-        if (
-          Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED ||
-          ambidextrous
-        )
+        if (Number(weapon.system.equipStatus) >= constants.EQUIP_STATE.EQUIPPED || ambidextrous)
           parryBonus += weapon.system.parry ?? 0;
 
         //add trademark weapon bonus
@@ -757,9 +764,7 @@ class CreatureData<
     heading.innerText =
       game.i18n.localize('SWADE.Movement.Base') +
       ': ' +
-      game.i18n.localize(
-        'SWADE.Movement.Pace.' + this.pace.base!.capitalize() + '.Label',
-      );
+      game.i18n.localize('SWADE.Movement.Pace.' + this.pace.base!.capitalize() + '.Label');
     element.appendChild(heading);
 
     //attempt to add other pace values as a list
@@ -773,9 +778,7 @@ class CreatureData<
       const paceList = document.createElement('ul');
       for (const key of availableKeys) {
         const li = document.createElement('li');
-        const localized = game.i18n.localize(
-          `SWADE.Movement.Pace.${key.capitalize()}.Label`,
-        );
+        const localized = game.i18n.localize(`SWADE.Movement.Pace.${key.capitalize()}.Label`);
         li.innerText = `${localized}: ${this.pace[key]}`;
         paceList.appendChild(li);
       }
@@ -799,14 +802,12 @@ class CreatureData<
   }
 
   // specifying this to resolve depth issue
-  override getRollData(
-    this: CreatureData,
-    includeModifiers = true,
-  ): Record<string, number | string> {
+  override getRollData(this: CreatureData, includeModifiers = true): Record<string, number | string> {
     const out: Record<string, number | string> = {
       wounds: this.wounds.value || 0,
       fatigue: this.fatigue.value || 0,
       pace: this.pace.default || 0,
+      size: this.stats.size || 0,
     };
 
     const globalMods = this.stats.globalMods;
@@ -895,15 +896,12 @@ class CreatureData<
   // specifying this to resolve depth issue
   async refreshBennies(this: CreatureData, notify = true) {
     if (notify && game.settings.get('swade', 'notifyBennies')) {
-      const message = await foundry.applications.handlebars.renderTemplate(
-        SWADE.bennies.templates.refresh,
-        {
-          target: this.parent,
-          speaker: getDocumentClass('ChatMessage').getSpeaker({
-            actor: this.parent,
-          }),
-        },
-      );
+      const message = await foundry.applications.handlebars.renderTemplate(SWADE.bennies.templates.refresh, {
+        target: this.parent,
+        speaker: getDocumentClass('ChatMessage').getSpeaker({
+          actor: this.parent,
+        }),
+      });
       const chatData = { content: message };
       getDocumentClass('ChatMessage').create(chatData);
     }
@@ -938,30 +936,17 @@ class CreatureData<
   }
 
   protected override async _preUpdate(
-    changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<
-        CreatureData.Schema,
-        SwadeActor
-      >
-    >,
+    changed: DeepPartial<foundry.abstract.TypeDataModel.ParentAssignmentType<CreatureData.Schema, SwadeActor>>,
     options: Actor.Database.PreUpdateOptions,
-    user: User.Implementation,
+    user: User.Implementation
   ) {
     const allowed = await super._preUpdate(changed, options, user);
     if (allowed === false) return false;
     if (foundry.utils.hasProperty(changed, 'system.wounds.value')) {
-      foundry.utils.setProperty(
-        options,
-        'swade.wounds.value',
-        this.wounds.value,
-      );
+      foundry.utils.setProperty(options, 'swade.wounds.value', this.wounds.value);
     }
     if (foundry.utils.hasProperty(changed, 'system.fatigue.value')) {
-      foundry.utils.setProperty(
-        options,
-        'swade.fatigue.value',
-        this.fatigue.value,
-      );
+      foundry.utils.setProperty(options, 'swade.fatigue.value', this.fatigue.value);
     }
   }
 }

@@ -1,0 +1,28 @@
+<section class='{{cssClass}}' autocomplete='off'>
+  {{! Sheet Header }}
+  <header class='sheet-header'>
+    <div class='profile-img-container'>
+      <img class='profile-img' src='{{actor.img}}' data-edit='img' title='{{actor.name}}' />
+    </div>
+    <div class='header-fields'>
+      <div class='charline'>
+        <h1 class='charname'>
+          <input
+            name='name'
+            type='text'
+            value='{{actor.name}}'
+            placeholder='{{localize "SWADE.Name"}}'
+            data-tooltip='{{actor.name}}'
+          />
+        </h1>
+      </div>
+    </div>
+  </header>
+  <section class='sheet-body'>
+    <div class='editor-container'>
+      <prose-mirror toggled style='border-top:1px groove #293133;'>
+        {{{enrichedBiography}}}
+      </prose-mirror>
+    </div>
+  </section>
+</section>

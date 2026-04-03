@@ -1,0 +1,39 @@
+<div class='form-group'>
+  <label for='{{item.uuid}}-trait'>{{localize 'SWADE.Trait'}}</label>
+  <span class='form-fields'>
+    <input
+      id='{{item.uuid}}-trait'
+      name='system.actions.trait'
+      type='text'
+      value='{{item.system.actions.trait}}'
+      placeholder='{{localize "SWADE.Trait"}}'
+    />
+  </span>
+</div>
+<div class='form-group'>
+  <label for='{{item.uuid}}-traitMod'>{{localize 'SWADE.SkillModUni'}}</label>
+  <span class='form-fields'>
+    <input
+      id='{{item.uuid}}-traitMod'
+      name='system.actions.traitMod'
+      type='text'
+      value='{{item.system.actions.traitMod}}'
+      placeholder='{{localize "SWADE.RollExample"}}'
+      title='{{localize "SWADE.ModHint"}}'
+    />
+  </span>
+</div>
+<div class='form-group'>
+  <label for='{{item.uuid}}-dmgMod'>{{localize 'SWADE.DmgModUni'}}</label>
+  <span class='form-fields'>
+    <input
+      id='{{item.uuid}}-dmgMod'
+      name='system.actions.dmgMod'
+      type='text'
+      value='{{item.system.actions.dmgMod}}'
+      placeholder='{{localize "SWADE.RollExample"}}'
+      title='{{localize "SWADE.ModHint"}}'
+      data-dtype='String'
+    />
+  </span>
+</div>
