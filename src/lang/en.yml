@@ -590,9 +590,9 @@ SWADE:
     Description: <p>Effects expire on the target's <em>next turn or later</em>.</p>
     Behavior: Expiration Behavior
     BeginAuto: Start of Turn, Automatic
-    BeginPrompt: Start of Turn, Prompt
+    BeginPrompt: Turn Start, Prompt
     EndAuto: End of Turn, Automatic
-    EndPrompt: End of Turn, Prompt
+    EndPrompt: Turn End, Prompt
     None: None
     LooseTurnOnHold: Lose Turn on Hold
     Remaining: Remaining
