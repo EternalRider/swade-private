@@ -197,10 +197,12 @@ export default class SwadeActiveEffect<
       //skip if the effect already exists on the actor
       if (this.actor.statuses.has(id) || !statusEffect) continue;
       //apply the mutation if one exists
+      const statuses = Array.from(statusEffect.statuses ?? []);
+      statuses.push(id);
       const effect = foundry.utils.mergeObject(
         statusEffect,
-        { statuses: [id], ...mutation },
-        { performDeletions: true }
+        { statuses, ...mutation },
+        { applyOperators: true, inplace: false }
       );
       toCreate.push(effect);
     }

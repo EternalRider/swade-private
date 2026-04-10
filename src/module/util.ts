@@ -404,9 +404,7 @@ function isIgnoredForGangUp(token: TokenDocument): boolean {
     Logger.warn(`Token ${token.uuid} has no actor!`);
     return true;
   }
-  const actorIncapacitated =
-    foundry.utils.getProperty(token.actor, 'system.isIncapacitated') ||
-    foundry.utils.getProperty(token.actor, 'system.status.isIncapacitated');
+  const actorIncapacitated = foundry.utils.getProperty(token.actor, 'system.status.isIncapacitated');
   return !!actorIncapacitated;
 }
 

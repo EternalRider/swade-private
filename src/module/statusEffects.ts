@@ -13,13 +13,6 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       expiry: 'turnStartPrompt',
     },
     system: {
-      changes: [
-        {
-          key: 'system.status.isShaken',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-      ],
       loseTurnOnHold: true,
     },
   },
@@ -28,15 +21,6 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
     id: 'incapacitated',
     _id: 'incapacitated000',
     name: 'SWADE.Incap',
-    system: {
-      changes: [
-        {
-          key: 'system.status.isIncapacitated',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-      ],
-    },
   },
   dead: {
     img: 'icons/svg/skull.svg',
@@ -94,11 +78,6 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
     system: {
       changes: [
         {
-          key: 'system.status.isVulnerable',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-        {
           key: 'system.stats.globalMods.attack',
           type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
           value: '2',
@@ -143,42 +122,14 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
     id: 'bound',
     _id: 'bound00000000000',
     name: 'SWADE.Bound',
-    system: {
-      changes: [
-        {
-          key: 'system.status.isBound',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-        {
-          key: 'system.status.isDistracted',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-      ],
-    },
     flags: { swade: { related: { entangled: {} } } },
-    statuses: ['distracted'], // , 'entangled' // TODO: After status effect handling rework
+    statuses: ['distracted'],
   },
   entangled: {
     img: 'systems/swade/assets/icons/status/status_entangled.svg',
     id: 'entangled',
     _id: 'entangled0000000',
     name: 'SWADE.Entangled',
-    system: {
-      changes: [
-        {
-          key: 'system.status.isEntangled',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-        {
-          key: 'system.status.isVulnerable',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-      ],
-    },
     statuses: ['vulnerable'],
   },
   frightened: {
@@ -225,30 +176,12 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       units: 'rounds',
       expiry: 'turnEnd',
     },
-    system: {
-      changes: [
-        {
-          key: 'system.status.isDistracted',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-      ],
-    },
   },
   encumbered: {
     img: 'systems/swade/assets/icons/status/status_encumbered.svg',
     id: 'encumbered',
     _id: 'encumbered000000',
     name: 'SWADE.Encumbered',
-    system: {
-      changes: [
-        {
-          key: 'system.details.encumbrance.isEncumbered',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-      ],
-    },
   },
   prone: {
     img: 'systems/swade/assets/icons/status/status_prone.svg',
@@ -281,18 +214,6 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       expiry: 'turnStartPrompt',
     },
     system: {
-      changes: [
-        {
-          key: 'system.status.isStunned',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-        {
-          key: 'system.status.isVulnerable',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        }
-      ],
       loseTurnOnHold: true,
     },
     flags: {
@@ -303,7 +224,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
         },
       },
     },
-    statuses: ['vulnerable'], // TODO: After status effect handling rework
+    statuses: ['vulnerable'],
   },
   vulnerable: {
     img: 'systems/swade/assets/icons/status/status_vulnerable.svg',
@@ -314,15 +235,6 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       value: 1,
       units: 'rounds',
       expiry: 'turnEnd',
-    },
-    system: {
-      changes: [
-        {
-          key: 'system.status.isVulnerable',
-          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
-          value: 'true',
-        },
-      ],
     },
   },
   'bleeding-out': {

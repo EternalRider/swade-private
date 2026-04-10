@@ -661,14 +661,15 @@ class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Su
     effect: CONFIG.StatusEffect | string,
     { overlay = false, active }: NullishProps<{ overlay: boolean; active: boolean }> = {}
   ) {
-    const statusEffect = typeof effect === 'string' ? getStatusEffectDataById(effect) : effect;
+    const statusEffect = foundry.utils.deepClone(typeof effect === 'string' ? getStatusEffectDataById(effect) : effect);
     if (!statusEffect?.id) return false;
+    statusEffect.statuses ??= [];
+    statusEffect.statuses.push(statusEffect.id);
+    const statusesSet = new Set(statusEffect.statuses);
 
-    // Remove existing single-status effects.
+    // Remove existing same-status effects.
     const existing = this.effects.reduce<string[]>((acc, cur) => {
-      if (cur.statuses.size === 1 && cur.statuses.has(statusEffect.id)) {
-        acc.push(cur.id);
-      }
+      if (cur.statuses.equals(statusesSet)) acc.push(cur.id);
       return acc;
     }, []);
     const state = active ?? !existing.length;
@@ -678,14 +679,11 @@ class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Su
     // Add a new effect
     else if (state) {
       const aeClass = getDocumentClass('ActiveEffect');
-      const data = foundry.utils.deepClone(statusEffect);
-      foundry.utils.setProperty(data, 'statuses', [statusEffect.id]);
-      delete data.id; //remove the ID to not trigger validation errors
-      aeClass.migrateDataSafe(data);
-      aeClass.cleanData(data);
-      data.name = game.i18n.localize(data.name as string);
-      if (overlay) foundry.utils.setProperty(data, 'flags.core.overlay', true);
-      await aeClass.create(data, { parent: this });
+      aeClass.migrateDataSafe(statusEffect);
+      aeClass.cleanData(statusEffect);
+      statusEffect.name = game.i18n.localize(statusEffect.name as string);
+      if (overlay) foundry.utils.setProperty(statusEffect, 'flags.core.overlay', true);
+      await aeClass.create(statusEffect, { parent: this });
     }
     return state;
   }
