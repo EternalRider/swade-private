@@ -144,6 +144,13 @@ Hooks.once('init', () => {
   CONFIG.Cards.documentClass = SwadeCards;
   CONFIG.ChatMessage.documentClass = SwadeChatMessage;
 
+  // Register custom AE expiries, set expiry action
+  Object.assign(CONFIG.ActiveEffect.expiryEvents, {
+    'turnStartPrompt': 'SWADE.Expiration.BeginPrompt',
+    'turnEndPrompt': 'SWADE.Expiration.EndPrompt',
+  });
+  CONFIG.ActiveEffect.expiryAction = 'delete';
+
   //register System Data Model
   CONFIG.Actor.dataModels = data.actor.config;
   CONFIG.Item.dataModels = data.item.config;
@@ -196,7 +203,7 @@ Hooks.once('init', () => {
   };
 
   //register custom status effects
-  CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
+  Object.defineProperty(CONFIG, "statusEffects", {value: foundry.utils.deepClone(SWADE.statusEffects), configurable: true, enumerable: true});
   Object.assign(CONFIG.specialStatusEffects, {
     COLDBODIED: 'cold-bodied',
     INCAPACITATED: 'incapacitated',

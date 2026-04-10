@@ -8,6 +8,7 @@ function modifierSchema() {
   const fields = foundry.data.fields;
 
   return {
+    ...foundry.data.ActiveEffectTypeDataModel.defineSchema(),
     cost: new fields.NumberField({
       initial: null,
       integer: false,
@@ -39,13 +40,13 @@ declare namespace ModifierData {
 /**
  * A data model to represent effects that modify the items they are contained on
  */
-class ModifierData extends foundry.abstract.TypeDataModel<ModifierData.Schema, SwadeActiveEffect<'modifier'>> {
+class ModifierData extends foundry.data.ActiveEffectTypeDataModel<ModifierData.Schema, SwadeActiveEffect<'modifier'>> {
   static override defineSchema() {
     return modifierSchema();
   }
 
   protected override async _preCreate(
-    data: foundry.abstract.TypeDataModel.ParentAssignmentType<ModifierData.Schema, ActiveEffect<'modifier'>>,
+    data: foundry.data.ActiveEffectTypeDataModel.ParentAssignmentType<ModifierData.Schema, ActiveEffect<'modifier'>>,
     options: ActiveEffect.Database.PreCreateOptions,
     user: User.Implementation
   ) {
@@ -61,7 +62,7 @@ class ModifierData extends foundry.abstract.TypeDataModel<ModifierData.Schema, S
 
   protected override async _preUpdate(
     changed: DeepPartial<
-      foundry.abstract.TypeDataModel.ParentAssignmentType<ModifierData.Schema, ActiveEffect<'modifier'>>
+      foundry.data.ActiveEffectTypeDataModel.ParentAssignmentType<ModifierData.Schema, ActiveEffect<'modifier'>>
     >,
     options: ActiveEffect.Database.PreUpdateOptions,
     user: User.Implementation

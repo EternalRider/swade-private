@@ -136,8 +136,8 @@ export default class SwadeCoreHooks {
     }
 
     //set the localized parry skill
-    [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
-      const proneParryModifier = arr.find((e) => e.id === 'prone')?.changes?.find((c) => c.key?.startsWith('@Skill'));
+    [CONFIG.statusEffects, SWADE.statusEffects].forEach((statuses) => {
+      const proneParryModifier = statuses.prone?.system?.changes?.find(c => c.key?.startsWith('@Skill'));
       if (proneParryModifier) {
         proneParryModifier.key = `@Skill{${game.settings.get('swade', 'parryBaseSkill')}}[system.die.modifier]`;
       }
@@ -715,62 +715,15 @@ export default class SwadeCoreHooks {
         { value: effect.system.conditionalEffect, disabled: !app.isEditable }
       );
 
-      const expirationOptions: foundry.applications.fields.FormSelectOption[] = [
-        {
-          label: 'SWADE.Expiration.BeginAuto',
-          value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto),
-        },
-        {
-          label: 'SWADE.Expiration.BeginPrompt',
-          value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
-        },
-        {
-          label: 'SWADE.Expiration.EndAuto',
-          value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
-        },
-        {
-          label: 'SWADE.Expiration.EndPrompt',
-          value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt),
-        },
-      ];
-      const expirationGroup = systemSchema.fields.expiration.toFormGroup(
-        { localize: true },
-        {
-          options: expirationOptions,
-          localize: true,
-          value: effect.system.expiration,
-          blank: 'SWADE.Expiration.None',
-          disabled: !app.isEditable,
-          dataset: { dtype: 'Number' }, // necessary in v12, can be removed in v13
-        }
-      );
       const loseTurnOnHoldGroup = systemSchema.fields.loseTurnOnHold.toFormGroup(
         { localize: true },
         { value: effect.system.loseTurnOnHold, disabled: !app.isEditable }
       );
 
-      const noneActive = !html.querySelector('section.active');
-
-      const tab = `
-        <a ${noneActive ? 'class="active"' : ''}data-action="tab" data-group="sheet" data-tab="expiration">
-          <i class="fa-solid fa-step-forward"></i> ${game.i18n.localize('SWADE.Expiration.TabLabel')}
-        </a>
-      `;
-      const durationSection = `
-        <section class="tab${noneActive ? ' active' : ''}" data-group="sheet" data-tab="expiration" data-application-part="expiration">
-          ${game.i18n.localize('SWADE.Expiration.Description')}
-          ${expirationGroup.outerHTML}
-          ${loseTurnOnHoldGroup.outerHTML}
-        </section>
-      `;
-
       html
         .querySelector('section[data-tab="details"] .form-group.stacked')
-        ?.insertAdjacentElement('afterend', conditionalGroup);
-      html.querySelector('nav.sheet-tabs a[data-tab="duration"]')?.insertAdjacentHTML('afterend', tab);
-      if (!html.querySelector('section.tab[data-tab="expiration"]')) {
-        html.querySelector('section[data-tab="duration"]')?.insertAdjacentHTML('afterend', durationSection);
-      }
+        ?.insertAdjacentElement('afterend', conditionalGroup)
+        ?.insertAdjacentElement('afterend', loseTurnOnHoldGroup);
     } else if (effect.system instanceof ModifierData) {
       const costGroup = effect.system.schema.fields.cost.toFormGroup({ localize: true }, { value: effect.system.cost });
       const limitGroup = effect.system.schema.fields.limit.toFormGroup(

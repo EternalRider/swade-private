@@ -571,7 +571,7 @@ export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
             }
 
             // Update tooltip
-            const effect = (CONFIG as any).statusEffects?.find((e: any) => e.id === iconStatusId);
+            const effect = CONFIG.statusEffects[iconStatusId];
             if (effect) {
               iconElement.title = iconIsActive
                 ? `Remove ${(game as any).i18n.localize(effect.name)}`
@@ -641,7 +641,7 @@ export function setupConditionHandlers(element: HTMLElement, hudInstance: any) {
             iconI.classList.add('fa-toggle-off');
           }
 
-          const effect = (CONFIG as any).statusEffects?.find((e: any) => e.id === statusId);
+          const effect = CONFIG.statusEffects[statusId];
           if (effect) {
             iconElement.title = `Add ${(game as any).i18n.localize(effect.name)}`;
           }

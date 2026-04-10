@@ -400,8 +400,8 @@ export class SwadePopout {
     ];
 
     const statusEffects =
-      CONFIG.statusEffects
-        ?.filter((effect) => allowedConditions.includes(effect.id.toLowerCase()))
+      Object.values(CONFIG.statusEffects)
+        ?.filter(effect => allowedConditions.includes(effect.id.toLowerCase()))
         .map(async (effect) => {
           // Check if this specific condition is active
           const isActive = this.actor?.effects?.some((e) => e.statuses?.has(effect.id)) ?? false;

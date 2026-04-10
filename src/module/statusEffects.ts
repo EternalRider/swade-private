@@ -1,275 +1,298 @@
 import { constants } from './constants';
 
 /** @internal */
-export const statusEffects: CONFIG.StatusEffect[] = [
-  {
+export const statusEffects: Record<string, CONFIG.StatusEffect> = {
+  shaken: {
     img: 'systems/swade/assets/icons/status/status_shaken.svg',
     id: 'shaken',
     _id: 'shaken0000000000',
     name: 'SWADE.Shaken',
     duration: {
-      rounds: 1,
+      value: 0,
+      units: 'rounds',
+      expiry: 'turnStartPrompt',
     },
-    changes: [
-      {
-        key: 'system.status.isShaken',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-    ],
     system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
+      changes: [
+        {
+          key: 'system.status.isShaken',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+      ],
       loseTurnOnHold: true,
     },
   },
-  {
+  incapacitated: {
     img: 'icons/svg/stoned.svg',
     id: 'incapacitated',
     _id: 'incapacitated000',
     name: 'SWADE.Incap',
-    changes: [
-      {
-        key: 'system.status.isIncapacitated',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-    ],
+    system: {
+      changes: [
+        {
+          key: 'system.status.isIncapacitated',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+      ],
+    },
   },
-  {
+  dead: {
     img: 'icons/svg/skull.svg',
     id: 'dead',
     _id: 'dead000000000000',
     name: 'COMBAT.CombatantDefeated',
     statuses: ['incapacitated'],
   },
-  {
+  aiming: {
     img: 'systems/swade/assets/icons/status/status_aiming.svg',
     id: 'aiming',
     _id: 'aiming0000000000',
     name: 'SWADE.Aiming',
   },
-  {
+  berserk: {
     img: 'systems/swade/assets/icons/status/status_enraged.svg',
     id: 'berserk',
     _id: 'berserk000000000',
     name: 'SWADE.Berserk',
     duration: {
-      rounds: 10,
+      value: 10,
+      units: 'rounds',
+      expiry: 'turnEndPrompt',
     },
-    changes: [
-      {
-        key: 'system.attributes.strength.die.sides',
-        value: '2',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-      },
-      {
-        key: 'system.stats.toughness.value',
-        value: '2',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-      },
-      {
-        key: 'system.wounds.ignored',
-        value: '1',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-      },
-    ],
     system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
+      changes: [
+        {
+          key: 'system.attributes.strength.die.sides',
+          value: '2',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+        },
+        {
+          key: 'system.stats.toughness.value',
+          value: '2',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+        },
+        {
+          key: 'system.wounds.ignored',
+          value: '1',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+        },
+      ],
     },
   },
-  {
+  'wild-attack': {
     img: 'systems/swade/assets/icons/status/status_wild_attack.svg',
     id: 'wild-attack',
     _id: 'wildattack000000',
     name: 'SWADE.WildAttack',
     duration: {
-      rounds: 0,
+      value: 0,
+      units: 'rounds',
+      expiry: 'turnEnd',
     },
-    changes: [
-      {
-        key: 'system.status.isVulnerable',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-      {
-        key: 'system.stats.globalMods.attack',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: '2',
-      },
-      {
-        key: 'system.stats.globalMods.damage',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-        value: '2',
-      },
-    ],
     system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
+      changes: [
+        {
+          key: 'system.status.isVulnerable',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+        {
+          key: 'system.stats.globalMods.attack',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+          value: '2',
+        },
+        {
+          key: 'system.stats.globalMods.damage',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+          value: '2',
+        },
+      ],
     },
-    statuses: ['vulnerable'],
+    flags: { swade: { related: { vulnerable: {} } } },
   },
-  {
+  defending: {
     img: 'systems/swade/assets/icons/status/status_defending.svg',
     id: 'defending',
     _id: 'defending0000000',
     name: 'SWADE.Defending',
     duration: {
-      rounds: 1,
+      value: 1,
+      units: 'rounds',
+      expiry: 'turnStart',
     },
-    changes: [
-      {
-        key: 'system.stats.parry.value',
-        value: '4',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-      },
-    ],
     system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto,
+      changes: [
+        {
+          key: 'system.stats.parry.value',
+          value: '4',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+        },
+      ],
     },
   },
-  {
+  holding: {
     img: 'systems/swade/assets/icons/status/status_holding.svg',
     id: 'holding',
     _id: 'holding000000000',
     name: 'SWADE.Holding',
   },
-  {
+  bound: {
     img: 'systems/swade/assets/icons/status/status_bound.svg',
     id: 'bound',
     _id: 'bound00000000000',
     name: 'SWADE.Bound',
-    changes: [
-      {
-        key: 'system.status.isBound',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-      {
-        key: 'system.status.isDistracted',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-    ],
+    system: {
+      changes: [
+        {
+          key: 'system.status.isBound',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+        {
+          key: 'system.status.isDistracted',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+      ],
+    },
     flags: { swade: { related: { entangled: {} } } },
     statuses: ['distracted'], // , 'entangled' // TODO: After status effect handling rework
   },
-  {
+  entangled: {
     img: 'systems/swade/assets/icons/status/status_entangled.svg',
     id: 'entangled',
     _id: 'entangled0000000',
     name: 'SWADE.Entangled',
-    changes: [
-      {
-        key: 'system.status.isEntangled',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-      {
-        key: 'system.status.isVulnerable',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-    ],
+    system: {
+      changes: [
+        {
+          key: 'system.status.isEntangled',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+        {
+          key: 'system.status.isVulnerable',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+      ],
+    },
     statuses: ['vulnerable'],
   },
-  {
+  frightened: {
     img: 'systems/swade/assets/icons/status/status_frightened.svg',
     id: 'frightened',
     _id: 'frightened000000',
     name: 'SWADE.Frightened',
-    changes: [
-      {
-        key: 'system.initiative.hasHesitant',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-        priority: 99, //High priority to make sure the effect overrides existing effects
-      },
-      {
-        key: 'system.initiative.hasLevelHeaded',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'false',
-        priority: 99, //High priority to make sure the effect overrides existing effects
-      },
-      {
-        key: 'system.initiative.hasImpLevelHeaded',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'false',
-        priority: 99, //High priority to make sure the effect overrides existing effects
-      },
-      {
-        key: 'system.initiative.hasQuick',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'false',
-        priority: 99, //High priority to make sure the effect overrides existing effects
-      },
-    ],
+    system: {
+      changes: [
+        {
+          key: 'system.initiative.hasHesitant',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+          priority: 99, //High priority to make sure the effect overrides existing effects
+        },
+        {
+          key: 'system.initiative.hasLevelHeaded',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'false',
+          priority: 99, //High priority to make sure the effect overrides existing effects
+        },
+        {
+          key: 'system.initiative.hasImpLevelHeaded',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'false',
+          priority: 99, //High priority to make sure the effect overrides existing effects
+        },
+        {
+          key: 'system.initiative.hasQuick',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'false',
+          priority: 99, //High priority to make sure the effect overrides existing effects
+        },
+      ],
+    },
   },
-  {
+  distracted: {
     img: 'systems/swade/assets/icons/status/status_distracted.svg',
     id: 'distracted',
     _id: 'distracted000000',
     name: 'SWADE.Distr',
     duration: {
-      rounds: 1,
+      value: 1,
+      units: 'rounds',
+      expiry: 'turnEnd',
     },
-    changes: [
-      {
-        key: 'system.status.isDistracted',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-    ],
     system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
+      changes: [
+        {
+          key: 'system.status.isDistracted',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+      ],
     },
   },
-  {
+  encumbered: {
     img: 'systems/swade/assets/icons/status/status_encumbered.svg',
     id: 'encumbered',
     _id: 'encumbered000000',
     name: 'SWADE.Encumbered',
-    changes: [
-      {
-        key: 'system.details.encumbrance.isEncumbered',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-    ],
+    system: {
+      changes: [
+        {
+          key: 'system.details.encumbrance.isEncumbered',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+      ],
+    },
   },
-  {
+  prone: {
     img: 'systems/swade/assets/icons/status/status_prone.svg',
     id: 'prone',
     _id: 'prone00000000000',
     name: 'SWADE.Prone',
-    changes: [
-      {
-        key: 'system.stats.parry.value',
-        value: '-2',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-      },
-      {
-        key: '@Skill{Fighting}[system.die.modifier]',
-        value: '-2',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-      },
-    ],
+    system: {
+      changes: [
+        {
+          key: 'system.stats.parry.value',
+          value: '-2',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+        },
+        {
+          key: '@Skill{Fighting}[system.die.modifier]',
+          value: '-2',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+        },
+      ],
+    },
   },
-  {
+  stunned: {
     img: 'systems/swade/assets/icons/status/status_stunned.svg',
     id: 'stunned',
     _id: 'stunned000000000',
     name: 'SWADE.Stunned',
     duration: {
-      rounds: 1,
+      value: 0,
+      units: 'rounds',
+      expiry: 'turnStartPrompt',
     },
-    changes: [
-      {
-        key: 'system.status.isStunned',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-    ],
     system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
+      changes: [
+        {
+          key: 'system.status.isStunned',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+        {
+          key: 'system.status.isVulnerable',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        }
+      ],
       loseTurnOnHold: true,
     },
     flags: {
@@ -277,163 +300,167 @@ export const statusEffects: CONFIG.StatusEffect[] = [
         related: {
           distracted: {},
           prone: {},
-          vulnerable: { '-=duration': null },
         },
       },
     },
-    // statuses: ['distracted', 'prone', 'vulnerable'], // TODO: After status effect handling rework
+    statuses: ['vulnerable'], // TODO: After status effect handling rework
   },
-  {
+  vulnerable: {
     img: 'systems/swade/assets/icons/status/status_vulnerable.svg',
     id: 'vulnerable',
     _id: 'vulnerable000000',
     name: 'SWADE.Vuln',
     duration: {
-      rounds: 1,
+      value: 1,
+      units: 'rounds',
+      expiry: 'turnEnd',
     },
-    changes: [
-      {
-        key: 'system.status.isVulnerable',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-        value: 'true',
-      },
-    ],
     system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto,
+      changes: [
+        {
+          key: 'system.status.isVulnerable',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+          value: 'true',
+        },
+      ],
     },
   },
-  {
+  'bleeding-out': {
     img: 'systems/swade/assets/icons/status/status_bleeding_out.svg',
     id: 'bleeding-out',
     _id: 'bleedingout00000',
     name: 'SWADE.BleedingOut',
     duration: {
-      rounds: 1,
-    },
-    system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt,
+      value: 0,
+      units: 'rounds',
+      expiry: 'turnStartPrompt',
     },
   },
-  {
+  diseased: {
     img: 'systems/swade/assets/icons/status/status_diseased.svg',
     id: 'diseased',
     _id: 'diseased00000000',
     name: 'SWADE.Diseased',
   },
-  {
+  'heart-attack': {
     img: 'systems/swade/assets/icons/status/status_heart_attack.svg',
     id: 'heart-attack',
     _id: 'heartattack00000',
     name: 'SWADE.HeartAttack',
   },
-  {
+  'on-fire': {
     img: 'systems/swade/assets/icons/status/status_on_fire.svg',
     id: 'on-fire',
     _id: 'onfire0000000000',
     name: 'SWADE.OnFire',
   },
-  {
+  poisoned: {
     img: 'systems/swade/assets/icons/status/status_poisoned.svg',
     id: 'poisoned',
     _id: 'poisoned00000000',
     name: 'SWADE.Poisoned',
   },
-  {
+  'cover-shield': {
     img: 'systems/swade/assets/icons/status/status_cover_shield.svg',
     id: 'cover-shield',
     _id: 'covershield00000',
     name: 'SWADE.Cover.Shield',
   },
-  {
+  cover: {
     img: 'systems/swade/assets/icons/status/status_cover.svg',
     id: 'cover',
     _id: 'cover00000000000',
     name: 'SWADE.Cover._name',
   },
-  {
+  reach: {
     img: 'systems/swade/assets/icons/status/status_reach.svg',
     id: 'reach',
     _id: 'reach00000000000',
     name: 'SWADE.Reach',
   },
-  {
+  torch: {
     img: 'systems/swade/assets/icons/status/status_torch.svg',
     id: 'torch',
     _id: 'torch00000000000',
     name: 'SWADE.Torch',
   },
-  {
+  burrowing: {
     img: 'systems/swade/assets/icons/status/status_burrowing.svg',
     id: 'burrowing',
     _id: 'burrowing0000000',
     name: 'SWADE.Burrowing',
-    changes: [
-      {
-        key: 'system.pace.base',
-        value: 'burrow',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-      },
-    ],
+    system: {
+      changes: [
+        {
+          key: 'system.pace.base',
+          value: 'burrow',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+        },
+      ],
+    },
   },
-  {
+  flying: {
     img: 'systems/swade/assets/icons/status/status_flying.svg',
     id: 'flying',
     _id: 'flying0000000000',
     name: 'SWADE.Flying',
-    changes: [
-      {
-        key: 'system.pace.base',
-        value: 'fly',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.OVERRIDE,
-      },
-    ],
+    system: {
+      changes: [
+        {
+          key: 'system.pace.base',
+          value: 'fly',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
+        },
+      ],
+    },
   },
-  {
+  invisible: {
     id: 'invisible',
     _id: 'invisible0000000',
     name: 'EFFECT.StatusInvisible',
     img: 'icons/svg/invisible.svg',
   },
-  {
+  blind: {
     img: 'icons/svg/blind.svg',
     id: 'blind',
     _id: 'blind00000000000',
     name: 'EFFECT.StatusBlind',
   },
-  {
+  'cold-bodied': {
     img: 'systems/swade/assets/icons/status/status_coldbodied.svg',
     id: 'cold-bodied',
     _id: 'coldbodied000000',
     name: 'SWADE.ColdBodied',
   },
-  {
+  smite: {
     img: 'systems/swade/assets/icons/status/status_smite.svg',
     id: 'smite',
     _id: 'smite00000000000',
     name: 'SWADE.Smite',
   },
-  {
+  protection: {
     img: 'systems/swade/assets/icons/status/status_protection.svg',
     id: 'protection',
     _id: 'protection000000',
     name: 'SWADE.Protection',
     duration: {
-      rounds: 5,
+      value: 5,
+      units: 'rounds',
+      expiry: 'turnEndPrompt',
     },
-    changes: [
-      {
-        key: 'system.stats.toughness.value',
-        value: '0',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-      },
-      {
-        key: 'system.stats.toughness.armor',
-        value: '0',
-        mode: foundry.CONST.ACTIVE_EFFECT_MODES.ADD,
-      },
-    ],
     system: {
-      expiration: constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt,
+      changes: [
+        {
+          key: 'system.stats.toughness.value',
+          value: '0',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+        },
+        {
+          key: 'system.stats.toughness.armor',
+          value: '0',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
+        },
+      ],
     },
   },
-];
+};

@@ -435,7 +435,7 @@ export interface SwadeConfig {
   swid: {
     ignoreSystem: boolean;
   };
-  statusEffects: CONFIG.StatusEffect[];
+  statusEffects: Record<string, CONFIG.StatusEffect>;
   negativeStatusEffects: string[];
   wildCardIcons: {
     regular: string;

@@ -590,9 +590,9 @@ SWADE:
     Description: <p>Effects expire on the target's <em>next turn or later</em>.</p>
     Behavior: Expiration Behavior
     BeginAuto: Start of Turn, Automatic
-    BeginPrompt: Start of Turn, Prompt
+    BeginPrompt: Turn Start, Prompt
     EndAuto: End of Turn, Automatic
-    EndPrompt: End of Turn, Prompt
+    EndPrompt: Turn End, Prompt
     None: None
     LooseTurnOnHold: Lose Turn on Hold
     Remaining: Remaining
@@ -1069,7 +1069,7 @@ SWADE:
   EffectWizard:
     Preview: Preview
     Change: Change
-    Mode: Mode
+    Type: Type
     Value: Value
     Changes: Changes
     SelectAttribute: Select Attribute
@@ -1636,6 +1636,7 @@ SWADE:
     RevertRoundTitle: Revert to previous round?
     RevertRoundContent: Do you want to revert to the previous round?
     DiscardedCards: Discarded Cards
+    MustDrawInitiative: Cannot change turn or round without all combatants having initiative!
     Redraw: Card Redraw
     RedrawFor: Card Redraw ({name})
     RedrawDialog:

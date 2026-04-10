@@ -204,8 +204,7 @@ export async function copyToClipboard(textToCopy: string) {
 
 /** @internal */
 export function getStatusEffectDataById(idToSearchFor: string) {
-  const filter = (e: any) => e.id === idToSearchFor;
-  const data = CONFIG.statusEffects.find(filter) || SWADE.statusEffects.find(filter);
+  const data = CONFIG.statusEffects[idToSearchFor] || SWADE.statusEffects[idToSearchFor];
   // Future deprecation - removing this would require deeper API changes
   // foundry.utils.logCompatibilityWarning(
   //   'You are accessing `game.swade.util.getStatusEffectDataById`. ' +
