@@ -16,7 +16,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.status.isShaken',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
       ],
@@ -32,7 +32,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.status.isIncapacitated',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
       ],
@@ -66,17 +66,17 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
         {
           key: 'system.attributes.strength.die.sides',
           value: '2',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
         },
         {
           key: 'system.stats.toughness.value',
           value: '2',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
         },
         {
           key: 'system.wounds.ignored',
           value: '1',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
         },
       ],
     },
@@ -95,17 +95,17 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.status.isVulnerable',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
         {
           key: 'system.stats.globalMods.attack',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
           value: '2',
         },
         {
           key: 'system.stats.globalMods.damage',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
           value: '2',
         },
       ],
@@ -127,7 +127,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
         {
           key: 'system.stats.parry.value',
           value: '4',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
         },
       ],
     },
@@ -147,12 +147,12 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.status.isBound',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
         {
           key: 'system.status.isDistracted',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
       ],
@@ -169,12 +169,12 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.status.isEntangled',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
         {
           key: 'system.status.isVulnerable',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
       ],
@@ -190,25 +190,25 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.initiative.hasHesitant',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
           priority: 99, //High priority to make sure the effect overrides existing effects
         },
         {
           key: 'system.initiative.hasLevelHeaded',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'false',
           priority: 99, //High priority to make sure the effect overrides existing effects
         },
         {
           key: 'system.initiative.hasImpLevelHeaded',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'false',
           priority: 99, //High priority to make sure the effect overrides existing effects
         },
         {
           key: 'system.initiative.hasQuick',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'false',
           priority: 99, //High priority to make sure the effect overrides existing effects
         },
@@ -229,7 +229,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.status.isDistracted',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
       ],
@@ -244,7 +244,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.details.encumbrance.isEncumbered',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
       ],
@@ -260,12 +260,12 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
         {
           key: 'system.stats.parry.value',
           value: '-2',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
         },
         {
           key: '@Skill{Fighting}[system.die.modifier]',
           value: '-2',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
         },
       ],
     },
@@ -284,12 +284,12 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.status.isStunned',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
         {
           key: 'system.status.isVulnerable',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         }
       ],
@@ -319,7 +319,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
       changes: [
         {
           key: 'system.status.isVulnerable',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
           value: 'true',
         },
       ],
@@ -394,7 +394,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
         {
           key: 'system.pace.base',
           value: 'burrow',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
         },
       ],
     },
@@ -409,7 +409,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
         {
           key: 'system.pace.base',
           value: 'fly',
-          type: 'override',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE,
         },
       ],
     },
@@ -453,12 +453,12 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
         {
           key: 'system.stats.toughness.value',
           value: '0',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
         },
         {
           key: 'system.stats.toughness.armor',
           value: '0',
-          type: 'add',
+          type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
         },
       ],
     },

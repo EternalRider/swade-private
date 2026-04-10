@@ -408,7 +408,7 @@ async function _migratePTModifiers(actor: SwadeActor) {
           {
             key: 'system.stats.parry.value',
             value: parryModifier,
-            type: 'add',
+            type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
             priority: null,
           },
         ],
@@ -425,7 +425,7 @@ async function _migratePTModifiers(actor: SwadeActor) {
           {
             key: 'system.stats.toughness.value',
             value: toughModifier,
-            type: 'add',
+            type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
             priority: null,
           },
         ],

@@ -121,7 +121,7 @@ export default class SwadeActiveEffect<
     const ptMatch = change.key.match(SwadeActiveEffect.PT_REGEXP);
     if (itemMatch) {
       this._handleItemMatch(itemMatch, change, doc);
-    } else if (attrMatch && change.type === 'add' && doc instanceof SwadeActor) {
+    } else if (attrMatch && change.type === constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD && doc instanceof SwadeActor) {
       this._handleAttributeMatch(attrMatch, change, doc);
     } else if (globalMatch && doc instanceof SwadeActor) {
       this._handleGlobalModifierMatch(globalMatch, change, doc);
@@ -158,7 +158,7 @@ export default class SwadeActiveEffect<
         if (!match) continue;
         const key = match[3].trim();
         const type = match[1].trim().toLowerCase();
-        if (key === 'system.die.modifier' && type === 'skill' && change.type === 'add') {
+        if (key === 'system.die.modifier' && type === 'skill' && change.type === constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD) {
           foundry.utils.setProperty(item, 'system.effects', []);
         } else {
           //restore original data from source
@@ -220,7 +220,7 @@ export default class SwadeActiveEffect<
       if (
         key === 'system.die.modifier' &&
         match[1].trim().toLowerCase() === 'skill' &&
-        change.type === 'add'
+        change.type === constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD
       ) {
         const effectKey = 'system.effects';
         overrides[effectKey] ??= new Array<RollModifier>();
@@ -250,7 +250,7 @@ export default class SwadeActiveEffect<
 
   private _handleGlobalModifierMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
     if (doc.system instanceof GroupData) return; // Really shouldn't be a group
-    if (change.type === 'add' && doc.system.stats.globalMods[match[1]] !== undefined) {
+    if (change.type === constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD && doc.system.stats.globalMods[match[1]] !== undefined) {
       const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
       const effectKey = 'system.stats.globalMods.' + match[1];
       if (!(effectKey in overrides)) overrides[effectKey] = new Array<RollModifier>();
@@ -266,7 +266,7 @@ export default class SwadeActiveEffect<
   private _handlePTModifierMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
     // Really shouldn't be a group
     if (doc.system instanceof GroupData) return;
-    if (change.type === 'custom') {
+    if (change.type === constants.ACTIVE_EFFECT_CHANGE_TYPE.CUSTOM) {
       super.apply(doc, change);
       return;
     }

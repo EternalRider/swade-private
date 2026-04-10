@@ -390,7 +390,7 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
     this.#changes?.push({
       label: label,
       key: key,
-      type: 'add',
+      type: constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD,
     });
     this.render({ force: true });
   }
