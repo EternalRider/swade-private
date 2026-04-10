@@ -810,23 +810,29 @@ SWADE:
     Cone:
       Long: Gabarit de cone
       Short: Cône
+      Place: Placer un gabarit de cône
     Large:
       Long: Gabarit d'explosion - Grand
       Short: LBT
+      Place: Placer un grand gabarit d'explosion
     Stream:
       Long: Gabarit - Flux
       Short: Flux
+      Place: placer un garabit de flot
     Possible: Gabarits possibles
     Small:
       Long: Gabarit d'explosion - Petit
       Short: SBT
+      Place: Placer un petit gabarit d'explosion
     Available: Gabarits disponibles
     Medium:
       Long: Gabarit d'explosion - Moyen
       Short: MBT
+      Place: Placer un gabarit d'explosion moyen
     SmallCone:
       Short: Petit cône
       Long: Gabarit de petit cône
+      Place: Placer un petit gabarit de cône
   UsesTOC: Utiliser le sommaire du compendium
   Vision:
     SenseHeat: Sentir la chaleu
@@ -851,6 +857,12 @@ SWADE:
     AP: Tous les Perce-Armures (PA)
     Spirit: Âme et compétences liées
     Vigor: Vigueur et compétences liées
+    TargetAttack: Attaque ciblée
+    TargetAttackRanged: Attaque ciblée (à distance)
+    TargetAttackMelee: Attaque ciblée (corps-à-corps)
+    TargetDamage: Dégât de la cible
+    GangUp: Attaque à plusieurs
+    TargetGangUp: Modificateur de la cible de l'attaque à plusieurs
   Duplicate: Dupliquez
   ppReload: Points de pouvoir à recharger
   ReloadNotPossible: Ce type d'acteur ne peut pas recharger
@@ -952,6 +964,8 @@ SWADE:
       TakeFail: Souffre d'une séquelle permanente
       TakeSuccess: Souffre d'une séquelle qui disparaitra lorsque toutes les blessures
         auront été guéries
+      DefeatTitle: Marquer comme vaincu
+      MarkedDefeated: <p><strong>{name}</strong> a eté marqué comme vaincu sans hémorragie.</p>
     ApplyDamage:
       Label: Résolution des dommages
       Hint: '[Click] pour résoudre les dommages avec le jeton sélectionné'
@@ -1675,12 +1689,52 @@ SWADE:
   RechargeManualConfirm: Rechargement de {name} ?
   RechargeEncounterConfirm: Rechargement de toutes les charges de la rencontre ?
   RechargeDayConfirm: Rechargement de toutes les charges quotidienne ?
-  RechargeAllItemsEncounterConfirm: Rechargement de tout les charges de la recontre
+  RechargeAllItemsEncounterConfirm: Rechargement de tout les charges de la rencontre
     sur tous les objets ?
   RechargeAllItemsDayConfirm: Rechargement de toutes les charges quotidienne sur tous
     les objets ?
   DeleteEmbeddedChargePrompt: Êtes-vous sûr de vouloir supprimer la charge {charge}
     ?
+  ResistRoll: Jet de résistance
+  ResistRollName: 'Jet de résistance : {name}'
+  RollName: Jet de {name}
+  GMOverride: Remplacement par le MJ
+  NoAcing: pas d'explosion
+  GangUpDamage: Attaque à plusieurs
+  GangUpHint: Applique automatiquement le bonus d'attaque à plusieurs aux dégâts
+  RollDamageName: 'jet de dégât : {name}'
+  HUD:
+    RollTooltip: clic pour lancer je jet de {name}
+    ExpandTooltip: clic pour déplier
+    ViewCharacterTooltip: Voir la description du personnage
+    WoundsTooltip: 'Blessures (Clic gauche : -1, Clic droit : +1)'
+    SoakTooltip: Clic pour encaisser la blessure
+    OpenSheetTooltip: Clic gauche pour ouvrir complètement la fiche de personnage
+    FatigueTooltip: 'Fatigue (Clic gauche : -1, clic droit : +1)'
+    IncapacitatedTooltip: Clic pour basculer en état Incapacité
+    PaceTooltip: 'Allure : {pace} (clic gauche : jet de course, clic droit : mode
+      suivant)'
+    ParryTooltip: 'Parade (Modificateur : {mod}, Bouclier : {shield})'
+    SizeTooltip: 'Taille : {size} ({scale})'
+    ToughTooltip: 'Résistance (Modificateur : {mod}, Armure : {armor})'
+    ConvictionTooltip: 'Conviction (clic gauche : activation, clic droit : +1)'
+    BenniesTooltip: 'Jetons (clic gauche : +1, clic droit : +1)'
+    CombatStateTooltip: Basculer en état de combat (clic pour basculer)
+    RunMacroTooltip: 'Macro de course : {name}'
+    ReloadTooltip: 'Recharger : {name}'
+    UseConsumableTooltip: 'Utiliser : {name}'
+    RemoveTooltip: Enlever {name}
+    AddTooltip: Ajouter {name}
+    RemoveAllConditionsTooltip: Supprimer toutes les conditions actives
+    RemoveAllConditionsLabel: Supprimer tout
+    AENoEffects: Pas d'effet trouvé
+    AEToggleTooltip: Basculer {name}
+    AERounds: 'Rounds : {rounds}'
+    AEToggle: Basculer {name}
+    AEToggleInherited: Impossible de basculer les effets hérités
+    AEDragToApplyName: Glisser pour appliquer {name}
+    PowerPPTooltip: 'Points de pouvoir : {pp}/{ppmax} (clic gauche : -1, clic droit
+      : +1)'
 ACTOR:
   TypeCharacter: Personnage
   TypeNpc: PNJ
