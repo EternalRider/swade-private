@@ -688,9 +688,6 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   }
 
   protected static async _toggleStatusEffect(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
-    const key = target.dataset.key as string;
-    // this is just to make sure the status is false in the source data
-    await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(target.dataset.id as string);
   }
 
