@@ -183,24 +183,17 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
 
     this.#setupRechargeUsesMenu(this.element);
 
-    this.element
-      .querySelector('[name="system.details.currency"]')
-      ?.addEventListener('change', this._onChangeInputDelta.bind(this));
-
-    this.element.querySelectorAll('li.item, .attribute').forEach((el) => {
+    this.element.querySelectorAll<HTMLElement>('li.item, .attribute').forEach((el) => {
       // Add draggable attribute and dragstart listener.
       el.draggable = true;
       el.addEventListener('dragstart', this._onDragStart.bind(this), false);
     });
 
     //Disable draggable on the item if we drag inside of the charge summary
-    this.element.querySelectorAll('.charges-summary').forEach((el) => {
+    this.element.querySelectorAll<HTMLElement>('.charges-summary').forEach((el) => {
       el.addEventListener('mousedown', () => {
         el.closest('li')?.setAttribute('draggable', 'false');
       });
-    });
-
-    this.element.querySelectorAll('.charges-summary').forEach((el) => {
       el.addEventListener('mouseup', () => {
         el.closest('li')?.setAttribute('draggable', 'true');
       });
@@ -214,13 +207,14 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
 
     // Charge input fields
     // TODO: Necessary?
-    this.element.querySelectorAll('.charge-fields input').forEach((el) =>
+    this.element.querySelectorAll<HTMLInputElement>('.charge-fields input').forEach((el) =>
       el.addEventListener('change', async (ev) => {
-        const li = ev.currentTarget.closest('.item');
+        const target = ev.currentTarget as HTMLInputElement;
+        const li = target.closest<HTMLLIElement>('.item');
         const item = this.document.items.get(li?.dataset.itemId);
-        const id = ev.currentTarget.dataset.chargeId;
+        const id = target.dataset.chargeId;
         const charge = item.system.charges.find(id);
-        charge[ev.currentTarget.name] = Number(ev.currentTarget.value);
+        charge[target.name] = Number(target.value);
         await item.update({
           'system.charges.charges': item.system.charges.charges,
         });
@@ -228,7 +222,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     );
 
     this.element.querySelectorAll('input').forEach((el) => {
-      el.addEventListener('focus', (ev) => ev.currentTarget.select());
+      el.addEventListener('focus', (ev) => ev.currentTarget?.select());
       el.addEventListener('keypress', (ev: KeyboardEvent) => {
         const targetIsButton = 'button' === ev?.target?.type;
         if (!targetIsButton && ev.key === 'Enter') {
@@ -275,6 +269,29 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     this.#setupEquipStatusMenu(this.element);
     this.#setupEffectCreateMenu(this.element);
     this.#setupItemContextMenu(this.element);
+  }
+
+  protected override _processFormData(
+    event: SubmitEvent | null,
+    form: HTMLFormElement,
+    formData: foundry.applications.ux.FormDataExtended
+  ) {
+    const expanded = super._processFormData(event, form, formData);
+    const key = 'system.details.currency';
+
+    //handle input delta for currency
+    let value = foundry.utils.getProperty(expanded, key) as string;
+    value = value.replace(',', '.'); //make sure to handle european style decimals
+    //if the currency starts with a + or - we calculate the new value and set that in the update data
+    if (['+', '-'].includes(value[0])) {
+      const delta = parseFloat(value);
+      const currency = foundry.utils.getProperty(this.actor, key) as number;
+      foundry.utils.setProperty(expanded, key, currency + delta);
+    } else if (value.startsWith('=')) {
+      //if it starts with the equals then it's an explicit override, mostly useful for setting negative values
+      foundry.utils.setProperty(expanded, key, value.slice(1));
+    }
+    return expanded;
   }
 
   override async _prepareContext(options): Promise<CharacterSheetRenderContext> {
@@ -664,26 +681,10 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       const template = button.dataset.template!;
       SwadeMeasuredTemplate.fromPreset(template, item);
     } else {
-      const foo = 'bar';
       ItemChatCardHelper.handleAction(item, this.actor, action, {
         additionalMods,
         event,
       });
-    }
-  }
-
-  /**
-   * Handle input changes to numeric form fields, allowing them to accept delta-typed inputs
-   * @param {Event} event  Triggering event.
-   */
-  protected _onChangeInputDelta(event: Event) {
-    const input = event.target as HTMLInputElement;
-    const value = input.value;
-    if (['+', '-'].includes(value[0])) {
-      const delta = parseInt(value, 10);
-      input.value = foundry.utils.getProperty(this.actor, input.name) + delta;
-    } else if (value[0] === '=') {
-      input.value = value.slice(1);
     }
   }
 
@@ -999,7 +1000,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     const flatOverrides = foundry.utils.flattenObject(this.actor.overrides);
     const disabledText = game.i18n.localize('SWADE.disabledAE');
     for (const override of Object.keys(flatOverrides)) {
-      html.querySelectorAll(`[name="${override}"]`).forEach((input) => {
+      html.querySelectorAll<HTMLInputElement>(`[name="${override}"]`).forEach((input) => {
         input.disabled = true;
         if (input.dataset.tooltip) {
           input.dataset.tooltip += '<br>' + disabledText;

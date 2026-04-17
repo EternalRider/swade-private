@@ -10,7 +10,6 @@ import AttributeManager from './module/apps/AttributeManager';
 import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
-import SwadeActorHUD from './module/apps/SwadeActorHUD';
 import { SwadeActorTweaks, SwadeDocumentTweaks, SwadeItemTweaks } from './module/apps/SwadeDocumentTweaks';
 import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
@@ -38,7 +37,6 @@ import { registerAuraHooks } from './module/hooks/AuraHooks';
 import SwadeCoreHooks from './module/hooks/SwadeCoreHooks';
 import SwadeIntegrationHooks from './module/hooks/SwadeIntegrationHooks';
 import { rollItemMacro } from './module/hooks/hotbarDrop';
-import './module/hud/swade-hud';
 import { registerKeybindings } from './module/keybindings';
 import * as migrations from './module/migration/migration';
 import { preloadHandlebarsTemplates } from './module/preloadTemplates';
@@ -84,7 +82,6 @@ const swadeAPI: SwadeGame = {
     CompendiumTOC,
     AttributeManager,
     ActiveEffectWizard,
-    SwadeActorHUD,
   },
   dice: {
     Benny,
@@ -146,8 +143,8 @@ Hooks.once('init', () => {
 
   // Register custom AE expiries, set expiry action
   Object.assign(CONFIG.ActiveEffect.expiryEvents, {
-    'turnStartPrompt': 'SWADE.Expiration.BeginPrompt',
-    'turnEndPrompt': 'SWADE.Expiration.EndPrompt',
+    turnStartPrompt: 'SWADE.Expiration.BeginPrompt',
+    turnEndPrompt: 'SWADE.Expiration.EndPrompt',
   });
   CONFIG.ActiveEffect.expiryAction = 'delete';
 
@@ -203,7 +200,11 @@ Hooks.once('init', () => {
   };
 
   //register custom status effects
-  Object.defineProperty(CONFIG, "statusEffects", {value: foundry.utils.deepClone(SWADE.statusEffects), configurable: true, enumerable: true});
+  Object.defineProperty(CONFIG, 'statusEffects', {
+    value: foundry.utils.deepClone(SWADE.statusEffects),
+    configurable: true,
+    enumerable: true,
+  });
   Object.assign(CONFIG.specialStatusEffects, {
     COLDBODIED: 'cold-bodied',
     INCAPACITATED: 'incapacitated',
@@ -357,11 +358,8 @@ Hooks.once('init', () => {
   CONFIG.Dice.rolls.push(TraitRoll, DamageRoll);
   CONFIG.Dice.types.push(WildDie);
 
-  // Initialize SWADE HUD system
-  game.swade.hud = {
-    SwadeActorHUD,
-    ID: 'swade-hud',
-  };
+  // Add Wild Die as configurable die type
+  CONFIG.Dice.fulfillment.dice.dw = { label: 'SWADE.WildDie', icon: '<i class="fa-solid fa-dice"></i>' };
 });
 Hooks.once('i18nInit', SwadeCoreHooks.onI18nInit);
 Hooks.once('setup', SwadeCoreHooks.onSetup);
@@ -408,64 +406,6 @@ Hooks.on('targetToken', SwadeCoreHooks.onTargetToken);
 /* Canvas Interactions  			          */
 /* ------------------------------------ */
 Hooks.on('dropCanvasData', SwadeCoreHooks.onDropCanvasData);
-
-/* ------------------------------------ */
-/* System Hooks              	          */
-/* ------------------------------------ */
-// Hooks.on('renderSwadeRollMessage', SwadeSystemHooks.onRenderSwadeRollMessage);
-
-/* ------------------------------------ */
-/* SWADE HUD Test Functions            */
-/* ------------------------------------ */
-Hooks.once('init', () => {
-  // Add test function early in initialization
-  (window as any).testSwadeHUD = async () => {
-    // Wait for canvas to be ready
-    if (!canvas || !canvas.ready) {
-      await new Promise((resolve) => {
-        Hooks.once('canvasReady', resolve);
-      });
-    }
-
-    // Get the first owned character token
-    const ownedTokens = canvas.tokens?.placeables.filter((t) => t.actor?.isOwner && t.actor?.type === 'character');
-    if (ownedTokens?.length === 0) {
-      console.error(
-        'SWADE HUD: No owned character tokens found. Available tokens:',
-        canvas.tokens?.placeables.map((t) => ({
-          name: t.name,
-          actorType: t.actor?.type,
-          isOwner: t.actor?.isOwner,
-        }))
-      );
-      return;
-    }
-
-    const token = ownedTokens[0];
-
-    try {
-      const HUDClass = SwadeActorHUD || (window as any).SwadeActorHUD || game?.swade?.hud?.SwadeActorHUD;
-      if (!HUDClass) {
-        console.error('SWADE HUD: SwadeActorHUD class not found');
-        return;
-      }
-
-      const hud = new HUDClass({ actor: token.actor, token: token.document });
-      await hud.render(true);
-    } catch (error) {
-      console.error('SWADE HUD: Error creating test HUD:', error);
-    }
-  };
-
-  // Also add a simple synchronous version
-  (window as any).testSwadeHUDSimple = () => {
-    return 'HUD system check complete - see console for details';
-  };
-});
-
-Hooks.once('ready', () => {
-  // SWADE HUD system loaded
-});
 
 /* ------------------------------------ */
 /* Third Party Integrations		          */
