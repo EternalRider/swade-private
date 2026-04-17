@@ -4,7 +4,6 @@ import CharacterSummarizer from '../CharacterSummarizer';
 import { Logger } from '../Logger';
 import ActionCardEditor from '../apps/ActionCardEditor';
 import { CompendiumTOC } from '../apps/CompendiumTOC';
-import SwadeActorHUD from '../apps/SwadeActorHUD';
 import SwadeToken from '../canvas/SwadeToken';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
@@ -151,58 +150,6 @@ export default class SwadeCoreHooks {
         short: game.i18n.localize(short),
       };
     }
-
-    // Set up test functions for development
-    if (game.user?.isGM) {
-      globalThis.testSwadeHUD = () => {
-        console.log('SWADE HUD: Testing HUD functionality...');
-
-        // Get the first available actor
-        const actor = game.actors?.find((a) => a.isOwner);
-        if (!actor) {
-          console.error('SWADE HUD: No owned actors found for testing');
-          return;
-        }
-
-        console.log('SWADE HUD: Testing with actor:', actor.name);
-
-        // Test HUD creation
-        const hud = new SwadeActorHUD({ actor });
-        hud.render(true);
-
-        // Return the HUD instance for further testing
-        return hud;
-      };
-
-      globalThis.toggleSwadeHUD = () => {
-        console.log('SWADE HUD: Toggling HUD visibility...');
-
-        // Find existing HUD instances
-        const existingHUDs = Object.values(ui.windows).filter(
-          (w: any) => w instanceof SwadeActorHUD
-        ) as SwadeActorHUD[];
-
-        if (existingHUDs.length > 0) {
-          // Close all existing HUDs
-          existingHUDs.forEach((hud) => hud.close());
-          console.log('SWADE HUD: Closed', existingHUDs.length, 'HUD instances');
-        } else {
-          // Create new HUD
-          const actor = game.actors?.find((a) => a.isOwner);
-          if (actor) {
-            const hud = new SwadeActorHUD({ actor });
-            hud.render(true);
-            console.log('SWADE HUD: Created new HUD for', actor.name);
-          } else {
-            console.error('SWADE HUD: No owned actors found');
-          }
-        }
-      };
-
-      console.log('SWADE HUD: Test functions available:');
-      console.log('  - testSwadeHUD() - Create and show HUD for first owned actor');
-      console.log('  - toggleSwadeHUD() - Toggle HUD visibility');
-    }
   }
 
   static onRenderActorDirectory(app: foundry.applications.sidebar.tabs.ActorDirectory, html: HTMLElement, _data: any) {
@@ -216,14 +163,15 @@ export default class SwadeCoreHooks {
       wildcards.push(...npcWildcards);
     }
 
-    entries.forEach((element) => {
-      const actorID = element.dataset.entryId;
-      if (!actorID) return;
+    for (const entry of entries) {
+      if (entry?.querySelector('img.wildcard-icon')) continue;
+      const actorID = entry.dataset.entryId;
+      if (!actorID) continue;
       const isWildcard = !!wildcards.find((a) => a.id === actorID);
-      if (!isWildcard) return;
-      const thumbnail = element.querySelector<HTMLImageElement>('.thumbnail');
+      if (!isWildcard) continue;
+      const thumbnail = entry.querySelector<HTMLImageElement>('.thumbnail');
       thumbnail?.insertAdjacentHTML('afterend', '<img class="wildcard-icon">');
-    });
+    }
   }
 
   static onRenderSettings(_app: foundry.applications.sidebar.tabs.Settings, html: HTMLElement) {

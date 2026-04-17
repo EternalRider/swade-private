@@ -3,7 +3,7 @@ import { SWADE } from './config';
 import { constants } from './constants';
 import SwadeCombatant from './documents/combat/SwadeCombatant';
 import SwadeItem from './documents/item/SwadeItem';
-import { signedNumberString, getScaleName } from './util';
+import { getScaleName, signedNumberString } from './util';
 
 /*****************************
  * General Utility Helpers
@@ -26,7 +26,7 @@ function isOdd(number: number): boolean {
   return !isEven(number);
 }
 
-function signedString(num) {
+function signedString(num: string | number) {
   const result = parseInt(num);
   if (isNaN(result)) return '';
   return signedNumberString(result);
@@ -38,13 +38,13 @@ function rotate(number: number) {
   else return rotationVal;
 }
 
-function formatNumber(num) {
+function formatNumber(num: number) {
   return Math.round((num + Number.EPSILON) * 1000) / 1000;
 }
 
 function capitalize(str: string) {
   if (!str || typeof str !== 'string') return str;
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  return str.capitalize();
 }
 
 function isEmpty(value) {

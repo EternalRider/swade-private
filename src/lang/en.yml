@@ -658,36 +658,6 @@ SWADE:
   Background: Background
   ID: ID
   SortNum: Sorting Number
-  HUD:
-    RollTooltip: Click to roll {name}
-    ExpandTooltip: Click to expand
-    ViewCharacterTooltip: View Character Description
-    WoundsTooltip: 'Wounds (Left click: -1, Right click: +1)'
-    SoakTooltip: Click to Soak Damage
-    OpenSheetTooltip: Left click to open full character sheet
-    FatigueTooltip: 'Fatigue (Left click: -1, Right click: +1)'
-    IncapacitatedTooltip: Click to Toggle Incapacitated
-    PaceTooltip: 'Pace: {pace} (Left click: roll running, Right click: cycle)'
-    ParryTooltip: 'Parry (Modifier: {mod}, Shield: {shield})'
-    SizeTooltip: 'Size: {size} ({scale})'
-    ToughTooltip: 'Toughness (Modifier: {mod}, Armor: {armor})'
-    ConvictionTooltip: 'Conviction (Left click: activate, Right click: +1)'
-    BenniesTooltip: 'Bennies (Left click: -1, Right click: +1)'
-    CombatStateTooltip: Toggle Combat State (Click to toggle)
-    RunMacroTooltip: 'Run Macro: {name}'
-    ReloadTooltip: 'Reload: {name}'
-    UseConsumableTooltip: 'Use: {name}'
-    RemoveTooltip: Remove {name}
-    AddTooltip: Add {name}
-    RemoveAllConditionsTooltip: Remove all active conditions
-    RemoveAllConditionsLabel: Clear All
-    AENoEffects: No effects found
-    AEToggleTooltip: Toggle {name}
-    AERounds: 'Rounds: {rounds}'
-    AEToggle: Toggle {name}
-    AEToggleInherited: Cannot toggle inherited effect
-    AEDragToApplyName: Drag to apply {name}
-    PowerPPTooltip: 'Power Points: {pp}/{ppmax} (Left click: -1, Right click: +1)'
   ActiveEffects:
     Add: Add Active Effect
     Source: Source
@@ -718,9 +688,6 @@ SWADE:
       Hint: >-
         Press to spend a Benny, hold down Alt while you press the key to receive
         a Benny instead
-    ToggleHUD:
-      Name: Toggle SWADE HUD
-      Hint: Toggle the SWADE HUD for the currently controlled token or your assigned character
   Settings:
     ArbitFields: Arbitrary Setting Fields
     CharSheetDefaultWidth:
