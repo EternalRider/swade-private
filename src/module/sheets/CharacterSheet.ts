@@ -280,16 +280,18 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     const key = 'system.details.currency';
 
     //handle input delta for currency
-    let value = foundry.utils.getProperty(expanded, key) as string;
-    value = value.replace(',', '.'); //make sure to handle european style decimals
-    //if the currency starts with a + or - we calculate the new value and set that in the update data
-    if (['+', '-'].includes(value[0])) {
-      const delta = parseFloat(value);
-      const currency = foundry.utils.getProperty(this.actor, key) as number;
-      foundry.utils.setProperty(expanded, key, currency + delta);
-    } else if (value.startsWith('=')) {
-      //if it starts with the equals then it's an explicit override, mostly useful for setting negative values
-      foundry.utils.setProperty(expanded, key, value.slice(1));
+    let submittedCurrency = foundry.utils.getProperty(expanded, key) as string | undefined;
+    if (typeof submittedCurrency === 'string') {
+      submittedCurrency = submittedCurrency.replace(',', '.'); //make sure to handle european style decimals
+      //if the currency starts with a + or - we calculate the new value and set that in the update data
+      if (['+', '-'].includes(submittedCurrency[0])) {
+        const delta = parseFloat(submittedCurrency);
+        const currency = foundry.utils.getProperty(this.actor, key) as number;
+        foundry.utils.setProperty(expanded, key, currency + delta);
+      } else if (submittedCurrency.startsWith('=')) {
+        //if it starts with the equals then it's an explicit override, mostly useful for setting negative values
+        foundry.utils.setProperty(expanded, key, submittedCurrency.slice(1));
+      }
     }
     return expanded;
   }
