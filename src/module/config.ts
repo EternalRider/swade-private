@@ -148,29 +148,31 @@ export const SWADE: SwadeConfig = {
 
   measuredTemplatePresets: [
     {
-      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 4, width: 2 },
-      button: {
-        name: constants.TEMPLATE_PRESET.SCONE,
-        title: 'SWADE.Templates.SmallCone.Long',
-        icon: 'fa-solid fa-location-minus fa-rotate-90',
-        visible: true,
-        button: true,
-        onClick: () => {
-          SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.SCONE);
-        },
-      },
-    },
-    {
       data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 9, width: 3 },
       button: {
         name: constants.TEMPLATE_PRESET.CONE,
         title: 'SWADE.Templates.Cone.Long',
         icon: 'fa-solid fa-location-plus fa-rotate-90',
+        order: 0,
         visible: true,
         button: true,
-        onClick: () => {
-          SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.CONE);
-        },
+        control: true,
+        creation: true,
+        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.CONE),
+      },
+    },
+    {
+      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 4, width: 2 },
+      button: {
+        name: constants.TEMPLATE_PRESET.SCONE,
+        title: 'SWADE.Templates.SmallCone.Long',
+        icon: 'fa-solid fa-location-minus fa-rotate-90',
+        order: 1,
+        visible: true,
+        button: true,
+        control: true,
+        creation: true,
+        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.SCONE),
       },
     },
     {
@@ -183,11 +185,12 @@ export const SWADE: SwadeConfig = {
         name: constants.TEMPLATE_PRESET.STREAM,
         title: 'SWADE.Templates.Stream.Long',
         icon: 'fa-solid fa-rectangle-wide',
+        order: 2,
         visible: true,
         button: true,
-        onClick: () => {
-          SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.STREAM);
-        },
+        control: true,
+        creation: true,
+        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.STREAM),
       },
     },
     {
@@ -196,11 +199,12 @@ export const SWADE: SwadeConfig = {
         name: constants.TEMPLATE_PRESET.SBT,
         title: 'SWADE.Templates.Small.Long',
         icon: 'fa-solid fa-circle-1 fa-2xs',
+        order: 3,
         visible: true,
         button: true,
-        onClick: () => {
-          SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.SBT);
-        },
+        control: true,
+        creation: true,
+        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.SBT),
       },
     },
     {
@@ -209,11 +213,12 @@ export const SWADE: SwadeConfig = {
         name: constants.TEMPLATE_PRESET.MBT,
         title: 'SWADE.Templates.Medium.Long',
         icon: 'fa-solid fa-circle-2 fa-sm',
+        order: 4,
         visible: true,
         button: true,
-        onClick: () => {
-          SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.MBT);
-        },
+        control: true,
+        creation: true,
+        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.MBT),
       },
     },
     {
@@ -222,11 +227,12 @@ export const SWADE: SwadeConfig = {
         name: constants.TEMPLATE_PRESET.LBT,
         title: 'SWADE.Templates.Large.Long',
         icon: 'fa-solid fa-circle-3 fa-lg',
+        order: 5,
         visible: true,
         button: true,
-        onClick: () => {
-          SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.LBT);
-        },
+        control: true,
+        creation: true,
+        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.LBT),
       },
     },
   ],

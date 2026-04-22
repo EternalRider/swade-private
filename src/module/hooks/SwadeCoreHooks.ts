@@ -8,7 +8,6 @@ import SwadeToken from '../canvas/SwadeToken';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
-import { constants } from '../constants';
 import { BaseEffectData } from '../data/effect/base';
 import { ModifierData } from '../data/effect/modifier';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -564,20 +563,22 @@ export default class SwadeCoreHooks {
     );
   }
 
-  static onGetSceneControlButtons(sceneControlButtons: Record<string, foundry.applications.ui.SceneControls.Control>) {
-    //get the measured template tools
-    const measure = sceneControlButtons.templates;
-    //add buttons
-    const numTools = Object.keys(measure.tools).length;
-    const newTemplateButtons = SWADE.measuredTemplatePresets.map((t, i) => ({
-      ...t.button,
-      order: numTools + i,
-    }));
-    measure.tools.clear.order = numTools + newTemplateButtons.length;
-    foundry.utils.mergeObject(
-      measure.tools,
-      newTemplateButtons.reduce((acc, t) => ({ ...acc, [t.name]: t }), {})
-    );
+  static onGetSceneControlButtons(controls: Record<string, foundry.applications.ui.SceneControls.Control>) {
+    const entries = SWADE.measuredTemplatePresets.map(({ button }, order) => [button.name, { ...button, order }]);
+    const templates: foundry.applications.ui.SceneControls.Control = {
+      layer: 'regions',
+      name: 'templates',
+      title: 'Templates',
+      icon: 'fa-solid fa-shapes',
+      tools: Object.fromEntries(entries),
+      order: Math.max(Object.values(entries).map((e) => e.order)) + 1,
+      visible: game.user.can('REGION_CREATE'),
+      onChange: (_event, active) => {
+        if (!active) return;
+        canvas.regions.activate({ tool: 'templates' });
+      },
+    };
+    controls.templates = templates;
   }
 
   static async onRenderCombatantConfig(
