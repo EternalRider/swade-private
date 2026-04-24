@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 5.2.6
+
+### Fixed
+
+- Fixed an issue that would prevent the character sheet from submitting form data when currency was not enabled. (#1435) (#1436) (#1437) **by @florad92**
+
 ## 5.2.5
 
 ### Fixed
