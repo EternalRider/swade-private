@@ -15,7 +15,7 @@ const argv = await yargs(hideBin(process.argv))
   .parse();
 
 const manifestPath = 'dist/system.json';
-const url = 'https://api.foundryvtt.com/_api/packages/release_version/';
+const url = 'https://foundryvtt.com/_api/packages/release_version/';
 
 const manifestRaw = await readFile(manifestPath, 'utf-8');
 const manifest = JSON.parse(manifestRaw);
