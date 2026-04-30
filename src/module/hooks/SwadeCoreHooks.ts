@@ -20,7 +20,7 @@ import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
-import { stringToHTML } from '../util';
+import { createRegionFromPreset, stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -564,21 +564,19 @@ export default class SwadeCoreHooks {
   }
 
   static onGetSceneControlButtons(controls: Record<string, foundry.applications.ui.SceneControls.Control>) {
-    const entries = SWADE.measuredTemplatePresets.map(({ button }, order) => [button.name, { ...button, order }]);
-    const templates: foundry.applications.ui.SceneControls.Control = {
-      layer: 'regions',
-      name: 'templates',
-      title: 'Templates',
-      icon: 'fa-solid fa-shapes',
-      tools: Object.fromEntries(entries),
-      order: Math.max(Object.values(entries).map((e) => e.order)) + 1,
-      visible: game.user.can('REGION_CREATE'),
-      onChange: (_event, active) => {
-        if (!active) return;
-        canvas.regions.activate({ tool: 'templates' });
-      },
-    };
-    controls.templates = templates;
+    const templatePresets = SWADE.regionPresets.reduce((acc, {button, shape}) => ({
+      ...acc,
+      [button.name]: {
+        ...button,
+        order: button.order + 9,
+        visible: canvas.regions?.templateMode,
+        onChange: () => createRegionFromPreset(button.name),
+      }
+    }), {});
+    Object.assign(controls.regions.tools, templatePresets);
+    controls.regions.tools.snap.order += 3;
+    controls.regions.tools.togglePalette.order += 3;
+    controls.regions.tools.clear.order += 3;
   }
 
   static async onRenderCombatantConfig(
