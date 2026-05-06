@@ -101,11 +101,10 @@ export class SwadeActorSheetV2<
   }
 
   override async _prepareContext(options) {
-    const context = {
-      //add the game user
-      user: game.user,
+    const superContext = await super._prepareContext(options);
+    return {
+      ...superContext,
       // Validates both permissions and compendium status
-      editable: this.isEditable,
       owner: this.document.isOwner,
       limited: this.document.limited,
       // Add the actor document.
@@ -117,7 +116,6 @@ export class SwadeActorSheetV2<
       // Adding a pointer to CONFIG.SWADE
       config: CONFIG.SWADE,
     };
-    return foundry.utils.mergeObject(await super._prepareContext(options), context);
   }
 
   /**

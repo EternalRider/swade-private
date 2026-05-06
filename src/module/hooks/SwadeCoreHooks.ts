@@ -8,7 +8,6 @@ import SwadeToken from '../canvas/SwadeToken';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
-import { constants } from '../constants';
 import { BaseEffectData } from '../data/effect/base';
 import { ModifierData } from '../data/effect/modifier';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -21,7 +20,7 @@ import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
-import { stringToHTML } from '../util';
+import { createRegionFromPreset, stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -564,20 +563,20 @@ export default class SwadeCoreHooks {
     );
   }
 
-  static onGetSceneControlButtons(sceneControlButtons: Record<string, foundry.applications.ui.SceneControls.Control>) {
-    //get the measured template tools
-    const measure = sceneControlButtons.templates;
-    //add buttons
-    const numTools = Object.keys(measure.tools).length;
-    const newTemplateButtons = SWADE.measuredTemplatePresets.map((t, i) => ({
-      ...t.button,
-      order: numTools + i,
-    }));
-    measure.tools.clear.order = numTools + newTemplateButtons.length;
-    foundry.utils.mergeObject(
-      measure.tools,
-      newTemplateButtons.reduce((acc, t) => ({ ...acc, [t.name]: t }), {})
-    );
+  static onGetSceneControlButtons(controls: Record<string, foundry.applications.ui.SceneControls.Control>) {
+    const templatePresets = SWADE.regionPresets.reduce((acc, {button, shape}) => ({
+      ...acc,
+      [button.name]: {
+        ...button,
+        order: button.order + 9,
+        visible: canvas.regions?.templateMode,
+        onChange: () => createRegionFromPreset(button.name),
+      }
+    }), {});
+    Object.assign(controls.regions.tools, templatePresets);
+    controls.regions.tools.snap.order += 3;
+    controls.regions.tools.togglePalette.order += 3;
+    controls.regions.tools.clear.order += 3;
   }
 
   static async onRenderCombatantConfig(

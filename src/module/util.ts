@@ -756,4 +756,42 @@ export async function createEnrichedTextEmbed(
   return elem;
 }
 
+export async function createRegionFromPreset(preset: string, item?: SwadeItem) {
+  const highlightRAW = game.settings.get('swade', 'highlightTemplate');
+  const presetData = SWADE.regionPresets.find(({button}) => button.name === preset);
+  if (!presetData || !canvas.grid) return;
+  const regionData = {
+    name: _loc(presetData.button.name),
+    color: game.user.color,
+    levels: [canvas.level.id],
+    visibility: CONST.REGION_VISIBILITY.ALWAYS,
+    highlightMode: highlightRAW ? 'shapes' : 'coverage',
+    shapes: [{
+      type: presetData.shape.type,
+      x: 0,
+      y: 0,
+    }],
+    flags: item ? { swade: { origin: item.uuid } } : {},
+  };
+  switch (presetData.shape.type) {
+    case 'cone':
+      Object.assign(regionData.shapes[0], {
+        angle: presetData.shape.angle,
+        curvature: 'semicircle',
+        radius: presetData.shape.radius * canvas.grid.size,
+      });
+      break;
+    case 'line':
+      Object.assign(regionData.shapes[0], {
+        length: presetData.shape.length * canvas.grid.size,
+        width: presetData.shape.width * canvas.grid.size,
+      });
+      break;
+    case 'circle':
+      regionData.shapes[0].radius = presetData.shape.radius * canvas.grid.size;
+      break;
+  }
+  return canvas.regions.placeRegion(regionData);
+}
+
 type Ownership = Record<string, number>;

@@ -7,7 +7,6 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../apps/AdvanceEditor';
 import AttributeManager from '../apps/AttributeManager';
 import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
-import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { ChargeData } from '../data/fields/ChargesData';
@@ -681,7 +680,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     } else if (action === 'template') {
       //Handle template placement
       const template = button.dataset.template!;
-      SwadeMeasuredTemplate.fromPreset(template, item);
+      util.createRegionFromPreset(template, item);
     } else {
       ItemChatCardHelper.handleAction(item, this.actor, action, {
         additionalMods,

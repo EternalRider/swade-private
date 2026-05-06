@@ -198,10 +198,7 @@ class SwadeActorTweaks extends SwadeDocumentTweaks<SwadeActor, AnyObject> {
   }
 }
 
-class SwadeItemTweaks<Document extends SwadeItem, RenderContext extends AnyObject> extends SwadeDocumentTweaks<
-  Document,
-  RenderContext
-> {
+class SwadeItemTweaks extends SwadeDocumentTweaks<SwadeItem, AnyObject> {
   static override DEFAULT_OPTIONS = {
     actions: {
       regenerateSWID: SwadeItemTweaks.#regenerateSWID,
@@ -216,7 +213,7 @@ class SwadeItemTweaks<Document extends SwadeItem, RenderContext extends AnyObjec
     footer: { template: 'templates/generic/form-footer.hbs' },
   };
 
-  static async #regenerateSWID() {
+  static async #regenerateSWID(this: SwadeItemTweaks) {
     await this.document.regenerateSWID();
     this.render({ force: true });
   }
