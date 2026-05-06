@@ -11,7 +11,6 @@ import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import { SwadeActorTweaks, SwadeDocumentTweaks, SwadeItemTweaks } from './module/apps/SwadeDocumentTweaks';
-import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import SwadeTokenRuler from './module/canvas/SwadeTokenRuler';
 import { SWADE } from './module/config';
@@ -162,10 +161,6 @@ Hooks.once('init', () => {
   CONFIG.RegionBehavior.typeIcons.attackModifiers = 'fa-solid fa-sliders';
 
   //register custom object classes
-  CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
-  // SWADE's default cone template is a very special case that we're storing at angle===0
-  // This preserves access to the other types of cone definitions
-  CONFIG.MeasuredTemplate.defaults.angle = 0;
   CONFIG.Token.objectClass = SwadeToken;
   CONFIG.Token.rulerClass = SwadeTokenRuler;
   SwadeTokenRuler.applySWADEMovementConfig();

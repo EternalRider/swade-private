@@ -1,7 +1,6 @@
 import { AbilitySubType } from '../globals';
 import { TemplateConfig } from '../interfaces/TemplateConfig.interface';
 import { RollModifierGroup } from '../interfaces/additional.interface';
-import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { constants } from './constants';
 import { statusEffects } from './statusEffects';
 
@@ -146,9 +145,9 @@ export const SWADE: SwadeConfig = {
     compendium: 'systems/swade/assets/ui/wildcard-dark.svg',
   },
 
-  measuredTemplatePresets: [
+  regionPresets: [
     {
-      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 9, width: 3 },
+      shape: { type: 'cone', angle: 22.5, radius: 9 },
       button: {
         name: constants.TEMPLATE_PRESET.CONE,
         title: 'SWADE.Templates.Cone.Long',
@@ -158,11 +157,10 @@ export const SWADE: SwadeConfig = {
         button: true,
         control: true,
         creation: true,
-        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.CONE),
       },
     },
     {
-      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CONE, distance: 4, width: 2 },
+      shape: { type: 'cone', angle: 37.5, radius: 4 },
       button: {
         name: constants.TEMPLATE_PRESET.SCONE,
         title: 'SWADE.Templates.SmallCone.Long',
@@ -172,15 +170,10 @@ export const SWADE: SwadeConfig = {
         button: true,
         control: true,
         creation: true,
-        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.SCONE),
       },
     },
     {
-      data: {
-        t: foundry.CONST.MEASURED_TEMPLATE_TYPES.RAY,
-        distance: 12,
-        width: 1,
-      },
+      shape: { type: 'line', length: 12, width: 1 },
       button: {
         name: constants.TEMPLATE_PRESET.STREAM,
         title: 'SWADE.Templates.Stream.Long',
@@ -190,11 +183,10 @@ export const SWADE: SwadeConfig = {
         button: true,
         control: true,
         creation: true,
-        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.STREAM),
       },
     },
     {
-      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CIRCLE, distance: 1 },
+      shape: { type: 'circle', radius: 1 },
       button: {
         name: constants.TEMPLATE_PRESET.SBT,
         title: 'SWADE.Templates.Small.Long',
@@ -204,11 +196,10 @@ export const SWADE: SwadeConfig = {
         button: true,
         control: true,
         creation: true,
-        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.SBT),
       },
     },
     {
-      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CIRCLE, distance: 2 },
+      shape: { type: 'circle', radius: 2 },
       button: {
         name: constants.TEMPLATE_PRESET.MBT,
         title: 'SWADE.Templates.Medium.Long',
@@ -218,11 +209,10 @@ export const SWADE: SwadeConfig = {
         button: true,
         control: true,
         creation: true,
-        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.MBT),
       },
     },
     {
-      data: { t: CONST.MEASURED_TEMPLATE_TYPES.CIRCLE, distance: 3 },
+      shape: { type: 'circle', radius: 3 },
       button: {
         name: constants.TEMPLATE_PRESET.LBT,
         title: 'SWADE.Templates.Large.Long',
@@ -232,12 +222,9 @@ export const SWADE: SwadeConfig = {
         button: true,
         control: true,
         creation: true,
-        onChange: () => SwadeMeasuredTemplate.fromPreset(constants.TEMPLATE_PRESET.LBT),
       },
     },
   ],
-
-  activeMeasuredTemplatePreview: null,
 
   abilitySheet: {
     special: {
@@ -447,8 +434,7 @@ export interface SwadeConfig {
     regular: string;
     compendium: string;
   };
-  measuredTemplatePresets: TemplateConfig[];
-  activeMeasuredTemplatePreview: SwadeMeasuredTemplate | null;
+  regionPresets: TemplateConfig[];
   abilitySheet: Record<AbilitySubType, { dropdown: string }>;
   rollModifiers: Record<string, RollModifierGroup>;
   ranks: string[];
