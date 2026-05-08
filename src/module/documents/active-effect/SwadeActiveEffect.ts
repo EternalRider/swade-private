@@ -321,13 +321,13 @@ export default class SwadeActiveEffect<
     const buttons: foundry.applications.api.DialogV2.Button[] = [
       {
         action: 'yes',
-        label: game.i18n.localize('Yes'),
+        label: game.i18n.localize('COMMON.Yes'),
         icon: '<i class="fas fa-check"></i>',
         callback: () => this.delete(),
       },
       {
         action: 'no',
-        label: game.i18n.localize('No'),
+        label: game.i18n.localize('COMMON.No'),
         icon: '<i class="fas fa-times"></i>',
       },
       {

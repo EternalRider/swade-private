@@ -314,7 +314,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         {
           action: 'cancel',
           icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize('Cancel'),
+          label: game.i18n.localize('COMMON.Cancel'),
         },
       ],
     });
