@@ -517,7 +517,7 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
       window: {
         title: `${game.i18n.format('DOCUMENT.Delete', { type })}: ${this.name}`,
       },
-      content: `<h3>${game.i18n.localize('AreYouSure')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarningPermanent', { name: this.name, parent: this.parent.name })}</p>`,
+      content: `<h3>${game.i18n.localize('SWADE.DialogConfirmPrompt')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarningPermanent', { name: this.name, parent: this.parent.name })}</p>`,
     });
     if (!proceed) return false;
     return this.delete();

@@ -26,7 +26,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
     img: 'icons/svg/skull.svg',
     id: 'dead',
     _id: 'dead000000000000',
-    name: 'COMBAT.CombatantDefeated',
+    name: 'COMBATANT.FIELDS.defeated.label',
     statuses: ['incapacitated'],
   },
   aiming: {

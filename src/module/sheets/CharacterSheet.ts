@@ -780,7 +780,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         {
           action: 'cancel',
           icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize('Cancel'),
+          label: game.i18n.localize('COMMON.Cancel'),
         },
       ],
     });

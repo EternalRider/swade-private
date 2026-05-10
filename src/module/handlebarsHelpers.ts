@@ -129,7 +129,7 @@ function advanceType(type: number) {
     case constants.ADVANCE_TYPE.HINDRANCE:
       return game.i18n.localize('SWADE.Advances.Types.Hindrance');
     default:
-      return 'Unknown';
+      return game.i18n.localize('COMMON.Unknown');
   }
 }
 

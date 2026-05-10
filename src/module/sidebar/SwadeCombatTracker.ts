@@ -321,7 +321,7 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
     const entryOptions = super._getEntryContextOptions();
 
     // Remove the default re-draw action.
-    entryOptions.findSplice((v) => v.name === 'COMBAT.CombatantReroll');
+    entryOptions.findSplice((v) => v.name === 'COMBATANT.ACTIONS.Reroll');
 
     const getCombatant = (li: HTMLLIElement) => this.viewed!.combatants.get(li.dataset.combatantId);
 
