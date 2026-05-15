@@ -37,7 +37,7 @@ export default class SwadeActiveEffect<
   get affectsItems() {
     const affectedItems = new Array<SwadeItem>();
     this.system.changes.forEach((c: ActiveEffect.ChangeData) =>
-      affectedItems.push(...this._getAffectedItems(this.parent!, c))
+      affectedItems.push(...SwadeActiveEffect._getAffectedItems(this.parent!, c))
     );
     return affectedItems.length > 0;
   }
@@ -114,25 +114,25 @@ export default class SwadeActiveEffect<
     return super.migrateData(data);
   }
 
-  override apply(doc: SwadeActor | SwadeItem, change: ActiveEffect.ChangeData) {
+  static override applyChange(doc: SwadeActor | SwadeItem, change: ActiveEffect.ChangeData, options) {
     const itemMatch = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     const attrMatch = change.key.match(SwadeActiveEffect.ATTR_REGEXP);
     const globalMatch = change.key.match(SwadeActiveEffect.GLOBAL_REGEXP);
     const ptMatch = change.key.match(SwadeActiveEffect.PT_REGEXP);
     if (itemMatch) {
-      this._handleItemMatch(itemMatch, change, doc);
+      this._handleItemMatch(itemMatch, change, doc, options);
     } else if (attrMatch && change.type === constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD && doc instanceof SwadeActor) {
       this._handleAttributeMatch(attrMatch, change, doc);
     } else if (globalMatch && doc instanceof SwadeActor) {
       this._handleGlobalModifierMatch(globalMatch, change, doc);
     } else if (ptMatch && doc instanceof SwadeActor) {
-      this._handlePTModifierMatch(ptMatch, change, doc);
+      this._handlePTModifierMatch(ptMatch, change, doc, options);
     } else {
-      return super.apply(doc as SwadeActor, change);
+      return super.applyChange(doc as SwadeActor, change, options);
     }
   }
 
-  private _getAffectedItems(parent: SwadeActor | SwadeItem, change: ActiveEffect.ChangeData) {
+  private static _getAffectedItems(parent: SwadeActor | SwadeItem, change: ActiveEffect.ChangeData) {
     const items = new Array<SwadeItem>();
     const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
     if (!match) return items;
@@ -151,7 +151,7 @@ export default class SwadeActiveEffect<
    */
   private _removeEffectsFromItems(parent: SwadeActor | SwadeItem) {
     const affectedItems = new Array<SwadeItem>();
-    this.changes.forEach((c) => affectedItems.push(...this._getAffectedItems(parent, c)));
+    this.changes.forEach((c) => affectedItems.push(...SwadeActiveEffect._getAffectedItems(parent, c)));
     for (const item of affectedItems) {
       for (const change of this.changes as ActiveEffect.ChangeData[]) {
         const match = change.key.match(SwadeActiveEffect.ITEM_REGEXP);
@@ -169,21 +169,16 @@ export default class SwadeActiveEffect<
     }
   }
 
-  private _updateTraitRollEffects(effectsArray: RollModifier[], value: number | string, ignore = false): boolean {
-    if (!this.id) {
-      // Handling null ID - don't want to make un-deletable override
-      console.warn('No ID found!');
-      return false;
-    }
+  private static _updateTraitRollEffects(effectsArray: RollModifier[], change: ActiveEffect.ChangeData, ignore = false): boolean {
     const modifier: RollModifier = {
-      label: this.name ?? game.i18n.localize('SWADE.Addi'),
-      value: Number.isNumeric(value) ? Number(value) : value,
-      effectID: this.id,
-      ignore: this.system.conditionalEffect || ignore,
+      label: change.effect.name ?? game.i18n.localize('SWADE.Addi'),
+      value: Number.isNumeric(change.value) ? Number(change.value) : change.value,
+      effectID: change.effect.id,
+      ignore: change.effect.system.conditionalEffect || ignore,
     };
     // Technically doesn't handle an effect that adds to the same item multiple times,
     // but necessary to avoid duplication on refresh
-    const splice: RollModifier | null = effectsArray.findSplice((e) => e.effectID === this.id, modifier);
+    const splice: RollModifier | null = effectsArray.findSplice((e) => e.effectID === change.effect.id, modifier);
     if (!splice) effectsArray.push(modifier);
     return true;
   }
@@ -209,7 +204,7 @@ export default class SwadeActiveEffect<
     await this.actor?.createEmbeddedDocuments('ActiveEffect', toCreate);
   }
 
-  private _handleItemMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor | SwadeItem) {
+  private static _handleItemMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor | SwadeItem, options) {
     //get the properties from the match
     const key = match[3].trim();
     const value = change.value;
@@ -226,50 +221,50 @@ export default class SwadeActiveEffect<
       ) {
         const effectKey = 'system.effects';
         overrides[effectKey] ??= new Array<RollModifier>();
-        this._updateTraitRollEffects(overrides[effectKey], value);
+        this._updateTraitRollEffects(overrides[effectKey], change);
         // NOT calling super.apply because normal apply doesn't handle objects
         foundry.utils.setProperty(item, effectKey, overrides[effectKey]);
       } else {
         //mock up a new change object with the key and value we extracted from the original key and feed it into the super apply method alongside the item
         const mockChange = { ...change, key, value };
         // @ts-expect-error AE.apply doesn't actually require an Actor, just a Document
-        const changes = super.apply(item, mockChange);
+        const changes = super.applyChange(item, mockChange, options);
         Object.assign(overrides, changes);
       }
       item.overrides = foundry.utils.expandObject(overrides);
     }
   }
 
-  private _handleAttributeMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
+  private static _handleAttributeMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
     const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
     const effectKey = 'system.attributes.' + match[1] + '.effects';
     if (!(effectKey in overrides)) overrides[effectKey] = new Array<RollModifier>();
-    this._updateTraitRollEffects(overrides[effectKey], change.value);
+    this._updateTraitRollEffects(overrides[effectKey], change);
     // NOT calling super.apply because normal apply doesn't handle objects
     foundry.utils.setProperty(doc, effectKey, overrides[effectKey]);
     doc.overrides = foundry.utils.expandObject(overrides);
   }
 
-  private _handleGlobalModifierMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
+  private static _handleGlobalModifierMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
     if (doc.system instanceof GroupData) return; // Really shouldn't be a group
     if (change.type === constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD && doc.system.stats.globalMods[match[1]] !== undefined) {
       const overrides = foundry.utils.flattenObject(doc.overrides ?? {});
       const effectKey = 'system.stats.globalMods.' + match[1];
       if (!(effectKey in overrides)) overrides[effectKey] = new Array<RollModifier>();
-      this._updateTraitRollEffects(overrides[effectKey], change.value, false);
+      this._updateTraitRollEffects(overrides[effectKey], change, false);
       // NOT calling super.apply because normal apply doesn't handle objects
       foundry.utils.setProperty(doc, effectKey, overrides[effectKey]);
       doc.overrides = foundry.utils.expandObject(overrides);
     } else {
-      Logger.warn('Invalid Global Modifier ' + change.key + 'on effect ' + this.id);
+      Logger.warn('Invalid Global Modifier ' + change.key + 'on effect ' + change.effect.id);
     }
   }
 
-  private _handlePTModifierMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor) {
+  private static _handlePTModifierMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor, options) {
     // Really shouldn't be a group
     if (doc.system instanceof GroupData) return;
     if (change.type === constants.ACTIVE_EFFECT_CHANGE_TYPE.CUSTOM) {
-      super.apply(doc, change);
+      super.applyChange(doc, change, options);
       return;
     }
     const autoCalc = match[1] === 'parry' ? doc.system.details.autoCalcParry : doc.system.details.autoCalcToughness;
@@ -280,7 +275,7 @@ export default class SwadeActiveEffect<
           ? 'effects'
           : 'sources';
     doc.system.stats[match[1]][target]?.push({
-      label: this.name,
+      label: change.effect.name,
       value: Number(change.value),
       mode: change.mode,
     });
