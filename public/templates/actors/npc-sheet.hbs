@@ -151,6 +151,11 @@
         </div>
       </section>
     </div>
+    <div class="category-container">
+      {{#if system.category}}
+        <span data-tooltip="SWADE.Category">{{system.category}}</span>
+      {{/if}}
+    </div>
   </header>
 
   {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
@@ -159,7 +164,7 @@
 
   {{!-- Summary Tab --}}
   {{> "swade.npc-summary" tab=tabs.summary}}
-  {{!-- Powers Tab --}} 
+  {{!-- Powers Tab --}}
   {{#if (or actor.hasPowers actor.hasArcaneBackground)}}
     {{> "swade.npc-powers" tab=tabs.powers}}
   {{/if}}

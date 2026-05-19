@@ -22,6 +22,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 6.0.0
+
+### Added
+
+- Added compatibility with Foundry V14
+
+### Changed
+
+- Migrated Measured Templates over to Regions. (#1415) **by @roth-michael**
+- Migrated Active Effect Expiry to the v14 API. (#1417) **by @roth-michael**
+- Updated several i18n sections for v14. (#1441) **by @mhilbrunner**
+
+### Fixed
+
 ## 5.2.6
 
 ### Fixed

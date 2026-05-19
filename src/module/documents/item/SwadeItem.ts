@@ -234,7 +234,7 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
     }
     changes.sort((a, b) => a.priority - b.priority);
     // Apply all changes
-    const overrides = this.overrides;
+    const overrides = this.overrides || {};
     for (const change of changes) {
       if (!change.key) continue;
       const changes = change.effect.apply(this, change);
