@@ -406,22 +406,6 @@ function creatureSchema() {
       },
       { label: 'SWADE.Adv' }
     ),
-    status: new fields.SchemaField(
-      {
-        isShaken: new fields.BooleanField({ label: 'SWADE.Shaken' }),
-        isDistracted: new fields.BooleanField({
-          label: 'SWADE.Distr',
-        }),
-        isVulnerable: new fields.BooleanField({
-          label: 'SWADE.Vuln',
-        }),
-        isStunned: new fields.BooleanField({ label: 'SWADE.Stunned' }),
-        isEntangled: new fields.BooleanField({ label: 'SWADE.Entangled' }),
-        isBound: new fields.BooleanField({ label: 'SWADE.Bound' }),
-        isIncapacitated: new fields.BooleanField({ label: 'SWADE.Incap' }),
-      },
-      { label: 'SWADE.Status' }
-    ),
     initiative: new fields.SchemaField(
       {
         hasHesitant: new fields.BooleanField({ label: 'SWADE.Hesitant' }),
@@ -545,11 +529,17 @@ class CreatureData<
     return encumbrance.value > encumbrance.max;
   }
 
-  get isIncapacitated(): boolean {
-    return (
-      (this as CreatureData).status.isIncapacitated ||
-      this.parent?.statuses.has(CONFIG.specialStatusEffects.INCAPACITATED)
-    );
+  get status() {
+    const statuses = this.parent.statuses;
+    return {
+      isShaken: statuses.has(CONFIG.statusEffects.shaken.id),
+      isDistracted: statuses.has(CONFIG.statusEffects.distracted.id),
+      isVulnerable: statuses.has(CONFIG.statusEffects.vulnerable.id),
+      isStunned: statuses.has(CONFIG.statusEffects.stunned.id),
+      isEntangled: statuses.has(CONFIG.statusEffects.entangled.id),
+      isBound: statuses.has(CONFIG.statusEffects.bound.id),
+      isIncapacitated: statuses.has(CONFIG.statusEffects.incapacitated.id)
+    }
   }
 
   // specifying this to resolve depth issue

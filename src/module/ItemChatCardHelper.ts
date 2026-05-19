@@ -1,7 +1,6 @@
 import { Attribute } from '../globals';
 import { ItemAction, RollModifier } from '../interfaces/additional.interface';
 import IRollOptions from '../interfaces/RollOptions.interface';
-import SwadeMeasuredTemplate from './canvas/SwadeMeasuredTemplate';
 import { SWADE } from './config';
 import { constants } from './constants';
 import { VehicleData } from './data/actor/vehicle';
@@ -10,7 +9,7 @@ import { TraitRoll } from './dice/TraitRoll';
 import SwadeActor from './documents/actor/SwadeActor';
 import SwadeItem from './documents/item/SwadeItem';
 import { Logger } from './Logger';
-import { getTrait } from './util';
+import { createRegionFromPreset, getTrait } from './util';
 
 /**
  * @deprecated
@@ -91,7 +90,7 @@ export default class ItemChatCardHelper {
 
     if (action === 'template') {
       const template = button.dataset.template!;
-      SwadeMeasuredTemplate.fromPreset(template, item);
+      createRegionFromPreset(template, item);
       button.disabled = false;
       return null;
     }

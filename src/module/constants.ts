@@ -17,12 +17,25 @@ export const constants = {
     MBT: 'mbt',
     LBT: 'lbt',
   },
-  /** @enum */
+  /** 
+   * @deprecated 
+   * @enum
+   */
   STATUS_EFFECT_EXPIRATION: {
     StartOfTurnAuto: 0,
     StartOfTurnPrompt: 1,
-    EndOfTurnAuto: 2,
+    EndOFTurnAuto: 2,
     EndOfTurnPrompt: 3,
+  },
+  /** @enum */
+  ACTIVE_EFFECT_CHANGE_TYPE: {
+    ADD: 'add',
+    SUBTRACT: 'subtract',
+    MULTIPLY: 'multiply',
+    UPGRADE: 'upgrade',
+    DOWNGRADE: 'downgrade',
+    OVERRIDE: 'override',
+    CUSTOM: 'custom',
   },
   /** @enum */
   ADVANCE_TYPE: {

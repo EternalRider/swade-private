@@ -1,7 +1,6 @@
 import { EmptyObject } from 'fvtt-types/utils';
 import { ItemActions } from '../../../globals';
 import { ItemAction } from '../../../interfaces/additional.interface';
-import SwadeMeasuredTemplate from '../../canvas/SwadeMeasuredTemplate';
 import { constants } from '../../constants';
 import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
@@ -9,6 +8,7 @@ import SwadeItem from '../../documents/item/SwadeItem';
 import { TraitDie } from '../../documents/actor/SwadeActor.interface';
 import ItemCardService from '../../models/ItemCardService';
 import { VehicleData } from '../actor/vehicle';
+import { createRegionFromPreset } from '../../util';
 
 declare namespace ItemCardData {
   interface Schema extends foundry.data.fields.DataSchema {
@@ -131,7 +131,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
         await this._refreshMessage();
         break;
       case 'template':
-        SwadeMeasuredTemplate.fromPreset(btn.dataset.template!, this._item);
+        createRegionFromPreset(btn.dataset.template!, this._item);
         break;
       case 'reload':
         await this._item.reload();

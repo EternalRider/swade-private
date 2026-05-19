@@ -11,7 +11,6 @@ import { CompendiumTOC } from './module/apps/CompendiumTOC';
 import { RollDialog } from './module/apps/RollDialog';
 import SettingConfigurator from './module/apps/SettingConfigurator';
 import { SwadeActorTweaks, SwadeDocumentTweaks, SwadeItemTweaks } from './module/apps/SwadeDocumentTweaks';
-import SwadeMeasuredTemplate from './module/canvas/SwadeMeasuredTemplate';
 import SwadeToken from './module/canvas/SwadeToken';
 import SwadeTokenRuler from './module/canvas/SwadeTokenRuler';
 import { SWADE } from './module/config';
@@ -53,6 +52,7 @@ import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
 import {
+  createRegionFromPreset,
   deepFreeze,
   getDefaultAttackModifiers,
   getItemsBySwid,
@@ -95,6 +95,7 @@ const swadeAPI: SwadeGame = {
     getScaleName,
     getRankFromAdvanceAsString,
     getDefaultAttackModifiers,
+    createRegionFromPreset,
   },
   compendiumArt: {
     map: new Map<string, ArtworkMapping>(),
@@ -141,6 +142,13 @@ Hooks.once('init', () => {
   CONFIG.Cards.documentClass = SwadeCards;
   CONFIG.ChatMessage.documentClass = SwadeChatMessage;
 
+  // Register custom AE expiries, set expiry action
+  Object.assign(CONFIG.ActiveEffect.expiryEvents, {
+    turnStartPrompt: 'SWADE.Expiration.BeginPrompt',
+    turnEndPrompt: 'SWADE.Expiration.EndPrompt',
+  });
+  CONFIG.ActiveEffect.expiryAction = 'delete';
+
   //register System Data Model
   CONFIG.Actor.dataModels = data.actor.config;
   CONFIG.Item.dataModels = data.item.config;
@@ -155,10 +163,6 @@ Hooks.once('init', () => {
   CONFIG.RegionBehavior.typeIcons.attackModifiers = 'fa-solid fa-sliders';
 
   //register custom object classes
-  CONFIG.MeasuredTemplate.objectClass = SwadeMeasuredTemplate;
-  // SWADE's default cone template is a very special case that we're storing at angle===0
-  // This preserves access to the other types of cone definitions
-  CONFIG.MeasuredTemplate.defaults.angle = 0;
   CONFIG.Token.objectClass = SwadeToken;
   CONFIG.Token.rulerClass = SwadeTokenRuler;
   SwadeTokenRuler.applySWADEMovementConfig();
@@ -193,7 +197,11 @@ Hooks.once('init', () => {
   };
 
   //register custom status effects
-  CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
+  Object.defineProperty(CONFIG, 'statusEffects', {
+    value: foundry.utils.deepClone(SWADE.statusEffects),
+    configurable: true,
+    enumerable: true,
+  });
   Object.assign(CONFIG.specialStatusEffects, {
     COLDBODIED: 'cold-bodied',
     INCAPACITATED: 'incapacitated',

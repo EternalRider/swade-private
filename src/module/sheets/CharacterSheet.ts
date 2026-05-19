@@ -7,7 +7,6 @@ import ActiveEffectWizard from '../apps/ActiveEffectWizard';
 import { AdvanceEditor } from '../apps/AdvanceEditor';
 import AttributeManager from '../apps/AttributeManager';
 import { SwadeActorTweaks } from '../apps/SwadeDocumentTweaks';
-import SwadeMeasuredTemplate from '../canvas/SwadeMeasuredTemplate';
 import { SWADE } from '../config';
 import { constants } from '../constants';
 import { ChargeData } from '../data/fields/ChargesData';
@@ -681,7 +680,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     } else if (action === 'template') {
       //Handle template placement
       const template = button.dataset.template!;
-      SwadeMeasuredTemplate.fromPreset(template, item);
+      util.createRegionFromPreset(template, item);
     } else {
       ItemChatCardHelper.handleAction(item, this.actor, action, {
         additionalMods,
@@ -691,9 +690,6 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   }
 
   protected static async _toggleStatusEffect(this: CharacterSheet, _event: PointerEvent, target: HTMLElement) {
-    const key = target.dataset.key as string;
-    // this is just to make sure the status is false in the source data
-    await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(target.dataset.id as string);
   }
 
@@ -784,7 +780,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         {
           action: 'cancel',
           icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize('Cancel'),
+          label: game.i18n.localize('COMMON.Cancel'),
         },
       ],
     });

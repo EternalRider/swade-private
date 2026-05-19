@@ -1,12 +1,12 @@
 import { DeepPartial } from 'fvtt-types/utils';
-import { constants } from '../constants';
-import { getDieSidesRange } from '../util';
-import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 import { AdditionalStats, Attribute, DieSidesOption, SwadeApplicationTab } from '../../globals';
 import AttributeManager from '../apps/AttributeManager';
-import SwadeItem from '../documents/item/SwadeItem';
+import { constants } from '../constants';
 import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
+import SwadeItem from '../documents/item/SwadeItem';
+import { getDieSidesRange } from '../util';
+import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
 
 export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderContext> {
   #activeArcane = 'All';
@@ -171,7 +171,6 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       allApplicableEffects: Array.from(this.actor.allApplicableEffects()),
       arcanes: Array.from(arcanesSet).filter((a) => a),
       armorTooltip: this.actor.getArmorTooltip(),
-      category: this.actor.system.category,
       enrichedBiography,
       hasAdditionalStatsFields: Object.keys(additionalStats).length > 0,
       itemTypes,
@@ -238,9 +237,6 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   }
 
   protected static async _toggleStatusEffect(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
-    const key = target.dataset.key as string;
-    // this is just to make sure the status is false in the source data
-    await this.actor.update({ [`system.status.${key}`]: false });
     await this.actor.toggleActiveEffect(target.dataset.id as string);
   }
 
@@ -317,7 +313,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         {
           action: 'cancel',
           icon: '<i class="fas fa-times"></i>',
-          label: game.i18n.localize('Cancel'),
+          label: game.i18n.localize('COMMON.Cancel'),
         },
       ],
     });
@@ -458,7 +454,6 @@ interface NpcSheetRenderContext extends SwadeActorSheetV2.RenderContext {
   allApplicableEffects: ActiveEffect[];
   arcanes: string[];
   armorTooltip: string;
-  category: string;
   enrichedBiography: string;
   hasAdditionalStatsFields: boolean;
   itemTypes: Record<string, SwadeItem[]>;

@@ -8,7 +8,6 @@ import SwadeToken from '../canvas/SwadeToken';
 import * as chaseUtils from '../chaseUtils';
 import * as chat from '../chat';
 import { SWADE } from '../config';
-import { constants } from '../constants';
 import { BaseEffectData } from '../data/effect/base';
 import { ModifierData } from '../data/effect/modifier';
 import SwadeActor from '../documents/actor/SwadeActor';
@@ -21,7 +20,7 @@ import { registerCompendiumArt } from '../setup/compendiumArt';
 import * as setup from '../setup/setupHandler';
 import PlayerBennyDisplay from '../style/PlayerBennyDisplay';
 import { UserSummary } from '../style/UserSummary';
-import { stringToHTML } from '../util';
+import { createRegionFromPreset, stringToHTML } from '../util';
 import { onHotbarDrop } from './hotbarDrop';
 
 /** Hook callbacks for core hooks surrounding system setup and functionality */
@@ -135,8 +134,8 @@ export default class SwadeCoreHooks {
     }
 
     //set the localized parry skill
-    [CONFIG.statusEffects, SWADE.statusEffects].forEach((arr) => {
-      const proneParryModifier = arr.find((e) => e.id === 'prone')?.changes?.find((c) => c.key?.startsWith('@Skill'));
+    [CONFIG.statusEffects, SWADE.statusEffects].forEach((statuses) => {
+      const proneParryModifier = statuses.prone?.system?.changes?.find((c) => c.key?.startsWith('@Skill'));
       if (proneParryModifier) {
         proneParryModifier.key = `@Skill{${game.settings.get('swade', 'parryBaseSkill')}}[system.die.modifier]`;
       }
@@ -564,20 +563,20 @@ export default class SwadeCoreHooks {
     );
   }
 
-  static onGetSceneControlButtons(sceneControlButtons: Record<string, foundry.applications.ui.SceneControls.Control>) {
-    //get the measured template tools
-    const measure = sceneControlButtons.templates;
-    //add buttons
-    const numTools = Object.keys(measure.tools).length;
-    const newTemplateButtons = SWADE.measuredTemplatePresets.map((t, i) => ({
-      ...t.button,
-      order: numTools + i,
-    }));
-    measure.tools.clear.order = numTools + newTemplateButtons.length;
-    foundry.utils.mergeObject(
-      measure.tools,
-      newTemplateButtons.reduce((acc, t) => ({ ...acc, [t.name]: t }), {})
-    );
+  static onGetSceneControlButtons(controls: Record<string, foundry.applications.ui.SceneControls.Control>) {
+    const templatePresets = SWADE.regionPresets.reduce((acc, {button, shape}) => ({
+      ...acc,
+      [button.name]: {
+        ...button,
+        order: button.order + 9,
+        visible: canvas.regions?.templateMode,
+        onChange: () => createRegionFromPreset(button.name),
+      }
+    }), {});
+    Object.assign(controls.regions.tools, templatePresets);
+    controls.regions.tools.snap.order += 3;
+    controls.regions.tools.togglePalette.order += 3;
+    controls.regions.tools.clear.order += 3;
   }
 
   static async onRenderCombatantConfig(
@@ -663,62 +662,15 @@ export default class SwadeCoreHooks {
         { value: effect.system.conditionalEffect, disabled: !app.isEditable }
       );
 
-      const expirationOptions: foundry.applications.fields.FormSelectOption[] = [
-        {
-          label: 'SWADE.Expiration.BeginAuto',
-          value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnAuto),
-        },
-        {
-          label: 'SWADE.Expiration.BeginPrompt',
-          value: String(constants.STATUS_EFFECT_EXPIRATION.StartOfTurnPrompt),
-        },
-        {
-          label: 'SWADE.Expiration.EndAuto',
-          value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnAuto),
-        },
-        {
-          label: 'SWADE.Expiration.EndPrompt',
-          value: String(constants.STATUS_EFFECT_EXPIRATION.EndOfTurnPrompt),
-        },
-      ];
-      const expirationGroup = systemSchema.fields.expiration.toFormGroup(
-        { localize: true },
-        {
-          options: expirationOptions,
-          localize: true,
-          value: effect.system.expiration,
-          blank: 'SWADE.Expiration.None',
-          disabled: !app.isEditable,
-          dataset: { dtype: 'Number' }, // necessary in v12, can be removed in v13
-        }
-      );
       const loseTurnOnHoldGroup = systemSchema.fields.loseTurnOnHold.toFormGroup(
         { localize: true },
         { value: effect.system.loseTurnOnHold, disabled: !app.isEditable }
       );
 
-      const noneActive = !html.querySelector('section.active');
-
-      const tab = `
-        <a ${noneActive ? 'class="active"' : ''}data-action="tab" data-group="sheet" data-tab="expiration">
-          <i class="fa-solid fa-step-forward"></i> ${game.i18n.localize('SWADE.Expiration.TabLabel')}
-        </a>
-      `;
-      const durationSection = `
-        <section class="tab${noneActive ? ' active' : ''}" data-group="sheet" data-tab="expiration" data-application-part="expiration">
-          ${game.i18n.localize('SWADE.Expiration.Description')}
-          ${expirationGroup.outerHTML}
-          ${loseTurnOnHoldGroup.outerHTML}
-        </section>
-      `;
-
       html
         .querySelector('section[data-tab="details"] .form-group.stacked')
-        ?.insertAdjacentElement('afterend', conditionalGroup);
-      html.querySelector('nav.sheet-tabs a[data-tab="duration"]')?.insertAdjacentHTML('afterend', tab);
-      if (!html.querySelector('section.tab[data-tab="expiration"]')) {
-        html.querySelector('section[data-tab="duration"]')?.insertAdjacentHTML('afterend', durationSection);
-      }
+        ?.insertAdjacentElement('afterend', conditionalGroup)
+        ?.insertAdjacentElement('afterend', loseTurnOnHoldGroup);
     } else if (effect.system instanceof ModifierData) {
       const costGroup = effect.system.schema.fields.cost.toFormGroup({ localize: true }, { value: effect.system.cost });
       const limitGroup = effect.system.schema.fields.limit.toFormGroup(

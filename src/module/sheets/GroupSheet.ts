@@ -73,7 +73,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
       window: {
         title: `${game.i18n.format('DOCUMENT.Delete', { type })}: ${name}`,
       },
-      content: `<h3>${game.i18n.localize('AreYouSure')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarning', { name, parent: this.actor.name })}</p>`,
+      content: `<h3>${game.i18n.localize('SWADE.DialogConfirmPrompt')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarning', { name, parent: this.actor.name })}</p>`,
     });
     if (!proceed) return;
     existing.splice(index, 1);
@@ -222,7 +222,7 @@ export class GroupSheet extends SwadeActorSheetV2<GroupSheetRenderContext> {
       members.push({
         uuid,
         cssClass: actor ? '' : 'broken',
-        name: actor?.name ?? game.i18n.localize('Unknown'),
+        name: actor?.name ?? game.i18n.localize('COMMON.Unknown'),
         img: actor?.img ?? '/icons/svg/mystery-man.svg',
         profile: member.actor
           ? [
