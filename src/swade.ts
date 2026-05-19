@@ -52,6 +52,7 @@ import SwadeCombatTracker from './module/sidebar/SwadeCombatTracker';
 import SwadeTour from './module/tours/SwadeTour';
 import registerSWADETours from './module/tours/registration';
 import {
+  createRegionFromPreset,
   deepFreeze,
   getDefaultAttackModifiers,
   getItemsBySwid,
@@ -94,6 +95,7 @@ const swadeAPI: SwadeGame = {
     getScaleName,
     getRankFromAdvanceAsString,
     getDefaultAttackModifiers,
+    createRegionFromPreset,
   },
   compendiumArt: {
     map: new Map<string, ArtworkMapping>(),
