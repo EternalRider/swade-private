@@ -107,7 +107,7 @@ export default class SwadeActiveEffect<
       }
     }
     // A little duration migration before Core gets to it
-    if (data.duration && !data.duration.expiry && data.duration.rounds) {
+    if (data.duration && !data.duration.expiry && ('rounds' in data.duration)) {
       data.duration.expiry = (data.system.expiration < 2) ? 'turnStart' : 'turnEnd';
       if (data.system.expiration % 2) data.duration.expiry += 'Prompt';
     }
@@ -277,7 +277,7 @@ export default class SwadeActiveEffect<
     doc.system.stats[match[1]][target]?.push({
       label: change.effect.name,
       value: Number(change.value),
-      mode: change.mode,
+      type: change.type,
     });
   }
 

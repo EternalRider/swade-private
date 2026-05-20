@@ -38,6 +38,14 @@ export const constants = {
     CUSTOM: 'custom',
   },
   /** @enum */
+  CHAT_MESSAGE_MODES: {
+    PUBLIC: 'public',
+    GM: 'gm',
+    BLIND: 'blind',
+    SELF: 'self',
+    IC: 'ic'
+  },
+  /** @enum */
   ADVANCE_TYPE: {
     EDGE: 0,
     SINGLE_SKILL: 1,

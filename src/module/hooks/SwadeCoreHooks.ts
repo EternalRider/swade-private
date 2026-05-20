@@ -223,13 +223,13 @@ export default class SwadeCoreHooks {
 
     // Invoke character summarizer on selected character
     newOptions.push({
-      name: 'SWADE.ShowCharacterSummary',
+      label: 'SWADE.ShowCharacterSummary',
       icon: '<i class="fa-solid fa-users"></i>',
-      callback: (li) => {
+      onClick: (_event, li) => {
         const actor = game.actors!.get(li.dataset.entryId, { strict: true });
         CharacterSummarizer.summarizeCharacters([actor]);
       },
-      condition: (li) => {
+      visible: (li) => {
         const actor = game.actors!.get(li.dataset.entryId, { strict: true });
         return (
           actor.permission > CONST.DOCUMENT_OWNERSHIP_LEVELS.LIMITED && CharacterSummarizer.isSupportedActorType(actor)
@@ -295,21 +295,21 @@ export default class SwadeCoreHooks {
     if (app instanceof foundry.applications.sidebar.apps.Compendium) return;
 
     const actionCardEditor: foundry.applications.ux.ContextMenu.Entry<HTMLElement> = {
-      name: 'SWADE.OpenACEditor',
+      label: 'SWADE.OpenACEditor',
       icon: '<i class="fa-solid fa-edit"></i>',
-      condition: (li) => {
+      visible: (li) => {
         const deck = game.cards!.get(li.dataset.entryId, { strict: true });
         return deck.type === 'deck' && deck.isOwner && deck.cards.contents.every((c) => c.type === 'poker');
       },
-      callback: async (li) => {
+      onClick: async (_event, li) => {
         const deck = game.cards!.get(li.dataset.entryId, { strict: true });
         new ActionCardEditor({ cards: deck }).render({ force: true });
       },
     };
     const chaseLayout: foundry.applications.ux.ContextMenu.Entry<HTMLElement> = {
-      name: 'SWADE.LayOutChaseWithDeck',
+      label: 'SWADE.LayOutChaseWithDeck',
       icon: '<i class="fa-solid fa-shipping-fast"></i>',
-      condition: (li) => {
+      visible: (li) => {
         //return early if there's no canvas or scene to lay out cards
         if (!canvas || !canvas.ready || !canvas.scene) return false;
         const cardsID = li.dataset.entryId;
@@ -317,21 +317,21 @@ export default class SwadeCoreHooks {
         const isActionDeck = game.settings.get('swade', 'actionDeck') === cardsID;
         return deck.type === 'deck' && !isActionDeck && deck.cards.contents.every((c) => c.type === 'poker');
       },
-      callback: (li) => {
+      onClick: (_event, li) => {
         const deck = game.cards!.get(li.dataset.entryId, { strict: true });
         chaseUtils.layoutChase(deck);
       },
     };
     const setActionDeck: foundry.applications.ux.ContextMenu.Entry<HTMLElement> = {
-      name: 'SWADE.SetActionDeck',
+      label: 'SWADE.SetActionDeck',
       icon: '<i class="fas fa-swords"></i>',
-      condition: (li) => {
+      visible: (li) => {
         const cardsID = li.dataset.entryId!;
         const deck = game.cards!.get(cardsID, { strict: true });
         const isActionDeck = game.settings.get('swade', 'actionDeck') === cardsID;
         return deck.type === 'deck' && !isActionDeck && deck.cards.contents.every((c) => c.type === 'poker');
       },
-      callback: async (li) => {
+      onClick: async (_event, li) => {
         const deckId = li.dataset.entryId;
         game.settings.set('swade', 'actionDeck', deckId);
       },
@@ -346,14 +346,14 @@ export default class SwadeCoreHooks {
   ) {
     options.push(
       {
-        name: 'SWADE.CompendiumTOC.Toggle',
+        label: 'SWADE.CompendiumTOC.Toggle',
         icon: '<i class="fa-solid fa-book"></i>',
-        condition: (li) => {
+        visible: (li) => {
           const pack = game.packs.get(li.dataset.pack!, { strict: true });
           const rightType = CompendiumTOC.ALLOWED_TYPES.includes(pack.metadata.type);
           return !!game.user?.isGM && rightType;
         },
-        callback: async (li) => {
+        onClick: async (_event, li) => {
           const confirmation = await foundry.applications.api.DialogV2.confirm({
             window: {
               title: game.i18n.localize('SWADE.CompendiumTOC.Dialog.Title'),
@@ -375,14 +375,14 @@ export default class SwadeCoreHooks {
         },
       },
       {
-        name: 'SWADE.MigrateCompendium',
+        label: 'SWADE.MigrateCompendium',
         icon: '<i class="fa-solid fa-right-left"></i>',
-        condition: (li) => {
+        visible: (li) => {
           const pack = game.packs.get(li.dataset.pack, { strict: true });
           const isRightPackType = ['Actor', 'Item', 'Scene'].includes(pack.metadata.type);
           return !!game.user?.isGM && isRightPackType;
         },
-        callback: async (li) => await migrations.migrateCompendium(game.packs.get(li.dataset.pack, { strict: true })),
+        onClick: async (_event, li) => await migrations.migrateCompendium(game.packs.get(li.dataset.pack, { strict: true })),
       }
     );
   }
@@ -485,10 +485,10 @@ export default class SwadeCoreHooks {
     if (!players) return;
     context.push(
       {
-        name: game.i18n.localize('SWADE.BenniesGive'),
+        label: game.i18n.localize('SWADE.BenniesGive'),
         icon: '<i class="fa-solid fa-plus"></i>',
-        condition: (li) => game.user!.isGM && game.users?.get(li.dataset.userId!)?.isGM,
-        callback: async (li) => {
+        visible: (li) => game.user!.isGM && game.users?.get(li.dataset.userId!)?.isGM,
+        onClick: async (_event, li) => {
           const selectedUser = game.users?.get(li.dataset.userId!);
           await selectedUser?.setFlag('swade', 'bennies', (selectedUser?.getFlag('swade', 'bennies') ?? 0) + 1);
           ui.players?.render({ force: true });
@@ -500,22 +500,22 @@ export default class SwadeCoreHooks {
         },
       },
       {
-        name: game.i18n.localize('SWADE.BenniesRefresh'),
+        label: game.i18n.localize('SWADE.BenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
-        condition: () => game.user!.isGM,
-        callback: (li) => game.users?.get(li.dataset.userId!)?.refreshBennies(),
+        visible: () => game.user!.isGM,
+        onClick: (_event, li) => game.users?.get(li.dataset.userId!)?.refreshBennies(),
       },
       {
-        name: game.i18n.localize('SWADE.AllBenniesRefresh'),
+        label: game.i18n.localize('SWADE.AllBenniesRefresh'),
         icon: '<i class="fa-solid fa-sync"></i>',
-        condition: () => game.user!.isGM,
-        callback: () => PlayerBennyDisplay.refreshAll(),
+        visible: () => game.user!.isGM,
+        onClick: () => PlayerBennyDisplay.refreshAll(),
       },
       {
-        name: game.i18n.localize('SWADE.BenniesAdjustGM'),
+        label: game.i18n.localize('SWADE.BenniesAdjustGM'),
         icon: '<i class="fa-solid fa-coins"></i>',
-        condition: (li) => game.user!.isGM && game.users?.get(li.dataset.userId!)?.isGM,
-        callback: async (li) => {
+        visible: (li) => game.user!.isGM && game.users?.get(li.dataset.userId!)?.isGM,
+        onClick: async (_event, li) => {
           const gm = game.users?.get(li.dataset.userId!);
           const hasStaticBennies = game.settings.get('swade', 'staticGmBennies');
           const gmBennies = hasStaticBennies

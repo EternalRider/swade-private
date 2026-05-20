@@ -1082,52 +1082,60 @@ class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Su
     }
 
     effects.forEach((e: DerivedModifier) => {
-      switch (e.mode) {
-        case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
+      switch (e.type) {
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.MULTIPLY:
           derivedStat *= e.value;
           sources.push({
             label: e.label,
             value: e.value,
-            mode: e.mode,
+            type: e.type,
           });
           break;
-        case CONST.ACTIVE_EFFECT_MODES.ADD:
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD:
           derivedStat += e.value;
           sources.push({
             label: e.label,
             value: e.value,
-            mode: e.mode,
+            type: e.type,
           });
           break;
-        case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.SUBTRACT:
+          derivedStat -= e.value;
+          sources.push({
+            label: e.label,
+            value: -e.value,
+            type: e.type
+          });
+          break;
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.DOWNGRADE:
           if (derivedStat > e.value) {
             derivedStat = e.value;
             sources.length = 0;
             sources.push({
               label: e.label,
               value: e.value,
-              mode: e.mode,
+              type: e.type,
             });
           }
           break;
-        case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.UPGRADE:
           if (derivedStat < e.value) {
             derivedStat = e.value;
             sources.length = 0;
             sources.push({
               label: e.label,
               value: e.value,
-              mode: e.mode,
+              type: e.type,
             });
           }
           break;
-        case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE:
           derivedStat = e.value;
           sources.length = 0;
           sources.push({
             label: e.label,
             value: e.value,
-            mode: e.mode,
+            type: e.type,
           });
           break;
       }
@@ -1243,20 +1251,17 @@ class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Su
 
     sources.forEach((source) => {
       let effect = '';
-      switch (source.mode) {
-        case CONST.ACTIVE_EFFECT_MODES.MULTIPLY:
+      switch (source.type) {
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.MULTIPLY:
           effect = 'x' + source.value;
           break;
-        case CONST.ACTIVE_EFFECT_MODES.DOWNGRADE:
-          effect = game.i18n.localize('EFFECT.MODE_DOWNGRADE') + ' ' + source.value;
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.DOWNGRADE:
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.UPGRADE:
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.OVERRIDE:
+          effect = game.i18n.localize(`EFFECT.CHANGES.TYPES.${source.type}`) + ' ' + source.value;
           break;
-        case CONST.ACTIVE_EFFECT_MODES.UPGRADE:
-          effect = game.i18n.localize('EFFECT.MODE_UPGRADE') + ' ' + source.value;
-          break;
-        case CONST.ACTIVE_EFFECT_MODES.OVERRIDE:
-          effect = game.i18n.localize('EFFECT.MODE_OVERRIDE') + ' ' + source.value;
-          break;
-        case CONST.ACTIVE_EFFECT_MODES.ADD:
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.ADD:
+        case constants.ACTIVE_EFFECT_CHANGE_TYPE.SUBTRACT:
         default:
           effect = (source.value ?? 0).signedString();
       }
