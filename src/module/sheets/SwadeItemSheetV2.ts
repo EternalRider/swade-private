@@ -937,25 +937,25 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
       '.effects .header',
       [
         {
-          name: 'SWADE.ActiveEffects.AddGuided',
+          label: 'SWADE.ActiveEffects.AddGuided',
           icon: '<i class="fa-solid fa-hat-wizard"></i>',
-          condition: this.item.isOwner,
-          callback: () =>
+          visible: this.item.isOwner,
+          onClick: () =>
             new ActiveEffectWizard({ document: this.document }).render({
               force: true,
             }),
         },
         {
-          name: 'SWADE.ActiveEffects.AddModifier',
+          label: 'SWADE.ActiveEffects.AddModifier',
           icon: '<i class="fa-solid fa-bolt"></i>',
-          condition: this.item.isOwner,
-          callback: () => this.#createActiveEffect('modifier'),
+          visible: this.item.isOwner,
+          onClick: () => this.#createActiveEffect('modifier'),
         },
         {
-          name: 'SWADE.ActiveEffects.AddUnguided',
+          label: 'SWADE.ActiveEffects.AddUnguided',
           icon: '<i class="fa-solid fa-file-plus"></i>',
-          condition: this.item.isOwner,
-          callback: () => this.#createActiveEffect('base'),
+          visible: this.item.isOwner,
+          onClick: () => this.#createActiveEffect('base'),
         },
       ],
       {

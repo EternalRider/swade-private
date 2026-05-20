@@ -197,11 +197,7 @@ Hooks.once('init', () => {
   };
 
   //register custom status effects
-  Object.defineProperty(CONFIG, 'statusEffects', {
-    value: foundry.utils.deepClone(SWADE.statusEffects),
-    configurable: true,
-    enumerable: true,
-  });
+  CONFIG.statusEffects = foundry.utils.deepClone(SWADE.statusEffects);
   Object.assign(CONFIG.specialStatusEffects, {
     COLDBODIED: 'cold-bodied',
     INCAPACITATED: 'incapacitated',

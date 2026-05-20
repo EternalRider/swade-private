@@ -22,6 +22,19 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 6.0.1
+
+### Deprecated
+
+- `RollDialog#rollMode` getter now points to new `RollDialog#messageMode` getter. **by @roth-michael**
+
+### Fixed
+
+- Active Effects targeting Parry, Toughness, and Armor now properly support the "Subtract" change type. **by @roth-michael**
+- Dragging a combatant onto another to form a Group when one or the other doesn't have a dealt Initiative no longer throws an error. **by @roth-michael**
+- `CONFIG.statusEffects` should now be writable again, and accessible as an array if desired for backwards compatibility (normal v14 behavior). **by @roth-michael**
+- Fixed various deprecation warnings regarding `ActiveEffect#mode`. **by @roth-michael**
+
 ## 6.0.0
 
 ### Added

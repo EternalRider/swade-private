@@ -376,18 +376,18 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
   #setupItemContextMenu(html: HTMLElement) {
     const items: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[] = [
       {
-        name: 'SWADE.Reload',
+        label: 'SWADE.Reload',
         icon: '<i class="fa-solid fa-right-to-bracket"></i>',
-        condition: (i) => {
+        visible: (i) => {
           const item = this.actor.items.get(i.dataset.itemId);
           return item?.type === 'weapon' && !!item.system.shots && game.settings.get('swade', 'ammoManagement');
         },
-        callback: (i) => this.actor.items.get(i.dataset.itemId)?.reload(),
+        onClick: (_event, i) => this.actor.items.get(i.dataset.itemId)?.reload(),
       },
       {
-        name: 'SWADE.RemoveAmmo',
+        label: 'SWADE.RemoveAmmo',
         icon: '<i class="fa-solid fa-right-from-bracket"></i>',
-        condition: (i) => {
+        visible: (i) => {
           const item = this.actor.items.get(i.dataset.itemId);
           const isWeapon = item?.type === 'weapon';
           const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
@@ -399,12 +399,12 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
               item.system.reloadType === constants.RELOAD_TYPE.BATTERY)
           );
         },
-        callback: (i) => this.actor.items.get(i.dataset.itemId)?.removeAmmo(),
+        onClick: (_event, i) => this.actor.items.get(i.dataset.itemId)?.removeAmmo(),
       },
       {
-        name: 'SWADE.Ed',
+        label: 'SWADE.Ed',
         icon: '<i class="fa-solid fa-edit"></i>',
-        callback: (i) => {
+        onClick: (_event, i) => {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectid;
           if (itemId) this.actor.items.get(itemId)?.sheet?.render({ force: true });
@@ -415,10 +415,10 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         },
       },
       {
-        name: 'SWADE.Duplicate',
+        label: 'SWADE.Duplicate',
         icon: '<i class="fa-solid fa-copy"></i>',
-        condition: (i) => !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
-        callback: async (i) => {
+        visible: (i) => !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
+        onClick: async (_event, i) => {
           const item = this.actor.items.get(i.dataset.itemId);
           const cloned = await item?.clone(
             { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
@@ -428,9 +428,9 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         },
       },
       {
-        name: 'SWADE.Del',
+        label: 'SWADE.Del',
         icon: '<i class="fa-solid fa-trash"></i>',
-        callback: (i) => {
+        onClick: (_event, i) => {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.deleteDialog();

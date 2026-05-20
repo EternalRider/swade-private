@@ -169,7 +169,7 @@ export default class SwadeCombatant<
         return;
       }
     }
-    let lastInitiative = this.initiative;
+    let lastInitiative = this.initiative ?? 0;
     if (this.group && !this.isGroupLeader) {
       lastInitiative ??= this.group.initiative ?? this.group.system.lastInitiative;
       const leaderTurnNumber = this.parent.getGroupLeader(this.group.id).turnNumber;

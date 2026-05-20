@@ -73,12 +73,13 @@ export interface DerivedModifier {
   /** The value of the modifier */
   value: number;
   /** For modifiers from active effects
-   *  CUSTOM: 0;
-   *  MULTIPLY: 1;
-   *  ADD: 2;
-   *  DOWNGRADE: 3;
-   *  UPGRADE: 4;
-   *  OVERRIDE: 5;
+   *  CUSTOM: 'custom';
+   *  MULTIPLY: 'multiply';
+   *  ADD: 'add';
+   *  SUBTRACT: 'subtract'
+   *  DOWNGRADE: 'downgrade';
+   *  UPGRADE: 'upgrade';
+   *  OVERRIDE: 'override';
    */
-  mode?: ValueOf<typeof CONST.ACTIVE_EFFECT_MODES>;
+  type?: ValueOf<typeof constants.ACTIVE_EFFECT_CHANGE_TYPE>;
 }
