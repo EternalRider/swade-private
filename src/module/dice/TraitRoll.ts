@@ -91,7 +91,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
 
   override async toMessage<const Create extends boolean | null | undefined>(
     messageData: SwadeRoll.MessageData = {},
-    { rollMode = 'publicroll', create = true }: Roll.ToMessageOptions<Create> = {}
+    { messageMode = 'public', create = true }: Roll.ToMessageOptions<Create> = {}
   ): Promise<Roll.ToMessageReturn<Create>> {
     foundry.utils.setProperty(
       messageData,
@@ -101,7 +101,7 @@ export class TraitRoll extends SwadeRoll<ActorRollData> {
       })
     );
 
-    return super.toMessage(messageData, { rollMode, create });
+    return super.toMessage(messageData, { messageMode, create });
   }
 
   override applyReroll(actor: Actor.Implementation | null): boolean {

@@ -74,8 +74,16 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
     return title;
   }
 
+  get messageMode() {
+    return this.form!.querySelector<HTMLSelectElement>('#messageMode')!.value;
+  }
+
   get rollMode(): foundry.CONST.DICE_ROLL_MODES {
-    return this.form!.querySelector<HTMLSelectElement>('#rollMode')!.value as foundry.CONST.DICE_ROLL_MODES;
+    foundry.utils.logCompatibilityWarning(
+      'RollDialog#rollMode has been moved to RollDialog#messageMode',
+      { since: '6.0.1', until: '7.0' }
+    );
+    return this.messageMode as foundry.CONST.DICE_ROLL_MODES;
   }
 
   get isTraitRoll(): boolean {
@@ -144,10 +152,10 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
 
   override async _prepareContext(options) {
     const context = foundry.utils.mergeObject(await super._prepareContext(options), {
-      rollModes: CONFIG.Dice.rollModes,
+      messageModes: CONFIG.ChatMessage.modes,
       modGroups: foundry.utils.duplicate(CONFIG.SWADE.rollModifiers),
       extraButtonLabel: '',
-      rollMode: game.settings.get('core', 'rollMode'),
+      messageMode: game.settings.get('core', 'messageMode'),
       modifiers: this.modifiers.map(normalizeRollModifiers).map(this.#fillModifierLabels.bind(this)),
       formula: this.#buildRollForEvaluation().formula.replace(/(?<={[^}]*?),/g, ', '),
       isTraitRoll: this.isTraitRoll,
@@ -261,7 +269,7 @@ export class RollDialog extends HandlebarsApplicationMixin(ApplicationV2) {
         flavor: this.ctx.flavor,
         speaker: this.ctx.speaker,
       },
-      { rollMode: this.rollMode }
+      { messageMode: this.messageMode }
     )) as ChatMessage;
     // TODO: Remove type annotation after toMessage gets fixed upstream in types
     finalizedRoll.setMessageId(msg?.id as string);
@@ -415,5 +423,5 @@ interface RollDialogFormData {
   modifiers?: (RollModifier & { active: boolean })[];
   map?: number;
   noAcing?: boolean;
-  rollMode: foundry.CONST.DICE_ROLL_MODES;
+  messageMode: keyof CONFIG.ChatMessage.modes;
 }

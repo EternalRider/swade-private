@@ -325,7 +325,7 @@ SWADE:
   DiceConfLabel: Open Wild Die Configuration
   Formula: Formula
   SitMod: Situational Mod
-  RollMode: Roll Mode
+  RollMode: Message Mode
   RollExample: eg. +1d6x or -2
   Roll: Roll
   RollName: 'Roll {name}'

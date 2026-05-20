@@ -1,4 +1,5 @@
 import { ActorRollData } from '../../interfaces/roll.interface';
+import { constants } from '../constants';
 import { DamageRoll } from '../dice/DamageRoll';
 import { TraitRoll } from '../dice/TraitRoll';
 import type SwadeActor from '../documents/actor/SwadeActor';
@@ -10,44 +11,13 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs.Chat
   static DAMAGE_ROLL_REGEXP = new RegExp(`^(\\/d(?:amage)? )${dice}$`, 'i');
   static TRAIT_ROLL_REGEXP = new RegExp(`^(\\/t(?:rait)? )${dice}$`, 'i');
 
-  static MESSAGE_PATTERNS = {
-    damage: this.DAMAGE_ROLL_REGEXP,
-    trait: this.TRAIT_ROLL_REGEXP,
-    ...super.MESSAGE_PATTERNS,
+  static CHAT_COMMANDS = {
+    damage: {rgx: this.DAMAGE_ROLL_REGEXP, fn: SwadeChatLog.#processSwadeDiceCommand},
+    trait: {rgx: this.TRAIT_ROLL_REGEXP, fn: SwadeChatLog.#processSwadeDiceCommand},
+    ...super.CHAT_COMMANDS,
   };
 
-  #swadeRollCommands: SwadeRollCommand[] = ['damage', 'trait'];
-
-  override async processMessage(message: string, options: any = {}): Promise<ChatMessage.Implementation | undefined> {
-    let { speaker } = options;
-    message = message.trim();
-    if (!message) return;
-    const cls = ChatMessage.implementation;
-    speaker ??= cls.getSpeaker();
-
-    // Parse the message to determine the matching handler
-    const parsed = this.constructor.parse(message);
-    const command = parsed[0];
-
-    const isSwadeRoll = this.#swadeRollCommands.includes(command);
-
-    if (!isSwadeRoll) return super.processMessage(message, options);
-
-    // Set up basic chat data
-    const chatData: ChatMessage.CreateData = { speaker, user: game.user.id };
-
-    if (Hooks.call('chatMessage', this, message, chatData) === false) return;
-
-    const createOptions: ChatMessage.Database.CreateOperation<false> = {};
-
-    const match = parsed[1];
-
-    await this.#processSwadeDiceCommand(command, match, chatData, createOptions);
-
-    return cls.create(chatData, createOptions);
-  }
-
-  async #processSwadeDiceCommand(
+  static async #processSwadeDiceCommand(
     command: SwadeRollCommand,
     match: RegExpMatchArray,
     chatData: ChatMessage.CreateData,
@@ -56,57 +26,57 @@ export default class SwadeChatLog extends foundry.applications.sidebar.tabs.Chat
     const speaker = chatData.speaker as ChatMessage.SpeakerData | undefined;
     const actor = ChatMessage.implementation.getSpeakerActor(speaker) || game.user.character;
     const rollData = actor ? actor.getRollData() : {};
-    const rollMode = game.settings.get('core', 'rollMode');
+    const messageMode = game.settings.get('core', 'messageMode');
     const [formula, flavor] = match.slice(2, 4);
 
     switch (command) {
       case 'damage':
-        await this.#createRoll({
+        await SwadeChatLog.#createRoll({
           rollClass: DamageRoll,
           formula,
           flavor,
           chatData,
           rollData,
-          rollMode,
+          messageMode,
         });
         break;
       case 'trait':
-        await this.#processTraitRoll({
+        await SwadeChatLog.#processTraitRoll({
           formula,
           flavor,
           chatData,
           actor,
           rollData,
-          rollMode,
+          messageMode,
         });
         break;
     }
 
     chatData.sound = CONFIG.sounds.dice;
-    createOptions.rollMode = rollMode;
+    createOptions.messageMode = messageMode;
   }
 
-  async #processTraitRoll({ formula, flavor = '', chatData, actor, rollData, rollMode }: TraitRollContext) {
+  static async #processTraitRoll({ formula, flavor = '', chatData, actor, rollData, messageMode }: TraitRollContext) {
     const processed = processFormula(formula, 'trait', actor);
     try {
-      await this.#createRoll({
+      await SwadeChatLog.#createRoll({
         rollClass: TraitRoll,
         formula: processed.formula,
         flavor,
         chatData,
         rollData,
-        rollMode,
+        messageMode,
       });
     } catch {
       throw new Error(`${formula} is not a valid trait roll`);
     }
   }
 
-  async #createRoll({ rollClass, formula, flavor = '', chatData, rollData, rollMode }: RollContext): Promise<void> {
+  static async #createRoll({ rollClass, formula, flavor = '', chatData, rollData, messageMode }: RollContext): Promise<void> {
     if (flavor && !chatData.flavor) chatData.flavor = flavor;
     const roll = new rollClass(formula, rollData);
     await roll.evaluate({
-      allowInteractive: rollMode !== CONST.DICE_ROLL_MODES.BLIND,
+      allowInteractive: messageMode !== constants.CHAT_MESSAGE_MODES.BLIND,
     });
     chatData.rolls = [roll];
   }
@@ -118,7 +88,7 @@ interface RollContext {
   flavor: string;
   chatData: ChatMessage.CreateData;
   rollData: ActorRollData;
-  rollMode: string | null;
+  messageMode: string | null;
 }
 type TraitRollContext = Omit<RollContext, 'rollClass'> & {
   actor: SwadeActor | null;

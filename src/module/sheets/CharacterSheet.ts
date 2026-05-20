@@ -602,16 +602,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         };
       }
       if (effect.isTemporary) {
-        if (effect.duration.type === 'turns') {
-          val.duration = {
-            expiration: effect.expirationText, // constants.STATUS_EFFECT_EXPIRATION
-            rounds: effect.duration.rounds,
-            startRound: effect.duration.startRound,
-            startTurn: effect.duration.startTurn,
-            remaining: effect.duration.remaining,
-            label: effect.duration.label,
-          };
-        }
+        if (effect.duration) val.duration = { label: effect.duration.label };
         temporary.push(val);
       } else {
         permanent.push(val);
@@ -1143,77 +1134,77 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   #setupEquipStatusMenu(html: HTMLElement) {
     const items: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[] = [
       {
-        name: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),
+        label: game.i18n.localize('SWADE.ItemEquipStatus.Stored'),
         icon: '<i class="fas fa-archive"></i>',
-        condition: true,
-        callback: (i: HTMLOListElement) => {
+        visible: true,
+        onClick: (_event, i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.STORED);
         },
       },
       {
-        name: game.i18n.localize('SWADE.ItemEquipStatus.Carried'),
+        label: game.i18n.localize('SWADE.ItemEquipStatus.Carried'),
         icon: '<i class="fas fa-shopping-bag"></i>',
-        condition: true,
-        callback: (i: HTMLOListElement) => {
+        visible: true,
+        onClick: (_event, i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.CARRIED);
         },
       },
       {
-        name: game.i18n.localize('SWADE.ItemEquipStatus.Equipped'),
+        label: game.i18n.localize('SWADE.ItemEquipStatus.Equipped'),
         icon: '<i class="fas fa-tshirt"></i>',
-        condition: (i: HTMLOListElement) => {
+        visible: (i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           if (item.type === 'gear') return item.system.equippable;
           return !['weapon', 'consumable'].includes(item.type);
         },
-        callback: (i: HTMLOListElement) => {
+        onClick: (_event, i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.EQUIPPED);
         },
       },
       {
-        name: game.i18n.localize('SWADE.ItemEquipStatus.OffHand'),
+        label: game.i18n.localize('SWADE.ItemEquipStatus.OffHand'),
         icon: '<i class="fas fa-hand-paper"></i>',
-        condition: (i: HTMLOListElement) => {
+        visible: (i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           return item.type === 'weapon';
         },
-        callback: (i: HTMLOListElement) => {
+        onClick: (_event, i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.OFF_HAND);
         },
       },
       {
-        name: game.i18n.localize('SWADE.ItemEquipStatus.MainHand'),
+        label: game.i18n.localize('SWADE.ItemEquipStatus.MainHand'),
         icon: '<i class="fas fa-hand-paper fa-flip-horizontal"></i>',
-        condition: (i: HTMLOListElement) => {
+        visible: (i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           return item.type === 'weapon';
         },
-        callback: (i: HTMLOListElement) => {
+        onClick: (_event, i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.MAIN_HAND);
         },
       },
       {
-        name: game.i18n.localize('SWADE.ItemEquipStatus.TwoHands'),
+        label: game.i18n.localize('SWADE.ItemEquipStatus.TwoHands'),
         icon: '<i class="fas fa-sign-language"></i>',
-        condition: (i: HTMLOListElement) => {
+        visible: (i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           return item.type === 'weapon';
         },
-        callback: (i: HTMLOListElement) => {
+        onClick: (_event, i: HTMLOListElement) => {
           const id = i.closest<HTMLElement>('.item')?.dataset.itemId;
           const item = this.actor.items.get(id, { strict: true });
           item.setEquipState(constants.EQUIP_STATE.TWO_HANDS);
@@ -1229,10 +1220,10 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   #setupRechargeUsesMenu(html: HTMLElement) {
     const items: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[] = [
       {
-        name: game.i18n.localize('SWADE.Encounter'),
+        label: game.i18n.localize('SWADE.Encounter'),
         icon: '<i class="fa-solid fa-rotate-right"></i>',
-        condition: true,
-        callback: async () => {
+        visible: true,
+        onClick: async () => {
           const text = game.i18n.localize('SWADE.RechargeAllItemsEncounterConfirm');
           await foundry.applications.api.DialogV2.confirm({
             content: `<p class="text-center">${text}</p>`,
@@ -1248,10 +1239,10 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         },
       },
       {
-        name: game.i18n.localize('SWADE.Day'),
+        label: game.i18n.localize('SWADE.Day'),
         icon: '<i class="fa-solid fa-rotate"></i>',
-        condition: true,
-        callback: async () => {
+        visible: true,
+        onClick: async () => {
           const text = game.i18n.localize('SWADE.RechargeAllItemsDayConfirm');
           await foundry.applications.api.DialogV2.confirm({
             content: `<p class="text-center">${text}</p>`,
@@ -1279,20 +1270,20 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       '.effects .effect-add',
       [
         {
-          name: 'SWADE.ActiveEffects.AddGuided',
+          label: 'SWADE.ActiveEffects.AddGuided',
           icon: '<i class="fa-solid fa-hat-wizard"></i>',
-          condition: this.document.isOwner,
-          callback: (_li) => {
+          visible: this.document.isOwner,
+          onClick: () => {
             new ActiveEffectWizard({ document: this.document }).render({
               force: true,
             });
           },
         },
         {
-          name: 'SWADE.ActiveEffects.AddUnguided',
+          label: 'SWADE.ActiveEffects.AddUnguided',
           icon: '<i class="fa-solid fa-file-plus"></i>',
-          condition: this.document.isOwner,
-          callback: (_li) => {
+          visible: this.document.isOwner,
+          onClick: () => {
             this._createActiveEffect();
           },
         },
@@ -1304,18 +1295,18 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
   #setupItemContextMenu(html: HTMLElement) {
     const items: foundry.applications.ux.ContextMenu.Entry<HTMLElement>[] = [
       {
-        name: 'SWADE.Reload',
+        label: 'SWADE.Reload',
         icon: '<i class="fa-solid fa-right-to-bracket"></i>',
-        condition: (i) => {
+        visible: (i) => {
           const item = this.actor.items.get(i.dataset.itemId);
           return item?.type === 'weapon' && !!item.system.shots && game.settings.get('swade', 'ammoManagement');
         },
-        callback: (i) => this.actor.items.get(i.dataset.itemId)?.reload(),
+        onClick: (_event, i) => this.actor.items.get(i.dataset.itemId)?.reload(),
       },
       {
-        name: 'SWADE.RemoveAmmo',
+        label: 'SWADE.RemoveAmmo',
         icon: '<i class="fa-solid fa-right-from-bracket"></i>',
-        condition: (i) => {
+        visible: (i) => {
           const item = this.actor.items.get(i.dataset.itemId);
           const isWeapon = item?.type === 'weapon';
           const loadedAmmo = item?.getFlag('swade', 'loadedAmmo');
@@ -1327,12 +1318,12 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
               item.system.reloadType === constants.RELOAD_TYPE.BATTERY)
           );
         },
-        callback: (i) => this.actor.items.get(i.dataset.itemId)?.removeAmmo(),
+        onClick: (_event, i) => this.actor.items.get(i.dataset.itemId)?.removeAmmo(),
       },
       {
-        name: 'SWADE.Ed',
+        label: 'SWADE.Ed',
         icon: '<i class="fa-solid fa-edit"></i>',
-        callback: (i) => {
+        onClick: (_event, i) => {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.sheet?.render({ force: true });
@@ -1343,10 +1334,10 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         },
       },
       {
-        name: 'SWADE.Duplicate',
+        label: 'SWADE.Duplicate',
         icon: '<i class="fa-solid fa-copy"></i>',
-        condition: (i) => !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
-        callback: async (i) => {
+        visible: (i) => !!this.actor.items.get(i.dataset.itemId)?.isPhysicalItem,
+        onClick: async (_event, i) => {
           const item = this.actor.items.get(i.dataset.itemId);
           const cloned = await item?.clone(
             { name: game.i18n.format('DOCUMENT.CopyOf', { name: item.name }) },
@@ -1356,9 +1347,9 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         },
       },
       {
-        name: 'SWADE.Del',
+        label: 'SWADE.Del',
         icon: '<i class="fa-solid fa-trash"></i>',
-        callback: (i) => {
+        onClick: (_event, i) => {
           const itemId = i.dataset.itemId;
           const effectId = i.dataset.effectId;
           if (itemId) this.actor.items.get(itemId)?.deleteDialog();

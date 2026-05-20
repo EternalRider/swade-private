@@ -1,6 +1,7 @@
 import { RollModifier } from '../../interfaces/additional.interface';
 import { RollPart, RollRenderOptions, SwadeRollData, SwadeRollOptions } from '../../interfaces/roll.interface';
 import { Logger } from '../Logger';
+import { constants } from '../constants';
 import SwadeUser from '../documents/SwadeUser';
 import SwadeActor from '../documents/actor/SwadeActor';
 import { normalizeRollModifiers } from '../util';
@@ -37,7 +38,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
         blind: msg.blind,
       },
       {
-        rollMode: msg.getFlag('swade', 'rollMode') ?? game.settings.get('core', 'rollMode'),
+        messageMode: msg.getFlag('swade', 'messageMode') ?? msg.getFlag('swade', 'rollMode') ?? game.settings.get('core', 'messageMode'),
       }
     );
   }
@@ -73,7 +74,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
         blind: msg.blind,
       },
       {
-        rollMode: msg.getFlag('swade', 'rollMode') ?? game.settings.get('core', 'rollMode'),
+        messageMode: msg.getFlag('swade', 'messageMode') ?? msg.getFlag('swade', 'rollMode') ?? game.settings.get('core', 'messageMode'),
       }
     );
   }
@@ -144,15 +145,15 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
 
   override async toMessage<const Create extends boolean | null | undefined>(
     messageData: SwadeRoll.MessageData = {},
-    { rollMode, create = true }: Roll.ToMessageOptions<Create> = {}
+    { messageMode, create = true }: Roll.ToMessageOptions<Create> = {}
   ): Promise<Roll.ToMessageReturn<Create>> {
-    if (rollMode === 'roll') rollMode = undefined;
-    rollMode ||= game.settings.get('core', 'rollMode');
+    if (messageMode === 'roll') messageMode = undefined;
+    messageMode ||= game.settings.get('core', 'messageMode');
 
     // Perform the roll, if it has not yet been rolled
     if (!this._evaluated)
       await this.evaluate({
-        allowInteractive: rollMode !== CONST.DICE_ROLL_MODES.BLIND,
+        allowInteractive: messageMode !== constants.CHAT_MESSAGE_MODES.BLIND,
       });
 
     // Prepare chat data
@@ -161,7 +162,7 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
       {
         user: game.user!.id,
         sound: CONFIG.sounds.dice,
-        'flags.swade.rollMode': rollMode,
+        'flags.swade.messageMode': messageMode,
       },
       messageData
     );
@@ -172,8 +173,8 @@ export class SwadeRoll<D extends SwadeRollData = {}> extends Roll<D> {
     const msg = new cls(messageData);
 
     // Either create or return the data
-    if (create) return cls.create(msg.toObject(), { rollMode });
-    if (rollMode) msg.applyRollMode(rollMode);
+    if (create) return cls.create(msg.toObject(), { messageMode });
+    if (messageMode) msg.applyMode(messageMode);
     return msg.toObject();
   }
 
