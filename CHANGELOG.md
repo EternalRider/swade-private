@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 6.0.2
+
+### Fixed
+
+- Permanent Active Effects now properly show up and behave as permanent. **by @roth-michael**
+
 ## 6.0.1
 
 ### Deprecated

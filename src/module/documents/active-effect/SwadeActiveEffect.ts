@@ -107,7 +107,7 @@ export default class SwadeActiveEffect<
       }
     }
     // A little duration migration before Core gets to it
-    if (data.duration && !data.duration.expiry && ('rounds' in data.duration)) {
+    if (data.duration && !data.duration.expiry && (data.duration.units === 'rounds') && Number.isNumeric(data.duration.value)) {
       data.duration.expiry = (data.system.expiration < 2) ? 'turnStart' : 'turnEnd';
       if (data.system.expiration % 2) data.duration.expiry += 'Prompt';
     }
