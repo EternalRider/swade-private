@@ -172,7 +172,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
     _id: 'distracted000000',
     name: 'SWADE.Distr',
     duration: {
-      value: 1,
+      value: 2,
       units: 'rounds',
       expiry: 'turnEnd',
     },
@@ -232,7 +232,7 @@ export const statusEffects: Record<string, CONFIG.StatusEffect> = {
     _id: 'vulnerable000000',
     name: 'SWADE.Vuln',
     duration: {
-      value: 1,
+      value: 2,
       units: 'rounds',
       expiry: 'turnEnd',
     },
