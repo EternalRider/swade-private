@@ -760,8 +760,18 @@ export async function createRegionFromPreset(preset: string, item?: SwadeItem) {
   const highlightRAW = game.settings.get('swade', 'highlightTemplate');
   const presetData = SWADE.regionPresets.find(({button}) => button.name === preset);
   if (!presetData || !canvas.grid) return;
+
+  // Avoid duplicate names by appending numbers, like ClientDocument.defaultName does in core.
+  const existingRegions = canvas.scene?.regions ?? [];
+  const takenNames = new Set();
+  for (const r of existingRegions) takenNames.add(r.name);
+  const baseName = game.i18n.format('SWADE.Templates.RegionName', { name: _loc(presetData.button.title)});
+  let name = baseName;
+  let index = 1;
+  while (takenNames.has(name)) name = `${baseName} (${++index})`;
+
   const regionData = {
-    name: _loc(presetData.button.name),
+    name: name,
     color: game.user.color,
     levels: [canvas.level.id],
     visibility: CONST.REGION_VISIBILITY.ALWAYS,
@@ -771,8 +781,14 @@ export async function createRegionFromPreset(preset: string, item?: SwadeItem) {
       x: 0,
       y: 0,
     }],
-    flags: item ? { swade: { origin: item.uuid } } : {},
+    flags: {
+      swade: {
+        preset: preset,
+      },
+    },
   };
+  if (item) regionData.flags.swade['origin'] = item.uuid;
+
   switch (presetData.shape.type) {
     case 'cone':
       Object.assign(regionData.shapes[0], {
