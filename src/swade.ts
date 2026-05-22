@@ -396,11 +396,6 @@ Hooks.on('updateCombat', SwadeCoreHooks.onUpdateCombat);
 Hooks.on('targetToken', SwadeCoreHooks.onTargetToken);
 
 /* ------------------------------------ */
-/* Canvas Interactions  			          */
-/* ------------------------------------ */
-Hooks.on('dropCanvasData', SwadeCoreHooks.onDropCanvasData);
-
-/* ------------------------------------ */
 /* Third Party Integrations		          */
 /* ------------------------------------ */
 
