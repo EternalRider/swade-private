@@ -321,28 +321,28 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
     const entryOptions = super._getEntryContextOptions();
 
     // Remove the default re-draw action.
-    entryOptions.findSplice((v) => v.name === 'COMBAT.CombatantReroll');
+    entryOptions.findSplice((v) => v.name === 'COMBATANT.ACTIONS.Reroll');
 
     const getCombatant = (li: HTMLLIElement) => this.viewed!.combatants.get(li.dataset.combatantId);
 
     entryOptions.push(
       {
-        name: 'SWADE.MakeGroupLeader',
+        label: 'SWADE.MakeGroupLeader',
         icon: '<i class="fa-solid fa-users"></i>',
-        condition: (li: HTMLLIElement) => {
+        visible: (li: HTMLLIElement) => {
           const combatant = getCombatant(li);
           return game.user.isGM && combatant?.group && !combatant?.isGroupLeader;
         },
-        callback: (li: HTMLLIElement) => getCombatant(li).setIsGroupLeader(true),
+        onClick: (_event, li: HTMLLIElement) => getCombatant(li).setIsGroupLeader(true),
       },
       {
-        name: 'SWADE.GroupByName',
+        label: 'SWADE.GroupByName',
         icon: '<i class="fa-solid fa-users"></i>',
-        condition: (li: HTMLLIElement) => {
+        visible: (li: HTMLLIElement) => {
           const combatant = getCombatant(li);
           return game.user.isGM && !combatant?.group && this.getMatchingCombatantsByName(combatant)?.length;
         },
-        callback: (li: HTMLLIElement) => this.#onGroupByName(getCombatant(li)),
+        onClick: (_event, li: HTMLLIElement) => this.#onGroupByName(getCombatant(li)),
       }
     );
 
@@ -353,11 +353,11 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
     const entryOptions = super._getCombatContextOptions();
 
     entryOptions.push({
-      name: game.i18n.format('DOCUMENT.Create', {
+      label: game.i18n.format('DOCUMENT.Create', {
         type: game.i18n.localize('DOCUMENT.CombatantGroup'),
       }),
       icon: '<i class="fa-solid fa-users-rectangle"></i>',
-      callback: () => this.viewed?.createGroup(),
+      onClick: () => this.viewed?.createGroup(),
     });
 
     return entryOptions;
@@ -372,12 +372,12 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
     const getCombatantGroup = (li: HTMLLIElement) => this.viewed!.groups.get(li.dataset.groupId!);
     const entryOptions = [
       {
-        name: game.i18n.format('DOCUMENT.Update', {
+        label: game.i18n.format('DOCUMENT.Update', {
           type: game.i18n.localize('DOCUMENT.CombatantGroup'),
         }),
         icon: '<i class="fa-solid fa-edit"></i>',
-        condition: (li) => getCombatantGroup(li)?.isOwner,
-        callback: (li: HTMLLIElement) =>
+        visible: (li) => getCombatantGroup(li)?.isOwner,
+        onClick: (_event, li: HTMLLIElement) =>
           getCombatantGroup(li)?.sheet.render({
             force: true,
             position: {
@@ -387,33 +387,33 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
           }),
       },
       {
-        name: 'COMBAT.ClearMovementHistories',
+        label: 'COMBAT.ClearMovementHistories',
         icon: '<i class="fa-solid fa-shoe-prints"></i>',
-        condition: game.user.isGM,
-        callback: (li: HTMLLIElement) => getCombatantGroup(li)?.clearMovementHistories(),
+        visible: game.user.isGM,
+        onClick: (_event, li: HTMLLIElement) => getCombatantGroup(li)?.clearMovementHistories(),
       },
       {
-        name: game.i18n.format('DOCUMENT.Delete', {
+        label: game.i18n.format('DOCUMENT.Delete', {
           type: game.i18n.localize('DOCUMENT.CombatantGroup'),
         }),
         icon: '<i class="fa-solid fa-trash"></i>',
-        condition: game.user.isGM,
-        callback: (li: HTMLLIElement) => this.viewed?.removeGroup(getCombatantGroup(li)?.id),
+        visible: game.user.isGM,
+        onClick: (_event, li: HTMLLIElement) => this.viewed?.removeGroup(getCombatantGroup(li)?.id),
       },
       {
-        name: game.i18n.localize('SWADE.DeleteGroupAndCombatants'),
+        label: game.i18n.localize('SWADE.DeleteGroupAndCombatants'),
         icon: '<i class="fa-solid fa-dumpster"></i>',
-        condition: (li) => game.user.isGM && getCombatantGroup(li)?.members?.size,
-        callback: (li: HTMLLIElement) =>
+        visible: (li) => game.user.isGM && getCombatantGroup(li)?.members?.size,
+        onClick: (_event, li: HTMLLIElement) =>
           this.viewed?.removeGroup(getCombatantGroup(li)?.id, {
             deleteMembers: true,
           }),
       },
       {
-        name: 'OWNERSHIP.Configure',
+        label: 'OWNERSHIP.Configure',
         icon: '<i class="fa-solid fa-lock"></i>',
-        condition: game.user.isGM,
-        callback: (li) =>
+        visible: game.user.isGM,
+        onClick: (_event, li) =>
           new foundry.applications.apps.DocumentOwnershipConfig({
             document: getCombatantGroup(li),
             position: {

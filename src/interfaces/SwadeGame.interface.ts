@@ -20,13 +20,14 @@ import SwadeVehicleSheetV2 from '../module/sheets/VehicleSheetV2';
 import SwadeSocketHandler from '../module/SwadeSocketHandler';
 import SwadeTour from '../module/tours/SwadeTour';
 import {
+  createRegionFromPreset,
+  getDefaultAttackModifiers,
   getItemsBySwid,
-  getStatusEffectDataById,
-  slugify,
   getRankFromAdvance,
   getRankFromAdvanceAsString,
   getScaleName,
-  getDefaultAttackModifiers,
+  getStatusEffectDataById,
+  slugify,
 } from '../module/util';
 import { ArtworkMapping } from './ArtworkMapping.interface';
 
@@ -59,6 +60,7 @@ export interface SwadeGame {
     getScaleName: typeof getScaleName;
     getRankFromAdvanceAsString: typeof getRankFromAdvanceAsString;
     getDefaultAttackModifiers: typeof getDefaultAttackModifiers;
+    createRegionFromPreset: typeof createRegionFromPreset;
   };
   compendiumArt: {
     map: Map<string, ArtworkMapping>;

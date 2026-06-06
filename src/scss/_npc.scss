@@ -376,9 +376,12 @@ body.theme-light .swade.sheet.actor.npc,
   }
 
   .sheet-header {
-    height: 150px;
-    margin-right: 2px;
-    display: flex;
+    display: grid;
+    grid-template-columns: 120px auto;
+    grid-template-rows: repeat(2, auto);
+    grid-template-areas:
+      'profile-img header-fields'
+      'category category';
 
     //Actor Name
     .charline {
@@ -434,11 +437,11 @@ body.theme-light .swade.sheet.actor.npc,
 
     // Stats Fiels
     .header-fields {
+      grid-area: header-fields;
       flex-direction: row;
       flex-wrap: wrap;
       justify-content: space-evenly;
       flex: 1;
-      padding: 5px 0px;
       input {
         background: none;
         border: none;
@@ -471,6 +474,7 @@ body.theme-light .swade.sheet.actor.npc,
       border: none;
     }
     .profile-img-container {
+      grid-area: profile-img;
       height: 120px;
       width: 120px;
       .profile-img {
@@ -479,6 +483,10 @@ body.theme-light .swade.sheet.actor.npc,
         object-fit: contain;
         cursor: pointer;
       }
+    }
+    .category-container {
+      grid-area: category;
+      text-wrap: balance;
     }
     .conviction {
       width: 30%;

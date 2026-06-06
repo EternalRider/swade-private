@@ -22,6 +22,58 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 6.0.2
+
+### Fixed
+
+- Permanent Active Effects now properly show up and behave as permanent. **by @roth-michael**
+
+## 6.0.1
+
+### Deprecated
+
+- `RollDialog#rollMode` getter now points to new `RollDialog#messageMode` getter. **by @roth-michael**
+
+### Fixed
+
+- Active Effects targeting Parry, Toughness, and Armor now properly support the "Subtract" change type. **by @roth-michael**
+- Dragging a combatant onto another to form a Group when one or the other doesn't have a dealt Initiative no longer throws an error. **by @roth-michael**
+- `CONFIG.statusEffects` should now be writable again, and accessible as an array if desired for backwards compatibility (normal v14 behavior). **by @roth-michael**
+- Fixed various deprecation warnings regarding `ActiveEffect#mode`. **by @roth-michael**
+
+## 6.0.0
+
+### Added
+
+- Added compatibility with Foundry V14
+
+### Changed
+
+- Migrated Measured Templates over to Regions. (#1415) **by @roth-michael**
+- Migrated Active Effect Expiry to the v14 API. (#1417) **by @roth-michael**
+- Updated several i18n sections for v14. (#1441) **by @mhilbrunner**
+
+### Fixed
+
+## 5.2.6
+
+### Fixed
+
+- Fixed an issue that would prevent the character sheet from submitting form data when currency was not enabled. (#1435) (#1436) (#1437) **by @florad92**
+
+## 5.2.5
+
+### Fixed
+
+- Fixed an issue that would cause the wildcard symbol to be rendered multiple times when switching the search method on the actor directory. (#1430) **by @florad92**
+- The Wild Die can now be configured in the Foundry Dice Config Menu. (#1431) **by @florad92**
+- Restored the ability to use delta values in the currency field of the character sheet. Simply use values like `-200` or `+5` to adjust the input on the fly. **Note** to use this feature you need to replace the entire value with the adjustment. Doing math directly like `200+5` will not work. **by @florad92**
+- Added a missing class in the vehicle stash tab that would cause a rendering error with the collapsible sections. **by @florad92**
+
+### Removed
+
+- Removed the SWADE HUD in favor of an upcoming Actor Sheet Refactor. HUD Will be redistributed as a standalone module at a future date. **by @florad92**
+
 ## 5.2.4
 
 ### Changed

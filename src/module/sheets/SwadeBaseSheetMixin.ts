@@ -79,10 +79,10 @@ export function SwadeBaseSheetMixin<
 
     protected override async _prepareContext(options: DocumentSheetRenderOptions) {
       const context = await super._prepareContext(options);
-      return foundry.utils.mergeObject(context, {
+      return {
+        ...context,
         tabs: this._getTabs(),
-        document: this.document,
-      });
+      };
     }
 
     protected override _preSyncPartState(

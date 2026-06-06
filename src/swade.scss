@@ -38,12 +38,11 @@
 @use 'scss/apps/requirements-editor';
 @use 'scss/apps/card-picker';
 @use 'scss/apps/ambush-assistant';
-@use 'scss/swade-hud';
 @use 'scss/update-combatant';
 
 //sheets
 @use 'scss/sheets/group';
-@use 'scss/sheets//vehicle2';
+@use 'scss/sheets/vehicle2';
 
 // Highlight code in journals
 @use '../node_modules/highlight.js/scss/a11y-dark.scss';

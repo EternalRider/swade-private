@@ -145,7 +145,7 @@ class SwadeBaseActorData<
   prepareEmbeddedDocuments() {
     if (!this.parent) return;
     for (const effect of this.parent.effects) effect._safePrepareData();
-    this.parent.applyActiveEffects();
+    this.parent.applyActiveEffects("initial");
     const sortedItems = this.parent.items.contents.sort((a, b) => {
       // make sure actions come first
       if (a.type === 'action' && b.type !== 'action') return -1;

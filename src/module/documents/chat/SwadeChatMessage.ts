@@ -19,7 +19,8 @@ declare global {
         isRedraw?: boolean;
         pickedCard?: string;
         cards?: any[]; //TODO properly set card source data type
-        rollMode?: string;
+        messageMode?: string;
+        rollMode?: string; // TODO: Remove, just for compatibility
         [key: string]: unknown;
       };
       core?: {

@@ -32,11 +32,10 @@
     <div class='form-group behavior'>
       <label>{{localize 'SWADE.Expiration.Behavior'}}</label>
       <span class='form-fields'>
-        <select name='system.expiration' data-dtype='Number'>
+        <select name='duration.expiry'>
           {{selectOptions
             expirationOptions
-            localize=true
-            selected=effect.system.expiration
+            selected=effect.duration.expiry
             blank='SWADE.Expiration.None'
           }}
         </select>
@@ -48,7 +47,7 @@
     <div class='changes'>
       <header class='change header text-center'>
         <span class='label'>{{localize 'SWADE.EffectWizard.Change'}}</span>
-        <span class='mode'>{{localize 'SWADE.EffectWizard.Mode'}}</span>
+        <span class='type'>{{localize 'SWADE.EffectWizard.Type'}}</span>
         <span class='value'>{{localize 'SWADE.EffectWizard.Value'}}</span>
         <span></span>
       </header>
@@ -56,8 +55,8 @@
         {{#each changes}}
           <li data-index='{{@index}}' class='change'>
             <span class='label'>{{label}}</span>
-            <select class='mode'>
-              {{selectOptions @root.changeModes selected=this.mode localize=true}}
+            <select class='type'>
+              {{selectOptions @root.changeTypes selected=this.type localize=true}}
             </select>
             <input type='text' class='value' value='{{this.value}}' />
             <span class='change-controls'>

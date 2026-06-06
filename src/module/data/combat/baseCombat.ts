@@ -4,7 +4,9 @@ import type SwadeActor from '../../documents/actor/SwadeActor';
 import type { RollModifier } from '../../../interfaces/additional.interface';
 
 function baseCombatSchema() {
-  return {};
+  return {
+    awaitingNextRound: new foundry.data.fields.BooleanField()
+  };
 }
 
 export declare namespace BaseCombat {

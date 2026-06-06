@@ -169,6 +169,13 @@ export default class SwadeCombatant<
         return;
       }
     }
+    let lastInitiative = this.initiative ?? 0;
+    if (this.group && !this.isGroupLeader) {
+      lastInitiative ??= this.group.initiative ?? this.group.system.lastInitiative;
+      const leaderTurnNumber = this.parent.getGroupLeader(this.group.id).turnNumber;
+      const adjustment = 0.01 * (leaderTurnNumber - this.turnNumber);
+      lastInitiative -= adjustment;
+    }
     return {
       initiative: null,
       system: {
@@ -177,8 +184,9 @@ export default class SwadeCombatant<
         hasJoker: false,
         cardString: '',
         turnLost: false,
+        lastInitiative
         // jokerBenniesGiven removed from reset
-      },
+      }
     };
   }
 
@@ -192,7 +200,7 @@ export default class SwadeCombatant<
 
   async resetGroupInitiativeIfLeader() {
     if (!game.user.isGM || !this.isGroupLeader || !this?.group?.initiative) return;
-    return this.group?.update({ initiative: null });
+    return this.group?.update({ initiative: null, 'system.lastInitiative': this.group.initiative });
   }
 
   get roundHeld() {

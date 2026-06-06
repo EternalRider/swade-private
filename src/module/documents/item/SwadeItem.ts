@@ -227,14 +227,14 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
         ...effect.changes.map((change) => {
           const c = foundry.utils.deepClone(change);
           c.effect = effect;
-          c.priority = c.priority ?? c.mode * 10;
+          c.priority = c.priority ?? CONST.ACTIVE_EFFECT_CHANGE_TYPES[c.type];
           return c;
         })
       );
     }
     changes.sort((a, b) => a.priority - b.priority);
     // Apply all changes
-    const overrides = this.overrides;
+    const overrides = this.overrides || {};
     for (const change of changes) {
       if (!change.key) continue;
       const changes = change.effect.apply(this, change);
@@ -517,7 +517,7 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
       window: {
         title: `${game.i18n.format('DOCUMENT.Delete', { type })}: ${this.name}`,
       },
-      content: `<h3>${game.i18n.localize('AreYouSure')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarningPermanent', { name: this.name, parent: this.parent.name })}</p>`,
+      content: `<h3>${game.i18n.localize('SWADE.DialogConfirmPrompt')}</h3><p>${game.i18n.format('SWADE.DeleteFromParentWarningPermanent', { name: this.name, parent: this.parent.name })}</p>`,
     });
     if (!proceed) return false;
     return this.delete();
@@ -553,7 +553,7 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
       chatData.whisper = game.users!.filter((u) => u.isGM).map((u) => u.id!);
     } else {
       // Apply the roll mode to the message
-      msgClass.applyRollMode(chatData, game.settings.get('core', 'rollMode') ?? 'roll');
+      msgClass.applyMode(chatData, game.settings.get('core', 'messageMode') ?? 'public');
     }
 
     // Create the chat message
@@ -728,7 +728,7 @@ class SwadeItem<Subtype extends Item.SubType = Item.SubType> extends Item<Subtyp
         name: this.name,
       }),
     };
-    msgClass.applyRollMode(createData, game.settings.get('core', 'rollMode') ?? 'roll');
+    msgClass.applyMode(createData, game.settings.get('core', 'messageMode') ?? 'public');
     return msgClass.create(createData);
   }
 
