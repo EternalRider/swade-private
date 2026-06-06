@@ -57,7 +57,7 @@ declare namespace WeaponData {
     rangeType: foundry.data.fields.NumberField<{
       integer: true;
       nullable: true;
-      initial: null;
+      initial: constants.WEAPON_RANGE_TYPE.MIXED;
       choices: ChoicesType<typeof constants.WEAPON_RANGE_TYPE>;
     }>;
     rof: foundry.data.fields.NumberField<{ initial: 1 }>;
@@ -68,7 +68,7 @@ declare namespace WeaponData {
     currentShots: foundry.data.fields.NumberField<{ initial: 0 }>;
     ammo: foundry.data.fields.StringField<{ initial: '' }>;
     reloadType: foundry.data.fields.StringField<{
-      initial: typeof constants.RELOAD_TYPE.NONE;
+      initial: constants.RELOAD_TYPE.NONE;
       choices: ChoicesType<typeof constants.RELOAD_TYPE>;
     }>;
     ppReloadCost: foundry.data.fields.NumberField<{ initial: 2 }>;
@@ -106,7 +106,7 @@ class WeaponData extends SwadePhysicalItemData<WeaponData.Schema, WeaponData.Bas
       rangeType: new fields.NumberField({
         integer: true,
         nullable: true,
-        initial: null,
+        initial: constants.WEAPON_RANGE_TYPE.MIXED,
         choices: Object.values(constants.WEAPON_RANGE_TYPE),
         label: 'SWADE.Weapon.RangeType.Label',
       }),
