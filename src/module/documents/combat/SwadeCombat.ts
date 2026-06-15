@@ -850,9 +850,8 @@ export default class SwadeCombat<out SubType extends Combat.SubType = Combat.Sub
 
   protected async _handleTurnExpirations(combatant: SwadeCombatant, event: 'start'|'end', context: object) {
     if (!combatant?.actor || combatant.isDefeated) return;
-    const expirations = combatant.actor.effects.filter(e => e.isTemporary && e.shouldPromptDeletion(event, context));
-    for (const effect of expirations) {
-      await effect.expire();
+    for (const effect of combatant.actor.effects) {
+      await effect.handleTurnExpirations(event, context);
     }
   } 
 
