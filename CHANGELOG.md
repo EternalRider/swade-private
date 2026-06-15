@@ -24,9 +24,25 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 6.0.3
 
+### Added
+
+- Template regions have clearer (and numbered) names. (#1467) **by @mhilbrunner**
+  - Created templates now also store their Savage Worlds template type (Large Blast Template etc.) in a flag.
+- Added an optional, default location param to calcArmor. (#1470) **by ddbrown30**
+- Updated translations.
+
 ### Fixed
 
 - Editing item descriptions once again saves the correct data, instead of enriched text. (#1455) **by @mhilbrunner**
+- Active Effects now correctly expire based on SWADE rounds. (#468, #1029) **by @mhilbrunner**
+  - One of the oldest open issues! They used to expire one round later than expected, as SWADE counts the current round for duration.
+- Fix system statuses not being shown on tokens after V14. (#1451) **by @mhilbrunner**
+- Fix Joker's Wild retriggering after leaving On Hold. Now Bennys are once more only given out once. (#1460) **by @mhilbrunner**
+- Fix Active Effects being applied twice when drag-and-dropped on tokens after V14. (#1448) **by @mhilbrunner**
+- Fix ammunition error message on weapons with 0/0 shots. (#1452) **by @mhilbrunner**
+- Fix some radio boxes not rendering due to missing defaults. (#1453) **by @mhilbrunner**
+- Decreased chat timestamp font size to fix localization issues. (#1464) **by @mhilbrunner**
+- Added some missing localization strings. (#1454, #1466) **by @mhilbrunner**
 
 ## 6.0.2
 
