@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 6.0.3
+
+### Fixed
+
+- Editing item descriptions once again saves the correct data, instead of enriched text. (#1455) **by @mhilbrunner**
+
 ## 6.0.2
 
 ### Fixed

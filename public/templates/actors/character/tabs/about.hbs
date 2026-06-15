@@ -56,13 +56,13 @@
         </ol>
       {{/each}}
     {{else}}
-      {{editor
-        enrichedText.advances
-        target='system.advances.details'
-        button=editable
-        editable=editable
-        engine='prosemirror'
-      }}
+      {{#if editable}}
+        <prose-mirror toggled name='system.advances.details' value='{{actor.system.advances.details}}'>
+          {{{enrichedText.advances}}}
+        </prose-mirror>
+      {{else}}
+        {{{enrichedText.advances}}}
+      {{/if}}
     {{/if}}
   </section>
   <section class='tab background{{#if subtabs.background.active}} active{{/if}}' data-group='about' data-tab='background'>
