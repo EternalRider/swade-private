@@ -237,7 +237,7 @@ SWADE:
   DiceConfLabel: Ouvrir la configuration des dés
   Formula: Formule
   SitMod: Modificateur de situation
-  RollMode: Mode de jet
+  RollMode: Mode pour les messages
   RollExample: ex. +1d6x ou -2
   Roll: Lancer
   RollRaise: Avec Prouesse
@@ -414,9 +414,9 @@ SWADE:
       ou plus tard</em></p>"
     Behavior: Comportement des fins d'effet
     BeginAuto: Début du tour automatique
-    BeginPrompt: Début du tour sur demande
+    BeginPrompt: Début du tour, invite
     EndAuto: Fin du tour automatique
-    EndPrompt: Fin du tour sur demande
+    EndPrompt: Fin du tour, invite
     None: Aucun
     LooseTurnOnHold: perte du tour En attente
     Remaining: Restant
@@ -781,6 +781,7 @@ SWADE:
     Mode: Mode
     Changes: Changements
     SelectAttribute: Sélectionner un attribut
+    Type: Type
   EncumbranceSteps: Etapes d'encombrement
   HeavyArmor: Armure lourde
   HeavyWeapon: Arme lourde
@@ -1446,6 +1447,8 @@ SWADE:
     LinkScene: Scène liée
     StartEncounter: Début de la rencontre
     RedrawFor: Repioche de carte ({name})
+    MustDrawInitiative: On ne peut pas passer au tour suivant ou au round suivant
+      tant que tous les combattants n'ont pas joué leur initiative !
   HeadquartersSheet: Fiche de quartier général
   Elan: Panache
   InnatePower: Pouvoir inné
