@@ -25,7 +25,7 @@ export default class SwadeCombatant<
         'roundHeld',
         'turnLost',
         'firstRound',
-        // jokerBenniesGiven removed from keys
+        'jokerBenniesGiven',
       ];
       data.system ??= {};
 
@@ -161,7 +161,7 @@ export default class SwadeCombatant<
           system: {
             hasJoker: false,
             '-=turnLost': null,
-            // jokerBenniesGiven removed from reset
+            jokerBenniesGiven: false,
           },
         };
       } else {
@@ -184,8 +184,8 @@ export default class SwadeCombatant<
         hasJoker: false,
         cardString: '',
         turnLost: false,
-        lastInitiative
-        // jokerBenniesGiven removed from reset
+        lastInitiative,
+        jokerBenniesGiven: false,
       }
     };
   }
@@ -259,7 +259,7 @@ export default class SwadeCombatant<
     updates.push({
       _id: this.id,
       initiative,
-      system: { cardValue, suitValue, hasJoker, cardString },
+      system: { cardValue, suitValue, hasJoker, cardString, jokerBenniesGiven: false },
     });
 
     await combat?.updateEmbeddedDocuments('Combatant', updates);
