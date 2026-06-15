@@ -285,6 +285,8 @@ class WeaponData extends SwadePhysicalItemData<WeaponData.Schema, WeaponData.Bas
   /** Used by SwadeItem.canExpendResources */
   _canExpendResources(resourcesUsed = 1): boolean {
     if (!game.settings.get('swade', 'ammoManagement') || this.isMelee) return true;
+    // Ignore ammo if both current and max shots are 0 (unless this is reload type self).
+    if (!this.shots && !this.currentShots && (this.reloadType !== constants.RELOAD_TYPE.SELF)) return true;
 
     if (this.reloadType === constants.RELOAD_TYPE.NONE) {
       if (!this.usesAmmoFromInventory) return true;
@@ -308,6 +310,8 @@ class WeaponData extends SwadePhysicalItemData<WeaponData.Schema, WeaponData.Bas
 
     if (!game.settings.get('swade', 'ammoManagement')) return false;
     const usesAmmo = this.shots && this.currentShots;
+    // Ignore ammo if both current and max shots are 0 (unless this is reload type self).
+    if (!usesAmmo && (this.reloadType !== constants.RELOAD_TYPE.SELF)) return false;
 
     if (this.reloadType === constants.RELOAD_TYPE.NONE) {
       if (!this.usesAmmoFromInventory) return false;
