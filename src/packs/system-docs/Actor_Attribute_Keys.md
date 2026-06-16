@@ -87,9 +87,10 @@ These are more generic roll bonuses that improve all rolls of a certain category
 - Target Attack (Ranged): `system.stats.globalMods.targetAttackRanged`
 - Target Attack (Melee): `system.stats.globalMods.targetAttackMelee`
 - Target Damage: `system.stats.globalMods.targetDamage`
-- Gang Up: `system.stats.globalMods.gangUp`
+- Gang Up Attack: `system.stats.globalMods.gangUpAttack`
+- Gang Up Defend: `system.stats.globalMods.gangUpDefend`
 
-Note: Gang Up modifies the Gang Up bonus. Positive values increase the bonus for the attacker, negative values decrease it.
+Note: Gang Up Attack/Defend modifies the Gang Up bonus. Attack affects the bonus from attackers and their allies (e.g Formation Fighter) and Defend reduces the attacker's bonus when defending (e.g. Block/Improved Block). Both use positive values.
 
 #### Derived Stats
 
