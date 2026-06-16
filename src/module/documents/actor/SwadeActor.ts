@@ -1007,9 +1007,9 @@ class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Su
   }
 
   /** Calculates the correct armor value based on SWADE v5.0 and returns that value */
-  calcArmor(): number {
-    const torsoArmor = this._getArmorForLocation(constants.ARMOR_LOCATIONS.TORSO);
-    return this._calcDerivedEffects('armor', torsoArmor);
+  calcArmor(location = constants.ARMOR_LOCATIONS.TORSO): number {
+    const armor = this._getArmorForLocation(location);
+    return this._calcDerivedEffects('armor', armor);
   }
 
   /** Calculates the Toughness value without armor and returns it */

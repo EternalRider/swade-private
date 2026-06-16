@@ -25,9 +25,13 @@
       />
     </div>
   {{/if}}
-  <div class='editor-container'>
-    <prose-mirror toggled name='system.description' value='{{enrichedDescription}}'>
-      {{{enrichedDescription}}}
-    </prose-mirror>
-  </div>
+  {{#if editable}}
+    <div class='editor-container'>
+      <prose-mirror toggled name='system.description' value='{{document.system.description}}'>
+        {{{enrichedDescription}}}
+      </prose-mirror>
+    </div>
+  {{else}}
+    {{{enrichedDescription}}}
+  {{/if}}
 </section>

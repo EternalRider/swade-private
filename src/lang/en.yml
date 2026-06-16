@@ -988,6 +988,7 @@ SWADE:
       Place: Place Large Blast Template
     Available: Available Templates
     Possible: Possible Templates
+    RegionName: SW {name}
   CompendiumTOC:
     Toggle: Toggle use Compendium TOC
     Dialog:

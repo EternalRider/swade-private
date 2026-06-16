@@ -3,7 +3,7 @@
     <legend>{{localize 'SWADE.SelectNewGroupLeader'}}</legend>
     {{#each candidates}}
       <div>
-        <input id='candidate-{{id}}' type='radio' name='candidate' value='{{id}}' />
+        <input id='candidate-{{id}}' type='radio' name='candidate' value='{{id}}' {{#if @first}}checked{{/if}} />
         <label for='candidate-{{id}}'>{{name}}</label>
       </div>
     {{/each}}

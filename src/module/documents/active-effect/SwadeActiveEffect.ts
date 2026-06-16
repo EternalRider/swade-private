@@ -281,6 +281,21 @@ export default class SwadeActiveEffect<
     });
   }
 
+  async handleTurnExpirations(pointInTurn: 'start' | 'end', context: object = {}) {
+    if (!this.isTemporary) return;
+
+    const duration = this.updateDuration(context);
+    const remaining = duration.remaining ?? 0;
+
+    // SWADE rules count the current turn as part of the duration, so if duration is in rounds, check < 2 instead of 1.
+    if (remaining < 1 || (duration.units === 'rounds' && remaining < 2)) {
+      if (pointInTurn === 'start' && duration.expiry?.startsWith('turnStart') ||
+          pointInTurn === 'end' && duration.expiry?.startsWith('turnEnd')) {
+        await this.expire();
+      }
+    }
+  }
+
   /** This functions checks the effect expiration behavior and either auto-deletes or prompts for deletion */
   async expire() {
     if (!isFirstOwner(this.parent)) {
@@ -295,14 +310,11 @@ export default class SwadeActiveEffect<
       return callbackFn(this);
     }
 
-    await this.promptEffectDeletion();
-  }
-
-  shouldPromptDeletion(pointInTurn: 'start' | 'end', context: object={}): boolean {
-    const goalExpiry = `turn${pointInTurn.titleCase()}Prompt`;
-    if (this.duration.expiry !== goalExpiry) return false;
-    const remaining = this.updateDuration(context).remaining ?? 0;
-    return remaining < 1;
+    if (this.duration?.expiry?.includes('Prompt')) {
+      await this.promptEffectDeletion();
+    } else {
+      await this.delete();
+    }
   }
 
   async promptEffectDeletion() {
