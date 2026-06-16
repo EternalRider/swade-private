@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 6.1.0
+
+### Changed
+
+- Reworked the gang up calculation to better support all use-cases. The gangUp key has been split and replaced by gangUpAttack and gangUpDefend. **by @ddbrown30**
+
 ## 6.0.2
 
 ### Fixed
