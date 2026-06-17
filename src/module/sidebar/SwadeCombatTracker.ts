@@ -246,16 +246,29 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
     // Combat Tracker contains combatant groups, which means this would fire twice
     event.stopPropagation();
     const data = foundry.applications.ux.TextEditor.implementation.getDragEventData(event);
+    if (!data) return;
+    switch (data.type as string) {
+      case Combatant.documentName:
+        await this._handleCombatantDrop(event, data as Combatant.DropData);
+        break;
+      case ActiveEffect.documentName:
+        await this._handleActiveEffectDrop(event, data as ActiveEffect.DropData);
+        break;
+      default:
+        console.warn(`Cannot drop ${data.type} documents onto combatants!`);
+    }
+  }
 
+  protected async _handleCombatantDrop(event: DragEvent, data: Combatant.DropData) {
     const combatant = await SwadeCombatant.fromDropData(data);
     if (!combatant) return;
 
-    const groupLI = (event.target as HTMLElement).closest('li.combatant-group') as HTMLLIElement | undefined;
+    const groupLI = (event.target as HTMLElement).closest<HTMLLIElement>('li.combatant-group');
 
     if (groupLI) {
       // Drop on group: move to group if it exists and not already in it.
       const groupId = groupLI.dataset.groupId;
-      if (groupId != combatant.group?.id && this.viewed?.groups.get(groupId)) {
+      if (groupId !== combatant.group?.id && this.viewed?.groups.get(groupId)) {
         await combatant.setGroup(groupLI.dataset.groupId);
       }
     } else {
@@ -264,8 +277,8 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
         combatant.removeFromGroup();
       } else {
         // Else if dropped on other combatant, create a group around and follow that combatant.
-        const targetCombatantLI = (event.target as HTMLElement).closest('li.combatant') as HTMLLIElement | undefined;
-        const targetCombatant = this.viewed?.combatants?.get(targetCombatantLI.dataset.combatantId);
+        const targetCombatantLI = (event.target as HTMLElement).closest<HTMLLIElement>('li.combatant');
+        const targetCombatant = this.viewed?.combatants?.get(targetCombatantLI?.dataset.combatantId);
         if (!targetCombatant || targetCombatant.id == combatant.id) return;
         const group = await this.viewed?.createGroup();
         if (!group) return;
@@ -273,6 +286,17 @@ export default class SwadeCombatTracker extends foundry.applications.sidebar.tab
         await combatant.setGroup(group.id);
       }
     }
+  }
+
+  protected async _handleActiveEffectDrop(event: DragEvent, data: ActiveEffect.DropData) {
+    const dropTarget = (event.target as HTMLElement).closest<HTMLLIElement>('.combatant.dropTarget');
+    if (!dropTarget) return;
+    const combatant = this.viewed?.combatants.get(dropTarget.dataset.combatantId);
+    if (!combatant || !combatant.actor) return;
+    const effect = await ActiveEffect.fromDropData(data);
+    if (!effect) return;
+
+    await ActiveEffect.implementation.create(effect.toObject(), { parent: combatant.actor });
   }
 
   protected _onDragEnd(_event: DragEvent): void {
