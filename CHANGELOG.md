@@ -43,6 +43,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fix some radio boxes not rendering due to missing defaults. (#1453) **by @mhilbrunner**
 - Decreased chat timestamp font size to fix localization issues. (#1464) **by @mhilbrunner**
 - Added some missing localization strings. (#1454, #1466) **by @mhilbrunner**
+- Fixed the font size for the Additional Stats header on item sheets. (#1456) **@by florad92**
+- Fixed the ressurection of old Item Chat Card messages in the Chatlog. (#1450) **@by @ivanthesquid**
 
 ## 6.0.2
 
