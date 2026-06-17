@@ -476,14 +476,10 @@ export function getGangUpModifiers(
       return getEdgeToEdgeDistance(targetToken, t) < 1;
     });
 
-  //Of the defender allies, count how many are also next to the attacker or his allies
+  //Of the defender allies, count how many are also next to the attacker
   const numDefenderAllies =
     defenderAllies.filter((t: TokenDocument) => {
-      if (getEdgeToEdgeDistance(sourceToken, t) < 1) return true;
-      for (const attackerAlly of attackerAllies) {
-        if (getEdgeToEdgeDistance(attackerAlly, t) < 1) return true;
-      }
-      return false;
+      return getEdgeToEdgeDistance(sourceToken, t) < 1;
     }).length ?? 0;
 
   let gangUpBonus = totalAttackerAllyBonus - numDefenderAllies;
