@@ -29,7 +29,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Template regions have clearer (and numbered) names. (#1467) **by @mhilbrunner**
   - Created templates now also store their Savage Worlds template type (Large Blast Template etc.) in a flag.
 - Added an optional, default location param to calcArmor. (#1470) **by ddbrown30**
+- You can now drop Active Effects directly onto single Combatants. (#1449) **@by florad92**
 - Updated translations.
+
+### Changed
+
+- Changed the symbol for the leader of a Combatant Group from a helmet to a crown.
 
 ### Fixed
 
