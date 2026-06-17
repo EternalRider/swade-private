@@ -435,13 +435,21 @@ export function getGangUpModifiers(
     sourceActor = gunner ?? sourceActor.system.operator ?? sourceActor;
   }
 
-  const numAttackerAllies =
-    scene.tokens?.reduce((accumulator: number, t: TokenDocument) => {
-      if (t === sourceToken) return accumulator + 0;
-      if (t.disposition !== sourceToken.disposition) return accumulator + 0;
-      if (isIgnoredForGangUp(t)) return accumulator + 0;
-      if (getEdgeToEdgeDistance(targetToken, t) >= 1) return accumulator + 0;
+  //Get all the attacker allies that are next to the target
+  const attackerAllies =
+    scene.tokens?.filter((t: TokenDocument) => {
+      if (t === sourceToken) return false;
+      if (t.disposition !== sourceToken.disposition) return false;
+      if (isIgnoredForGangUp(t)) return false;
+      return getEdgeToEdgeDistance(targetToken, t) < 1;
+    });
 
+  //We can only benefit from gang up if we have at least one ally
+  if (attackerAllies.length === 0) return mods;
+
+  //Get the total bonus of all attacker allies
+  const totalAttackerAllyBonus =
+    attackerAllies.reduce((accumulator: number, t: TokenDocument) => {
       const tGlobalMods = foundry.utils.getProperty(t.actor!, 'system.stats.globalMods') as Record<
         string,
         DerivedModifier[]
@@ -459,19 +467,26 @@ export function getGangUpModifiers(
       return accumulator + gangUpContribution;
     }, 0) ?? 0;
 
-  const numDefenderAllies =
+  //Get all the defender allies that are next to the target
+  const defenderAllies =
     scene.tokens?.filter((t: TokenDocument) => {
       if (t === targetToken) return false;
       if (t.disposition !== targetToken.disposition) return false;
       if (isIgnoredForGangUp(t)) return false;
       return getEdgeToEdgeDistance(targetToken, t) < 1;
+    });
+
+  //Of the defender allies, count how many are also next to the attacker or his allies
+  const numDefenderAllies =
+    defenderAllies.filter((t: TokenDocument) => {
+      if (getEdgeToEdgeDistance(sourceToken, t) < 1) return true;
+      for (const attackerAlly of attackerAllies) {
+        if (getEdgeToEdgeDistance(attackerAlly, t) < 1) return true;
+      }
+      return false;
     }).length ?? 0;
 
-
-  //We can only benefit from gang up if we have at least one nearby ally
-  if (numAttackerAllies === 0) return mods;
-
-  let gangUpBonus = numAttackerAllies - numDefenderAllies;
+  let gangUpBonus = totalAttackerAllyBonus - numDefenderAllies;
 
   const attackerGlobalMods = foundry.utils.getProperty(sourceActor!, 'system.stats.globalMods') as Record<
     string,
