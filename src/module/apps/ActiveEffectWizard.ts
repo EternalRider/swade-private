@@ -347,9 +347,9 @@ export default class ActiveEffectWizard extends HandlebarsApplicationMixin(Appli
   #getExpirationOptions(): Record<number, string> {
     const validOptions = ['turnStart', 'turnEnd', 'turnStartPrompt', 'turnEndPrompt'];
     return Object.entries(ActiveEffect.EXPIRY_EVENTS)
-      .map(([value, label]) => ({value, label: _loc(label)}))
+      .map(([value, label]) => ({ value, label: _loc(label) }))
       .sort((a, b) => a.label.localeCompare(b.label, game.i18n.lang))
-      .reduce((events, {value, label}) => {
+      .reduce((events, { value, label }) => {
         if (!validOptions.includes(value)) return events;
         events[value] = label;
         return events;

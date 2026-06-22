@@ -49,7 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Decreased chat timestamp font size to fix localization issues. (#1464) **by @mhilbrunner**
 - Added some missing localization strings. (#1454, #1466) **by @mhilbrunner**
 - Fixed the font size for the Additional Stats header on item sheets. (#1456) **by @florad92**
-- Fixed the ressurection of old Item Chat Card messages in the Chatlog. (#1450) **by @ivanthesquid**
+- Fixed the resurection of old Item Chat Card messages in the Chatlog. (#1450) **by @ivanthesquid**
 - Improved slow sheet rendering for actors with large number of items due to text enrichment (#1299) **by @mhilbrunner**
 
 ### Changed
