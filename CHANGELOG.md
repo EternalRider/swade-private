@@ -28,8 +28,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Template regions have clearer (and numbered) names. (#1467) **by @mhilbrunner**
   - Created templates now also store their Savage Worlds template type (Large Blast Template etc.) in a flag.
-- Added an optional, default location param to calcArmor. (#1470) **by ddbrown30**
-- You can now drop Active Effects directly onto single Combatants. (#1449) **@by florad92**
+- Added an optional, default location param to calcArmor. (#1470) **by @ddbrown30**
+- You can now drop Active Effects directly onto single Combatants. (#1449) **by @florad92**
 - Updated translations.
 
 ### Changed
@@ -48,8 +48,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fix some radio boxes not rendering due to missing defaults. (#1453) **by @mhilbrunner**
 - Decreased chat timestamp font size to fix localization issues. (#1464) **by @mhilbrunner**
 - Added some missing localization strings. (#1454, #1466) **by @mhilbrunner**
-- Fixed the font size for the Additional Stats header on item sheets. (#1456) **@by florad92**
-- Fixed the ressurection of old Item Chat Card messages in the Chatlog. (#1450) **@by @ivanthesquid**
+- Fixed the font size for the Additional Stats header on item sheets. (#1456) **by @florad92**
+- Fixed the ressurection of old Item Chat Card messages in the Chatlog. (#1450) **by @ivanthesquid**
+- Improved slow sheet rendering for actors with large number of items due to text enrichment (#1299) **by @mhilbrunner**
 
 ## 6.0.2
 
