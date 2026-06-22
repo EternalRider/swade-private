@@ -73,7 +73,8 @@ SWADE:
     TargetAttackRanged: Target Attack (Ranged)
     TargetAttackMelee: Target Attack (Melee)
     TargetDamage: Target Damage
-    GangUp: Gang Up
+    GangUpAttack: Gang Up Attack
+    GangUpDefend: Gang Up Defend
     TargetGangUp: Target Gang Up Modifier
     Damage: All Damage
     AP: All Armor Piercing

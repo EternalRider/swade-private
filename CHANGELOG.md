@@ -52,6 +52,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Fixed the ressurection of old Item Chat Card messages in the Chatlog. (#1450) **by @ivanthesquid**
 - Improved slow sheet rendering for actors with large number of items due to text enrichment (#1299) **by @mhilbrunner**
 
+### Changed
+
+- Reworked the gang up calculation to better support all use-cases. The gangUp key has been split and replaced by gangUpAttack and gangUpDefend. **by @ddbrown30**
+
 ## 6.0.2
 
 ### Fixed

@@ -435,82 +435,115 @@ export function getGangUpModifiers(
     sourceActor = gunner ?? sourceActor.system.operator ?? sourceActor;
   }
 
-  const numAttackerAllies =
+  //Get all the attacker allies that are next to the target
+  const attackerAllies =
     scene.tokens?.filter((t: TokenDocument) => {
+      if (t === sourceToken) return false;
       if (t.disposition !== sourceToken.disposition) return false;
       if (isIgnoredForGangUp(t)) return false;
       return getEdgeToEdgeDistance(targetToken, t) < 1;
-    }).length ?? 0;
+    });
 
-  const numDefenderAllies =
+  //We can only benefit from gang up if we have at least one ally
+  if (attackerAllies.length === 0) return mods;
+
+  //Get the total bonus of all attacker allies
+  const totalAttackerAllyBonus =
+    attackerAllies.reduce((accumulator: number, t: TokenDocument) => {
+      const tGlobalMods = foundry.utils.getProperty(t.actor!, 'system.stats.globalMods') as Record<
+        string,
+        DerivedModifier[]
+      >;
+
+      //gangUpAttack applies both when attacking and as an ally during an attack
+      let gangUpContribution = 1;
+      if (tGlobalMods?.gangUpAttack && Array.isArray(tGlobalMods.gangUpAttack)) {
+        tGlobalMods.gangUpAttack.forEach((m: any) => {
+          if (!m.ignore) {
+            gangUpContribution += Number(m.value);
+          }
+        });
+      }
+      return accumulator + gangUpContribution;
+    }, 0) ?? 0;
+
+  //Get all the defender allies that are next to the target
+  const defenderAllies =
     scene.tokens?.filter((t: TokenDocument) => {
+      if (t === targetToken) return false;
       if (t.disposition !== targetToken.disposition) return false;
       if (isIgnoredForGangUp(t)) return false;
       return getEdgeToEdgeDistance(targetToken, t) < 1;
+    });
+
+  //Of the defender allies, count how many are also next to the attacker
+  const numDefenderAllies =
+    defenderAllies.filter((t: TokenDocument) => {
+      return getEdgeToEdgeDistance(sourceToken, t) < 1;
     }).length ?? 0;
 
-  let gangUpBonus = Math.min(4, numAttackerAllies - numDefenderAllies);
+  let gangUpBonus = totalAttackerAllyBonus - numDefenderAllies;
 
   const attackerGlobalMods = foundry.utils.getProperty(sourceActor!, 'system.stats.globalMods') as Record<
     string,
     DerivedModifier[]
   >;
 
-  if (attackerGlobalMods?.gangUp && Array.isArray(attackerGlobalMods.gangUp)) {
-    attackerGlobalMods.gangUp.forEach((m: any) => {
-      gangUpBonus += Number(m.value);
+  if (attackerGlobalMods?.gangUpAttack && Array.isArray(attackerGlobalMods.gangUpAttack)) {
+    attackerGlobalMods.gangUpAttack.forEach((m: any) => {
+      if (!m.ignore) {
+        gangUpBonus += Number(m.value);
+      }
     });
   }
 
   if (vehicleActor) {
     const vehicleGlobalMods = foundry.utils.getProperty(vehicleActor, 'system.stats.globalMods') as any;
-    if (vehicleGlobalMods?.gangUp && Array.isArray(vehicleGlobalMods.gangUp)) {
-      vehicleGlobalMods.gangUp.forEach((m: any) => {
-        gangUpBonus += Number(m.value);
+    if (vehicleGlobalMods?.gangUpAttack && Array.isArray(vehicleGlobalMods.gangUpAttack)) {
+      vehicleGlobalMods.gangUpAttack.forEach((m: any) => {
+        if (!m.ignore) {
+          gangUpBonus += Number(m.value);
+        }
       });
     }
   }
 
+  if (gangUpBonus <= 0) return mods;
+
+  gangUpBonus = Math.min(4, gangUpBonus);
+
+  mods.push({
+    label: label ?? game.i18n.localize('SWADE.GangUp'),
+    value: gangUpBonus,
+  });
+
   let targetGangUpMod = 0;
   const targetGangUpLabels: string[] = [];
   const targetActor = targetToken.actor;
+
   // Target Gang Up Modifiers (Active Effects)
   const targetGlobalMods = targetActor
     ? (foundry.utils.getProperty(targetActor, 'system.stats.globalMods') as any)
     : {};
 
-  if (targetGlobalMods?.gangUp && Array.isArray(targetGlobalMods.gangUp)) {
-    targetGlobalMods.gangUp.forEach((m: any) => {
-      targetGangUpMod += Number(m.value);
-      targetGangUpLabels.push(m.label);
+  if (targetGlobalMods?.gangUpDefend && Array.isArray(targetGlobalMods.gangUpDefend)) {
+    targetGlobalMods.gangUpDefend.forEach((m: any) => {
+      if (!m.ignore) {
+        targetGangUpMod += Number(m.value);
+        targetGangUpLabels.push(m.label);
+      }
     });
   }
 
-  const improvedBlock = targetActor?.getSingleItemBySwid('improved-block', 'edge');
-  if (improvedBlock) {
-    targetGangUpMod -= 2;
-    targetGangUpLabels.push(improvedBlock.name);
-  } else {
-    const block = targetActor?.getSingleItemBySwid('block', 'edge');
-    if (block) {
-      targetGangUpMod -= 1;
-      targetGangUpLabels.push(block.name);
-    }
-  }
-
-  if (gangUpBonus > 0) {
+  if (targetGangUpMod > 0) {
+    //The target mod can't be higher than the total bonus
+    targetGangUpMod = Math.min(targetGangUpMod, gangUpBonus);
     mods.push({
-      label: label ?? game.i18n.localize('SWADE.GangUp'),
-      value: gangUpBonus,
+      label: targetGangUpLabels.join(' + ') || game.i18n.localize('SWADE.GlobalMod.TargetGangUp'),
+      value: -targetGangUpMod,
     });
-    if (targetGangUpMod !== 0) {
-      const value = Math.max(targetGangUpMod, -gangUpBonus);
-      mods.push({
-        label: targetGangUpLabels.join(' + ') || game.i18n.localize('SWADE.GlobalMod.TargetGangUp'),
-        value,
-      });
-    }
   }
+
   return mods;
 }
 
