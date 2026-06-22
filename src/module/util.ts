@@ -436,13 +436,12 @@ export function getGangUpModifiers(
   }
 
   //Get all the attacker allies that are next to the target
-  const attackerAllies =
-    scene.tokens?.filter((t: TokenDocument) => {
-      if (t === sourceToken) return false;
-      if (t.disposition !== sourceToken.disposition) return false;
-      if (isIgnoredForGangUp(t)) return false;
-      return getEdgeToEdgeDistance(targetToken, t) < 1;
-    });
+  const attackerAllies = scene.tokens?.filter((t: TokenDocument) => {
+    if (t === sourceToken) return false;
+    if (t.disposition !== sourceToken.disposition) return false;
+    if (isIgnoredForGangUp(t)) return false;
+    return getEdgeToEdgeDistance(targetToken, t) < 1;
+  });
 
   //We can only benefit from gang up if we have at least one ally
   if (attackerAllies.length === 0) return mods;
@@ -468,13 +467,12 @@ export function getGangUpModifiers(
     }, 0) ?? 0;
 
   //Get all the defender allies that are next to the target
-  const defenderAllies =
-    scene.tokens?.filter((t: TokenDocument) => {
-      if (t === targetToken) return false;
-      if (t.disposition !== targetToken.disposition) return false;
-      if (isIgnoredForGangUp(t)) return false;
-      return getEdgeToEdgeDistance(targetToken, t) < 1;
-    });
+  const defenderAllies = scene.tokens?.filter((t: TokenDocument) => {
+    if (t === targetToken) return false;
+    if (t.disposition !== targetToken.disposition) return false;
+    if (isIgnoredForGangUp(t)) return false;
+    return getEdgeToEdgeDistance(targetToken, t) < 1;
+  });
 
   //Of the defender allies, count how many are also next to the attacker
   const numDefenderAllies =
@@ -791,14 +789,14 @@ export async function createEnrichedTextEmbed(
 
 export async function createRegionFromPreset(preset: string, item?: SwadeItem) {
   const highlightRAW = game.settings.get('swade', 'highlightTemplate');
-  const presetData = SWADE.regionPresets.find(({button}) => button.name === preset);
+  const presetData = SWADE.regionPresets.find(({ button }) => button.name === preset);
   if (!presetData || !canvas.grid) return;
 
   // Avoid duplicate names by appending numbers, like ClientDocument.defaultName does in core.
   const existingRegions = canvas.scene?.regions ?? [];
   const takenNames = new Set();
   for (const r of existingRegions) takenNames.add(r.name);
-  const baseName = game.i18n.format('SWADE.Templates.RegionName', { name: _loc(presetData.button.title)});
+  const baseName = game.i18n.format('SWADE.Templates.RegionName', { name: _loc(presetData.button.title) });
   let name = baseName;
   let index = 1;
   while (takenNames.has(name)) name = `${baseName} (${++index})`;
@@ -809,11 +807,13 @@ export async function createRegionFromPreset(preset: string, item?: SwadeItem) {
     levels: [canvas.level.id],
     visibility: CONST.REGION_VISIBILITY.ALWAYS,
     highlightMode: highlightRAW ? 'shapes' : 'coverage',
-    shapes: [{
-      type: presetData.shape.type,
-      x: 0,
-      y: 0,
-    }],
+    shapes: [
+      {
+        type: presetData.shape.type,
+        x: 0,
+        y: 0,
+      },
+    ],
     flags: {
       swade: {
         preset: preset,

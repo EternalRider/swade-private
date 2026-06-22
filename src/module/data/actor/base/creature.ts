@@ -539,8 +539,8 @@ class CreatureData<
       isStunned: statuses.has(CONFIG.statusEffects.stunned.id),
       isEntangled: statuses.has(CONFIG.statusEffects.entangled.id),
       isBound: statuses.has(CONFIG.statusEffects.bound.id),
-      isIncapacitated: statuses.has(CONFIG.statusEffects.incapacitated.id)
-    }
+      isIncapacitated: statuses.has(CONFIG.statusEffects.incapacitated.id),
+    };
   }
 
   // specifying this to resolve depth issue
