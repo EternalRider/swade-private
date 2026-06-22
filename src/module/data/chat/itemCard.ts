@@ -6,9 +6,10 @@ import type SwadeActor from '../../documents/actor/SwadeActor';
 import SwadeItem from '../../documents/item/SwadeItem';
 
 import { TraitDie } from '../../documents/actor/SwadeActor.interface';
+import SwadeChatMessage from '../../documents/chat/SwadeChatMessage';
 import ItemCardService from '../../models/ItemCardService';
-import { VehicleData } from '../actor/vehicle';
 import { createRegionFromPreset } from '../../util';
+import { VehicleData } from '../actor/vehicle';
 
 declare namespace ItemCardData {
   interface Schema extends foundry.data.fields.DataSchema {
@@ -48,9 +49,22 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
     '.free-reroll',
   ];
 
+  static {
+    Hooks.on('deleteChatMessage', (message) => {
+      const id = ItemCardData.#hookIds.get(message);
+      if (id !== undefined) {
+        Hooks.off('updateItem', id);
+        ItemCardData.#hookIds.delete(message);
+      }
+    });
+  }
+
+  // Class-level map: ChatMessage doc → live updateItem hook id.
+  // WeakMap so entries auto-clean when messages are GC'd.
+  static #hookIds = new WeakMap<SwadeChatMessage, number>();
+
   _item: SwadeItem | null = null;
   #handler = new ItemCardService();
-  #hookId: number | undefined = undefined;
 
   get macros(): { id: string; uuid: string }[] {
     if (!this._item) return [];
@@ -99,11 +113,7 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
   }
 
   override prepareDerivedData(this: ItemCardData) {
-    if (!this.#hookId) {
-      this.#hookId = Hooks.on('updateItem', (item) => {
-        if (item.uuid === this.uuid) this._refreshMessage();
-      });
-    }
+    this.prepareUpdateHookListener();
   }
 
   protected async _handleButtonClick(event: MouseEvent, btn: HTMLButtonElement, html: HTMLElement) {
@@ -296,6 +306,25 @@ class ItemCardData extends foundry.abstract.TypeDataModel<
 
   protected async _refreshMessage() {
     await ui.chat.updateMessage(this.parent, false);
+  }
+
+  private prepareUpdateHookListener() {
+    const parent = this.parent;
+    if (!parent) return;
+    const prior = ItemCardData.#hookIds.get(parent);
+    if (prior !== undefined) Hooks.off('updateItem', prior);
+    const id = Hooks.on('updateItem', (item) => {
+      if (item.uuid !== this.uuid) return;
+      // Defensive: if the doc was deleted via a path that skipped
+      // deleteChatMessage, self-clean instead of resurrecting it.
+      if (!game.messages?.get(parent.id)) {
+        Hooks.off('updateItem', id);
+        ItemCardData.#hookIds.delete(parent);
+        return;
+      }
+      this._refreshMessage();
+    });
+    ItemCardData.#hookIds.set(parent, id);
   }
 }
 

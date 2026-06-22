@@ -123,6 +123,10 @@ body.theme-light .swade-item-sheet,
     place-self: center;
   }
 
+  .additional-stats-header {
+    font-size: var(--font-size-16);
+  }
+
   .column-grid {
     display: grid;
     grid-template-rows: auto;
@@ -205,6 +209,7 @@ body.theme-light .swade-item-sheet,
       height: 100%;
     }
     .editor-content {
+      padding: 0 0.5rem;
       overflow-y: scroll;
     }
   }

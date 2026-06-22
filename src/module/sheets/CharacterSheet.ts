@@ -352,30 +352,12 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
         system.reloadType !== constants.RELOAD_TYPE.NONE &&
         system.reloadType !== constants.RELOAD_TYPE.SELF;
 
-      const itemEnrichmentOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions> = {
-        relativeTo: item,
-        rollData: item.getRollData(),
-        secrets: this.document.isOwner,
-      };
-
-      const enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.description,
-        itemEnrichmentOptions
-      );
-
-      const enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-        item.system.notes as string,
-        itemEnrichmentOptions
-      );
-
       foundry.utils.setProperty(item, 'actions', actions);
       foundry.utils.setProperty(item, 'hasDamage', hasDamage);
       foundry.utils.setProperty(item, 'hasTraitRoll', hasTraitRoll);
       foundry.utils.setProperty(item, 'hasAmmoManagement', hasAmmoManagement);
       foundry.utils.setProperty(item, 'hasReloadButton', hasReloadButton);
       foundry.utils.setProperty(item, 'hasMacros', hasMacros);
-      foundry.utils.setProperty(item, 'enrichedDescription', enrichedDescription);
-      foundry.utils.setProperty(item, 'enrichedNotes', enrichedNotes);
       if (type === 'power') foundry.utils.setProperty(item, 'powerPoints', item.powerPointObject);
     }
 

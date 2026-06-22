@@ -147,19 +147,6 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       const { system, type } = item;
       itemTypes[type] ??= [];
       if (!(system instanceof ActionData) || !item.system.hidden || hiddenActionOverride) {
-        const itemEnrichmentOptions: Partial<foundry.applications.ux.TextEditor.EnrichmentOptions> = {
-          relativeTo: item,
-          rollData: item.getRollData(),
-          secrets: this.document.isOwner,
-        };
-        item.enrichedDescription = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          item.system.description,
-          itemEnrichmentOptions
-        );
-        item.enrichedNotes = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
-          item.system.notes,
-          itemEnrichmentOptions
-        );
         itemTypes[type].push(item);
       }
     }

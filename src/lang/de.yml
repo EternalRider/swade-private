@@ -12,7 +12,7 @@ SWADE:
   Tough: Robustheit
   Ancestry: Volk
   Archetype: Archetyp
-  Pace: Bew.
+  Pace: Bewegung
   Running: Sprinten
   RunningDie: Sprintwürfel
   RollRun: Klicke zum Sprinten
@@ -24,7 +24,7 @@ SWADE:
   WildCard: Wildcard
   Extra: Statist
   Bennies: Bennys
-  Shaken: Angeschl.
+  Shaken: Angeschlagen
   Distr: Abgelenkt
   Vuln: Verwundbar
   Stunned: Betäubt
@@ -507,8 +507,8 @@ SWADE:
   ItemDmgMod: Schadensmodifikator
   RemoveEffectTitle: '{label} entfernen?'
   RemoveEffectBody: >-
-    <p style="text-align: center;"><strong>{label}</strong> von
-    <strong>{parent}</strong>entfernen?</p>
+    <p style="text-align: center;"><strong>{label}</strong> von <strong>{parent}</strong>
+    entfernen?</p>
   WorldBasics: Basiseinstellungen
   NoActionDeckFound: Kein Aktionskartendeck gefunden, es wird eines erstellt
   NoActionDeckDiscardPileFound: Kein Aktionskarten-Ablagestapel gefunden, es wird
@@ -792,23 +792,29 @@ SWADE:
     Cone:
       Short: Kegel
       Long: Kegelschablone
+      Place: Kegelschablone platzieren
     Stream:
       Short: Strahl
       Long: Strahlschablone
+      Place: Strahlschablone platzieren
     Small:
       Short: KFS
       Long: Kleine Flächenschablone
+      Place: Kleine Flächenschablone platzieren
     Medium:
       Short: MFS
       Long: Mittlere Flächenschablone
+      Place: Mittlere Flächenschablone platzieren
     Large:
       Short: GFS
       Long: Große Flächenschablone
+      Place: Große Flächenschablone platzieren
     Available: Verfügbare Schablonen
     Possible: Mögliche Schablonen
     SmallCone:
       Short: Kl. Kegel
       Long: Kleine Kegelschablone
+      Place: Kleine Kegelschablone platzieren
   CompendiumTOC:
     Dialog:
       Title: Umschalten bestätigen
@@ -949,6 +955,9 @@ SWADE:
       Prompt: <p>{name} droht eine Verletzung. Konstitutionsprobe wiederholen?</p>
       InjuryRoll: Konstitutionsprobe gegen Verletzung durch Ausgeschaltet
       TakeSuccess: Erleide Verletzung bis alle Wunden geheilt wurden
+      DefeatTitle: Als Besiegt markieren
+      MarkedDefeated: <p><strong>{name}</strong> wurde als besiegt markiert, ohne
+        zu verbluten.</p>
   CustomWildDie: '- Persönlicher Wildcard-Würfel -'
   RunningMod: Sprintmodifikator
   ColdBodied: Kalt
@@ -1033,6 +1042,12 @@ SWADE:
     Attack: Alle Angriffe
     Damage: Aller Schaden
     AP: Alles Panzerbrechende
+    TargetAttack: Ziel-Angriff
+    TargetAttackRanged: Ziel-Angriff (Fernkampf)
+    TargetAttackMelee: Ziel-Angriff (Nahkampf)
+    TargetDamage: Ziel-Schaden
+    GangUp: Überzahl
+    TargetGangUp: Ziel-Überzahlbonus
   Requirements:
     Editor:
       AddHint: Neue Voraussetzung
@@ -1350,6 +1365,44 @@ SWADE:
   DeleteEmbeddedChargePrompt: Sicher, dass Ladung {charge} gelöscht werden soll?
   RechargeType: Aufladetyp
   RechargeEncounterConfirm: Alle "pro Begegnung" Ladungen aufladen?
+  GMOverride: SL-Override
+  HUD:
+    ParryTooltip: 'Parade (Modifikator: {mod}, Schild: {shield})'
+    RollTooltip: Klicken, um {name} zu würfeln
+    ExpandTooltip: Klicken zum Aufklappen
+    ViewCharacterTooltip: Charakterbeschreibung
+    WoundsTooltip: 'Wunden (Linksklick: -1, Rechtsklick: +1)'
+    SoakTooltip: Klicken, um Schaden wegzustecken
+    OpenSheetTooltip: Linksklick für vollen Charakterbogen
+    FatigueTooltip: 'Erschöpfung (Linksklick: -1, Rechtsklick: +1)'
+    IncapacitatedTooltip: Klicken, um Ausgeschaltet umzuschalten
+    PaceTooltip: 'Bewegung: {pace} (Linksklick: Sprinten würfeln, Rechtsklick: durchschalten)'
+    SizeTooltip: 'Größe: {size} ({scale})'
+    ToughTooltip: 'Robustheit (Modifikator: {mod}, Rüstung: {armor})'
+    ConvictionTooltip: 'Entschlossenheit (Linsklick: umschalten, Rechtsklick: +1)'
+    BenniesTooltip: 'Bennys (Linksklick: -1, Rechtsklick: +1)'
+    CombatStateTooltip: Kampfzustand (Klicken zum Umschalten)
+    RunMacroTooltip: 'Makro ausführen: {name}'
+    ReloadTooltip: 'Nachladen: {name}'
+    UseConsumableTooltip: 'Benutzen: {name}'
+    RemoveTooltip: '{name} entfernen'
+    AddTooltip: '{name} hinzufügen'
+    RemoveAllConditionsTooltip: Aktive Zustände entfernen
+    RemoveAllConditionsLabel: Alle entfernen
+    AENoEffects: Keine Effekte
+    AEToggleTooltip: '{name} umschalten'
+    AERounds: 'Runden: {rounds}'
+    AEToggle: '{name} umschalten'
+    AEToggleInherited: Geerbter Effekt nicht umschaltbar
+    AEDragToApplyName: Ziehen um {name} anzuwenden
+    PowerPPTooltip: 'Machtpunkte: {pp}/{ppmax} (Linksklick: -1, Rechtsklick: +1)'
+  ResistRoll: Widerstand würfeln
+  ResistRollName: 'Widerstand würfeln: {name}'
+  RollName: '{name} würfeln'
+  NoAcing: Kein Explodieren
+  GangUpDamage: Überzahl
+  GangUpHint: Automatischer Überzahlbonus auf Schaden
+  RollDamageName: 'Schaden würfeln: {name}'
 TYPES:
   Actor:
     npc: NSC

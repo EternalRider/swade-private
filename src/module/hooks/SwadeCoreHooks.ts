@@ -715,30 +715,4 @@ export default class SwadeCoreHooks {
       },
     });
   }
-
-  static async onDropCanvasData(canvas: foundry.canvas.Canvas, data: Hooks.DropData, _event: DragEvent) {
-    const { uuid, x, y, type } = data;
-    if (type !== 'ActiveEffect' || !canvas.tokens?.active) return;
-    //grab the tokens at the drop position
-    const tokensAtDropPosition = [...canvas.tokens.placeables]
-      .sort((a, b) => b.document.sort - a.document.sort)
-      .sort((a, b) => b.document.elevation - a.document.elevation)
-      .filter((t) => t.localShape?.contains(x, y));
-    const targets = new Set<SwadeToken>(tokensAtDropPosition);
-    if (!targets?.size) return;
-    const controlled = new Set<SwadeToken>(canvas.tokens?.controlled);
-    if (controlled.size && targets.isSubsetOf(controlled)) {
-      //add the controlled to the target if the set of targeted tokens is a subset of the controlled tokens
-      controlled.forEach((t) => targets.add(t));
-    }
-    const effect = await fromUuid(uuid);
-    if (!effect) return;
-    const effectData = foundry.utils.mergeObject(effect.toObject(), {
-      system: { favorite: true },
-      origin: effect.parent.uuid,
-    });
-    await Promise.allSettled(
-      targets.map((token) => token.actor?.createEmbeddedDocuments('ActiveEffect', [effectData]))
-    );
-  }
 }

@@ -4,7 +4,7 @@
     <legend>{{prompt}}</legend>
     {{#each choices as |choice|}}
       <div>
-        <input type='radio' id='choice{{choice.value}}' name='choiceset' value='{{choice.value}}' />
+        <input type='radio' id='choice{{choice.value}}' name='choiceset' value='{{choice.value}}' {{#if @first}}checked{{/if}} />
         <label for='choice{{choice.value}}' class='choice'>{{choice.name}}</label>
       </div>
     {{/each}}

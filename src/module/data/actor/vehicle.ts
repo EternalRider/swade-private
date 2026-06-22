@@ -46,7 +46,8 @@ declare namespace VehicleData {
         trait: DerivedModifier[];
         attackRanged: DerivedModifier[];
         attackMelee: DerivedModifier[];
-        gangUp: DerivedModifier[];
+        gangUpAttack: DerivedModifier[];
+        gangUpDefend: DerivedModifier[];
         targetAttack: DerivedModifier[];
         targetAttackRanged: DerivedModifier[];
         targetAttackMelee: DerivedModifier[];
@@ -482,7 +483,8 @@ class VehicleData<
       trait: new Array<DerivedModifier>(),
       attackRanged: new Array<DerivedModifier>(),
       attackMelee: new Array<DerivedModifier>(),
-      gangUp: new Array<DerivedModifier>(),
+      gangUpAttack: new Array<DerivedModifier>(),
+      gangUpDefend: new Array<DerivedModifier>(),
       targetAttack: new Array<DerivedModifier>(),
       targetAttackRanged: new Array<DerivedModifier>(),
       targetAttackMelee: new Array<DerivedModifier>(),
