@@ -317,6 +317,15 @@ export default class SwadeActiveEffect<
     }
   }
 
+  get isExpiryTrackable() {
+    // We currently don't support expiration of AEs on items.
+    if (this.parent instanceof SwadeItem) return false;
+
+    // This handles other cases, like AEs in compendia etc.
+    const base = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(SwadeActiveEffect.prototype), "isExpiryTrackable");
+    return base?.get?.call(this) ?? false;
+  }
+
   async promptEffectDeletion() {
     const title = game.i18n.format('SWADE.RemoveEffectTitle', {
       label: this.name,
