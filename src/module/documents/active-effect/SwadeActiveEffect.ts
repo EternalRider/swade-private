@@ -510,6 +510,7 @@ export default class SwadeActiveEffect<
         : negativeColor;
     const color = Color.from(colorCode);
     for (const token of tokens) {
+      if (!token.visible || token.document?.isSecret) continue;
       token.ring?.flashColor(color, {
         duration: 1000,
         easing: CONFIG.Token.ring?.ringClass.createSpikeEasing(0.4),
