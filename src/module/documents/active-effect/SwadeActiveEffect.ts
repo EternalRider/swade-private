@@ -363,10 +363,9 @@ export default class SwadeActiveEffect<
 
   async resetDuration() {
     await this.update({
-      start: {
-        round: game.combat?.round ?? 1,
-        time: game.time.worldTime,
-      },
+      start: SwadeActiveEffect.getEffectStart(),
+      'duration.expired': false,
+      disabled: false,
     });
   }
 
