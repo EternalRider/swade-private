@@ -323,9 +323,6 @@ export default class SwadeActiveEffect<
     // See `_preCreate` note about issue #1478.
     if (this.parent instanceof SwadeItem) return false;
 
-    // We handle round-based expiration ourselves, exclude from ActiveEffectRegistry to prevent double-expiry conflicts.
-    if (this.duration?.units === 'rounds') return false;
-
     // This handles other cases, like AEs in compendia etc.
     const base = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(SwadeActiveEffect.prototype), "isExpiryTrackable");
     return base?.get?.call(this) ?? false;

@@ -30,6 +30,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## 6.0.3
 
+### Fixed
+
+- Fixed Active Effects on items expiring. (#1478) **by @mhilbrunner**
+- Fixed Active Effects not properly resetting their start time when being applied to actors. (#1478) **by @mhilbrunner**
+- Fixed Active Effects duration only being reset to a single round, instead of full duration, when manually reset on expiration. (#496) **by @mhilbrunner**
+
+## 6.0.3
+
 ### Added
 
 - Template regions have clearer (and numbered) names. (#1467) **by @mhilbrunner**
