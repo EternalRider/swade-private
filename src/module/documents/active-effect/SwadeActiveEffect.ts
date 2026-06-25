@@ -60,18 +60,18 @@ export default class SwadeActiveEffect<
   }
 
   get expiresAtStartOfTurn(): boolean {
-    return this.duration.expiry.startsWith('turnStart');
+    return this.duration?.expiry?.startsWith('turnStart');
   }
 
   get expiresAtEndOfTurn(): boolean {
-    return this.duration.expiry.startsWith('turnEnd');
+    return this.duration?.expiry?.startsWith('turnEnd');
   }
 
   get expirationText(): string {
     let localizationKey = 'SWADE.Expiration.';
-    const suffix = this.duration.expiry.endsWith("Prompt") ? 'Prompt' : 'Auto';
-    if (this.duration.expiry === 'turnStart') localizationKey += `Begin${suffix}`;
-    else if (this.duration.expiry === 'turnEnd') localizationKey += `End${suffix}`;
+    const suffix = this.duration?.expiry.endsWith("Prompt") ? 'Prompt' : 'Auto';
+    if (this.duration?.expiry === 'turnStart') localizationKey += `Begin${suffix}`;
+    else if (this.duration?.expiry === 'turnEnd') localizationKey += `End${suffix}`;
     else localizationKey += 'None';
     return _loc(localizationKey);
   }
@@ -285,12 +285,12 @@ export default class SwadeActiveEffect<
     if (!this.isTemporary) return;
 
     const duration = this.updateDuration(context);
-    const remaining = duration.remaining ?? 0;
+    const remaining = duration?.remaining ?? 0;
 
     // SWADE rules count the current turn as part of the duration, so if duration is in rounds, check < 2 instead of 1.
-    if (remaining < 1 || (duration.units === 'rounds' && remaining < 2)) {
-      if (pointInTurn === 'start' && duration.expiry?.startsWith('turnStart') ||
-          pointInTurn === 'end' && duration.expiry?.startsWith('turnEnd')) {
+    if (remaining < 1 || (duration?.units === 'rounds' && remaining < 2)) {
+      if (pointInTurn === 'start' && duration?.expiry?.startsWith('turnStart') ||
+          pointInTurn === 'end' && duration?.expiry?.startsWith('turnEnd')) {
         await this.expire();
       }
     }
@@ -454,7 +454,7 @@ export default class SwadeActiveEffect<
       // Vulnerable & Distracted should expire this round if combatant hasn't gone yet, and be attached to target combatant
       if (['vulnerable000000', 'distracted000000'].includes(this._id)) {
         const sourceUpdate = { 'start.combatant': combatant.id };
-        if ((combat.turn !== null) && (combat.turn < combatant.turnNumber) && (this.duration.units === 'rounds')) {
+        if ((combat.turn !== null) && (combat.turn < combatant.turnNumber) && (this.duration?.units === 'rounds')) {
           sourceUpdate['duration.value'] = this.duration.value - 1;
         }
         this.updateSource(sourceUpdate);
