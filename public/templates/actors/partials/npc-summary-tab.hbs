@@ -93,7 +93,7 @@
           </div>
         </header>
         <ul class='items-list skills-list'>
-          {{#each sortedSkills}}
+          {{#each itemTypes.skill}}
             <li class='skill item' data-item-id='{{id}}'>
               <a data-action='rollSkill'>
                 {{name}}&nbsp;d{{system.die.sides}}

@@ -151,8 +151,17 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         itemTypes[type].push(item);
       }
     }
+    const sortTypes = ['ability', 'action', 'edge', 'hindrance', 'skill'];
+    for (const t of Object.keys(itemTypes)) {
+      if (!sortTypes.includes(t)) continue;
+      itemTypes[t] = itemTypes[t].toSorted((a, b) => a.name.localeCompare(b.name));
+    }
 
     const additionalStats = this.#getAdditionalStats();
+    let wildcardIconURL = CONFIG.SWADE.wildCardIcons.regular;
+    if (game.settings.get('core', 'uiConfig')?.colorScheme?.applications === 'light') {
+      wildcardIconURL = CONFIG.SWADE.wildCardIcons.compendium;
+    }
     return {
       ...context,
       additionalStats: additionalStats,
@@ -174,6 +183,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       toughnessTooltip: this.actor.getPTTooltip('toughness'),
       useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
       wealthDieTypes: getDieSidesRange(4, 12),
+      wildcardIconURL: wildcardIconURL,
     };
   }
 
@@ -460,4 +470,5 @@ interface NpcSheetRenderContext extends SwadeActorSheetV2.RenderContext {
   toughnessTooltip: string;
   useAttributeShorts: boolean;
   wealthDieTypes: DieSidesOption[];
+  wildcardIconURL: string;
 }
