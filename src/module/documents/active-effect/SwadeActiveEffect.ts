@@ -319,6 +319,8 @@ export default class SwadeActiveEffect<
 
   get isExpiryTrackable() {
     // We currently don't support expiration of AEs on items.
+    // If we change that, we may need to handle `start.time` values mistakenly added by the V14 migration.
+    // See `_preCreate` note about issue #1478.
     if (this.parent instanceof SwadeItem) return false;
 
     // We handle round-based expiration ourselves, exclude from ActiveEffectRegistry to prevent double-expiry conflicts.
@@ -429,6 +431,20 @@ export default class SwadeActiveEffect<
 
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
+
+    // This mostly matches what super._preCreate() already does, overriding it with these differences:
+    // 1. We don't allow user-defined `start.time`,
+    //    instead always resetting it to current time when an AE is applied to an actor.
+    //    This is because in the V14 migration, some of our AEs mistakenly got a start time generated. See issue #1478.
+    // 2. We discard user-defined duration data with `null` values, instead of just checking the keys don't exist.
+    if (this.parent instanceof Actor && data.start?.time >= 0) {
+      const start = SwadeActiveEffect.getEffectStart();
+      for (const key of Object.keys(start)) {
+        // Prefer user-defined duration data except for `start.time`.
+        if (data.start?.[key] !== undefined && data.start?.[key] !== null && key !== 'time') delete start[key];
+      }
+      this.updateSource({ start });
+    }
 
     if (!data.img) {
       let path = 'systems/swade/assets/icons/active-effect.svg';
