@@ -201,7 +201,7 @@ export default class SwadeActiveEffect<
       );
       toCreate.push(effect);
     }
-    await this.actor?.createEmbeddedDocuments('ActiveEffect', toCreate);
+    await this.actor?.createEmbeddedDocuments('ActiveEffect', toCreate, { keepId: true });
   }
 
   private static _handleItemMatch(match: RegExpMatchArray, change: ActiveEffect.ChangeData, doc: SwadeActor | SwadeItem, options) {
