@@ -4,7 +4,7 @@
   data-tab='{{tab.id}}'
 >
   {{#*inline "powerEntry"}}
-    <li class="power-card power item" data-item-id="{{id}}" data-document-class="Item">
+    <li class="power-card power item" data-item-id="{{id}}" data-arcane="{{#if system.arcane}}{{system.arcane}}{{else}}general{{/if}}" data-document-class="Item">
       <header class="card-header flexrow">
         <div class="item-image" style="background-image: url('{{img}}')"></div>
         <h4 class="item-name">{{name}}</h4>
@@ -23,7 +23,7 @@
                 {{#if system.rank}}
                 <div>{{localize 'SWADE.Rank'}}:&nbsp;{{system.rank}}</div>
                 {{/if}} {{#if system.pp}}
-                <div>{{localize 'SWADE.PPAbbreviation'}}:&nbsp;{{system.pp}}</div>
+                <div>{{localize 'SWADE.PP'}}:&nbsp;{{system.pp}}</div>
                 {{/if}}
               </div>
               <div class="flexrow">
@@ -52,14 +52,18 @@
   {{/inline}}
   <div class="flexrow form-group header-field">
     <div class="arcane-tabs">
-      <div class="arcane" data-arcane="All" data-action="filterPowers">{{localize "SWADE.All"}}</div>
-      {{#each arcanes as |arcane id|}}
-        <div class="arcane" data-arcane="{{arcane}}" data-action="filterPowers">{{arcane}}</div>
+      {{#if powers.showGeneral}}
+        <div class="arcane" data-arcane="general" data-action="filterPowers">{{localize "SWADE.General"}}</div>
+      {{/if}}
+      {{#each powers.arcaneBackgrounds as |background key|}}
+        {{#unless (eq key "general")}}
+          <div class="arcane" data-arcane="{{key}}" data-action="filterPowers">{{key}}</div>
+        {{/unless}}
       {{/each}}
     </div>
     <!-- Global counter -->
     {{#unless settingrules.noPowerPoints}}
-      <div class="power-counter" data-arcane="All">
+      <div class="power-counter" data-arcane="general">
         <label>{{localize "SWADE.PP"}}</label>
         <input
           name="system.powerPoints.general.value"
@@ -76,35 +80,35 @@
           placeholder="{{localize 'SWADE.MaxPP'}}"
           data-dtype="Number"
         />    
-        <button type="button" class="adjust-counter" data-action="pp-refresh" data-arcane="general">
+        <button type="button" class="adjust-counter" data-action="pp-refresh" data-arcane="general" data-tooltip="{{localize "SWADE.RefreshPP"}}">
           <i class="fa-solid fa-arrows-rotate"></i>
         </button>
       </div>
       <!-- Individual counters -->
-      {{#each arcanes as |arcane|}}
-        <div class="power-counter" data-arcane="{{arcane}}" data-action="filterPowers">
-          {{#with (lookup @root.actor.system.powerPoints arcane)}}
+      {{#each powers.arcaneBackgrounds as |background key|}}
+        {{#unless (eq key "general")}}
+          <div class="power-counter" data-arcane="{{key}}">
             <label>{{localize "SWADE.PP"}}</label>
             <input
-              name="system.powerPoints.{{arcane}}.value"
+              name="{{background.valuePath}}"
               type="number"
-              value="{{value}}"
+              value="{{background.value}}"
               placeholder="{{localize 'SWADE.CurPP'}}"
               data-dtype="Number"
             />
             <span>/</span>
             <input
-              name="system.powerPoints.{{arcane}}.max"
+              name="{{background.maxPath}}"
               type="number"
-              value="{{max}}"
+              value="{{background.max}}"
               placeholder="{{localize 'SWADE.MaxPP'}}"
               data-dtype="Number"
             />     
-            <button type="button" class="adjust-counter" data-action="pp-refresh" data-arcane="{{arcane}}">
+            <button type="button" class="adjust-counter" data-action="pp-refresh" data-arcane="{{key}}" data-tooltip="{{localize "SWADE.RefreshPP"}}">
               <i class="fa-solid fa-arrows-rotate"></i>
             </button>
-          {{/with}}
-        </div>
+          </div>
+        {{/unless}}
       {{/each}}
     {{/unless}}
     <div class="header-field-add">
@@ -113,8 +117,10 @@
   </div>
   <div class="quickaccess-list">
     <powers class="powers-list">
-      {{#each actor.itemTypes.power}}
-      {{> "powerEntry"}}
+      {{#each powers.arcaneBackgrounds as |background key|}}
+        {{#each background.powers}}
+          {{> "powerEntry"}}
+        {{/each}}
       {{/each}}
     </powers>
   </div>

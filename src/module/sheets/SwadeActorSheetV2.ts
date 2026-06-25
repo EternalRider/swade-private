@@ -100,6 +100,39 @@ export class SwadeActorSheetV2<
     await this.actor.system.rollAdditionalStat(target.dataset.stat);
   }
 
+  protected getPowers(): SheetPowers {
+    // Deal with ABs and Powers.
+    const arcaneBackgrounds: Record<string, SheetArcaneBackground> = {};
+
+    for (const power of this.actor.itemTypes.power) {
+      const ab = power.system.arcane || 'general';
+      if (!arcaneBackgrounds[ab]) {
+        arcaneBackgrounds[ab] = {
+          valuePath: `system.powerPoints.${ab}.value`,
+          value: foundry.utils.getProperty(this.actor, `system.powerPoints.${ab}.value`),
+          maxPath: `system.powerPoints.${ab}.max`,
+          max: foundry.utils.getProperty(this.actor, `system.powerPoints.${ab}.max`),
+          powers: [],
+        };
+      }
+      arcaneBackgrounds[ab].powers.push(power);
+    }
+
+    // Sort the powers by their sort value.
+    for (const entry of Object.values(arcaneBackgrounds)) {
+      entry.powers.sort((a, b) => a.sort - b.sort);
+    }
+
+    const hasPowersWithoutArcane = arcaneBackgrounds?.general?.powers.length > 0;
+    const showGeneral = hasPowersWithoutArcane || game.settings.get('swade', 'alwaysGeneralPP');
+
+    return {
+      arcaneBackgrounds,
+      hasPowersWithoutArcane,
+      showGeneral,
+    };
+  }
+
   override async _prepareContext(options) {
     const superContext = await super._prepareContext(options);
     return {
@@ -303,6 +336,20 @@ export class SwadeActorSheetV2<
     // Perform the update
     return this.actor.updateEmbeddedDocuments('Item', updateData);
   }
+}
+
+export interface SheetArcaneBackground {
+  valuePath: string;
+  value: any;
+  maxPath: string;
+  max: any;
+  powers: SwadeItem[];
+}
+
+export interface SheetPowers {
+  hasPowersWithoutArcane: boolean;
+  arcaneBackgrounds: Record<string, SheetArcaneBackground>;
+  showGeneral: boolean;
 }
 
 export namespace SwadeActorSheetV2 {

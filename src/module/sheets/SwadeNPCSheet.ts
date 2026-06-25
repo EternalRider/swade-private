@@ -6,10 +6,10 @@ import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { getDieSidesRange } from '../util';
-import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
+import { SwadeActorSheetV2, SheetPowers } from './SwadeActorSheetV2';
 
 export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderContext> {
-  #activeArcane = 'All';
+  #activeArcane = 'general';
 
   static override DEFAULT_OPTIONS = {
     classes: ['swade-application', 'npc'],
@@ -117,7 +117,8 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         cssClass: 'themed theme-dark',
       });
     });
-    this._filterPowers();
+
+    this._filterPowers(context);
   }
 
   override async _onFirstRender(
@@ -150,18 +151,18 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         itemTypes[type].push(item);
       }
     }
-    const arcanesSet = new Set((itemTypes.power ?? []).map((p) => p.system.arcane));
+
     const additionalStats = this.#getAdditionalStats();
     return {
       ...context,
       additionalStats: additionalStats,
       allApplicableEffects: Array.from(this.actor.allApplicableEffects()),
-      arcanes: Array.from(arcanesSet).filter((a) => a),
       armorTooltip: this.actor.getArmorTooltip(),
       enrichedBiography,
       hasAdditionalStatsFields: Object.keys(additionalStats).length > 0,
       itemTypes,
       parryTooltip: this.actor.getPTTooltip('parry'),
+      powers: this.getPowers(),
       settingrules: {
         conviction: game.settings.get('swade', 'enableConviction'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -306,15 +307,24 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     });
   }
 
-  _filterPowers() {
+  _filterPowers(context: NpcSheetRenderContext | null = null) {
+    // Initialize selected AB to first real, non-general AB, if possible.
+    if (this.#activeArcane === 'general' && !context?.powers?.showGeneral) {
+      for (const key of Object.keys(context?.powers?.arcaneBackgrounds ?? {})) {
+        if (key?.length < 1 || key === 'general') continue;
+        this.#activeArcane = key;
+        break;
+      }
+    }
+
+    // Toggle AB selectors, PP counters and powers display depending on selected AB.
     this.element.querySelectorAll('.arcane, .power, .power-counter').forEach((el) => {
-      if (el.dataset.arcane === this.#activeArcane || this.#activeArcane === 'All') el.classList.add('active');
-      else el.classList.remove('active');
+      el.classList.toggle('active', el.dataset.arcane === this.#activeArcane);
     });
   }
 
   static #filterPowers(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
-    this.#activeArcane = target.dataset.arcane ?? 'All';
+    this.#activeArcane = target.dataset.arcane ?? 'general';
     this._filterPowers();
   }
 
@@ -439,12 +449,12 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
 interface NpcSheetRenderContext extends SwadeActorSheetV2.RenderContext {
   additionalStats: AdditionalStats;
   allApplicableEffects: ActiveEffect[];
-  arcanes: string[];
   armorTooltip: string;
   enrichedBiography: string;
   hasAdditionalStatsFields: boolean;
   itemTypes: Record<string, SwadeItem[]>;
   parryTooltip: string;
+  powers: SheetPowers;
   settingrules: Record<string, unknown>;
   sortedSkills: SwadeItem[];
   toughnessTooltip: string;
