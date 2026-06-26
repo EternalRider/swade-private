@@ -151,22 +151,36 @@ body.theme-light .swade.sheet.actor.npc,
             background: var(--input-background);
           }
 
+          .parry-block,
           .toughness-block {
             display: flex;
             flex-direction: row;
             input {
               flex: 2;
             }
-            .armor-value {
-              flex: 1;
+            .armor-value,
+            .parry-value {
+              display: block;
+              padding: 0;
               line-height: 27px;
               font-weight: 600;
               text-align: center;
-              background: url('/assets/icons/police-badge.svg') no-repeat center;
-              background-size: cover;
               border: none;
+              background-color: transparent;
+              --button-text-color: inherit;
+              &:disabled {
+                --button-text-color: inherit;
+              }
               &:not(:disabled) {
                 cursor: pointer;
+              }
+              img {
+                height: 1lh;
+                filter: var(--invert-if-dark);
+              }
+              span {
+                position: relative;
+                top: -1lh;
               }
             }
           }

@@ -32,7 +32,7 @@
         </div>
         <div class='attribute flex3 parry'>
           <div class='attribute-label'>{{localize 'SWADE.Parry'}}</div>
-          <div class='toughness-block'>
+          <div class='parry-block'>
             <input
               name='system.stats.parry.value'
               value='{{actor.system.stats.parry.value}}'
@@ -43,12 +43,13 @@
               data-tooltip='{{parryTooltip}}'
             />
             <button
-              class='armor-value'
+              class='parry-value'
               data-action='displayModifierDialog'
               data-display-property='parry'
               {{disabled actor.system.details.autoCalcParry}}
             >
-              {{actor.system.stats.parry.shield}}
+              <img src="/systems/swade/assets/sheet_parry.svg" />
+              <span>{{actor.system.stats.parry.shield}}</span>
             </button>
           </div>
         </div>
@@ -71,7 +72,8 @@
               data-tooltip='{{armorTooltip}}'
               {{disabled actor.system.details.autoCalcToughness}}
             >
-              {{actor.system.stats.toughness.armor}}
+              <img src="/systems/swade/assets/sheet_armor.svg" />
+              <span>{{actor.system.stats.toughness.armor}}</span>
             </button>
           </div>
         </div>
