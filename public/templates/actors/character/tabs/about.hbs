@@ -56,20 +56,16 @@
         </ol>
       {{/each}}
     {{else}}
-      {{#if editable}}
-        <prose-mirror toggled name='system.advances.details' value='{{actor.system.advances.details}}'>
-          {{{enrichedText.advances}}}
-        </prose-mirror>
-      {{else}}
+      <prose-mirror toggled name='system.advances.details' value='{{actor.system.advances.details}}' editable='{{editable}}'>
         {{{enrichedText.advances}}}
-      {{/if}}
+      </prose-mirror>
     {{/if}}
   </section>
   <section class='tab background{{#if subtabs.background.active}} active{{/if}}' data-group='about' data-tab='background'>
     <div class='editor-container'>
       <header class='section-header'>{{localize 'SWADE.Appearance'}}</header>
       <div class='editor-container'>
-        <prose-mirror toggled name='system.details.appearance' value='{{document.system.details.appearance}}'>
+        <prose-mirror toggled name='system.details.appearance' value='{{document.system.details.appearance}}' editable='{{editable}}'>
           {{{enrichedText.appearance}}}
         </prose-mirror>
       </div>
@@ -78,19 +74,19 @@
       <header class='section-header'>
         {{localize 'SWADE.CharacterGoals'}}
       </header>
-      <prose-mirror toggled name='system.details.goals' value='{{document.system.details.goals}}'>
+      <prose-mirror toggled name='system.details.goals' value='{{document.system.details.goals}}' editable='{{editable}}'>
         {{{enrichedText.goals}}}
       </prose-mirror>
     </div>
     <div class='editor-container'>
       <header class='section-header'>{{localize 'SWADE.Biography'}}</header>
-      <prose-mirror toggled name='system.details.biography.value' value='{{document.system.details.biography.value}}'>
+      <prose-mirror toggled name='system.details.biography.value' value='{{document.system.details.biography.value}}' editable='{{editable}}'>
         {{{enrichedText.biography}}}
       </prose-mirror>
     </div>
   </section>
   <section class='tab actor-notes{{#if subtabs.notes.active}} active{{/if}}' data-group='about' data-tab='notes'>
-    <prose-mirror toggled name='system.details.notes' value='{{document.system.details.notes}}'>
+    <prose-mirror toggled name='system.details.notes' value='{{document.system.details.notes}}' editable='{{editable}}'>
       {{{enrichedText.notes}}}
     </prose-mirror>
   </section>
