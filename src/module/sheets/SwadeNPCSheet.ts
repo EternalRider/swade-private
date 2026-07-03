@@ -94,10 +94,28 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     this.element
       .querySelectorAll('.gear-card .card-header .item-name,.power-card .card-header .item-name')
       .forEach((el) =>
-        el.addEventListener('click', (ev) => {
-          const card = ev.currentTarget.closest('.gear-card,.power-card');
+        el.addEventListener('click', async (ev) => {
+          // Handle collapsible card toggling.
+          const card = ev.currentTarget?.closest('.gear-card,.power-card');
           const content = card.querySelector('.card-content');
-          content.classList.toggle('collapsed');
+          content?.classList.toggle('collapsed');
+
+          // Enrich and add item description. Currently, each render resets collapsed elements, so this can be on demand.
+          // If we change the NPC sheet to retain collapse state like the PC sheet, we need to enrich items for
+          // expanded elements in _prepareContext() instead.
+          const id = card.dataset.itemId;
+          const description = content?.querySelector('.description,.power-description')
+          if (id?.length && !content?.classList?.contains('collapsed') && description) {
+            const item = this.actor.items.get(id);
+            const desc = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+              item?.system?.description,
+              {
+                relativeTo: this.actor,
+                rollData: this.actor.getRollData(),
+                secrets: this.options.editable && this.document.isOwner,
+              });
+            description.innerHTML = desc;
+          }
         })
       );
 

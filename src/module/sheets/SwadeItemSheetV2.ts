@@ -474,7 +474,6 @@ export default class SwadeItemSheetV2 extends SwadeBaseSheetMixin<SwadeItem, Ite
       additionalStats: additionalStats,
       collapsibleStates: this.collapsibleStates,
       enrichedDescription: await this.#enrichText(this.item.system.description),
-      enrichedNotes: await this.#enrichText(this.item.system.notes as string),
       equipStatusOptions: this.#equipStatusOptions(),
       grantOnTriggers: this.#getGrantOnTriggers(),
       hasAdditionalStats: Object.keys(additionalStats).length > 0,
