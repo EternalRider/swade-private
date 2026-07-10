@@ -827,17 +827,17 @@ export async function createRegionFromPreset(preset: string, item?: SwadeItem) {
       Object.assign(regionData.shapes[0], {
         angle: presetData.shape.angle,
         curvature: 'semicircle',
-        radius: presetData.shape.radius * canvas.grid.size,
+        radius: presetData.shape.radius * canvas.grid.size / canvas.grid.distance,
       });
       break;
     case 'line':
       Object.assign(regionData.shapes[0], {
-        length: presetData.shape.length * canvas.grid.size,
-        width: presetData.shape.width * canvas.grid.size,
+        length: presetData.shape.length * canvas.grid.size / canvas.grid.distance,
+        width: presetData.shape.width * canvas.grid.size / canvas.grid.distance,
       });
       break;
     case 'circle':
-      regionData.shapes[0].radius = presetData.shape.radius * canvas.grid.size;
+      regionData.shapes[0].radius = presetData.shape.radius * canvas.grid.size / canvas.grid.distance;
       break;
   }
   return canvas.regions.placeRegion(regionData);
