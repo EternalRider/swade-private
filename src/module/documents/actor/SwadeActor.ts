@@ -683,7 +683,7 @@ class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Su
       aeClass.cleanData(statusEffect);
       statusEffect.name = game.i18n.localize(statusEffect.name as string);
       if (overlay) foundry.utils.setProperty(statusEffect, 'flags.core.overlay', true);
-      await aeClass.create(statusEffect, { parent: this });
+      await aeClass.create(statusEffect, { parent: this, keepId: true });
     }
     return state;
   }
