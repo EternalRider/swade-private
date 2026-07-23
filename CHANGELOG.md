@@ -22,6 +22,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 6.0.4
+
+### Fixed
+
+- Template regions now respect the grid distance **by @ddbrown30**
+
 ## 6.0.3
 
 ### Added
