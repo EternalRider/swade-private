@@ -6,10 +6,10 @@ import { ActionData } from '../data/item';
 import SwadeActiveEffect from '../documents/active-effect/SwadeActiveEffect';
 import SwadeItem from '../documents/item/SwadeItem';
 import { getDieSidesRange } from '../util';
-import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
+import { SwadeActorSheetV2, SheetPowers } from './SwadeActorSheetV2';
 
 export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderContext> {
-  #activeArcane = 'All';
+  #activeArcane = 'general';
 
   static override DEFAULT_OPTIONS = {
     classes: ['swade-application', 'npc'],
@@ -94,10 +94,28 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     this.element
       .querySelectorAll('.gear-card .card-header .item-name,.power-card .card-header .item-name')
       .forEach((el) =>
-        el.addEventListener('click', (ev) => {
-          const card = ev.currentTarget.closest('.gear-card,.power-card');
+        el.addEventListener('click', async (ev) => {
+          // Handle collapsible card toggling.
+          const card = ev.currentTarget?.closest('.gear-card,.power-card');
           const content = card.querySelector('.card-content');
-          content.classList.toggle('collapsed');
+          content?.classList.toggle('collapsed');
+
+          // Enrich and add item description. Currently, each render resets collapsed elements, so this can be on demand.
+          // If we change the NPC sheet to retain collapse state like the PC sheet, we need to enrich items for
+          // expanded elements in _prepareContext() instead.
+          const id = card.dataset.itemId;
+          const description = content?.querySelector('.description,.power-description')
+          if (id?.length && !content?.classList?.contains('collapsed') && description) {
+            const item = this.actor.items.get(id);
+            const desc = await foundry.applications.ux.TextEditor.implementation.enrichHTML(
+              item?.system?.description,
+              {
+                relativeTo: this.actor,
+                rollData: this.actor.getRollData(),
+                secrets: this.options.editable && this.document.isOwner,
+              });
+            description.innerHTML = desc;
+          }
         })
       );
 
@@ -117,7 +135,8 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         cssClass: 'themed theme-dark',
       });
     });
-    this._filterPowers();
+
+    this._filterPowers(context);
   }
 
   override async _onFirstRender(
@@ -150,18 +169,27 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
         itemTypes[type].push(item);
       }
     }
-    const arcanesSet = new Set((itemTypes.power ?? []).map((p) => p.system.arcane));
+    const sortTypes = ['ability', 'action', 'edge', 'hindrance', 'skill'];
+    for (const t of Object.keys(itemTypes)) {
+      if (!sortTypes.includes(t)) continue;
+      itemTypes[t] = itemTypes[t].toSorted((a, b) => a.name.localeCompare(b.name));
+    }
+
     const additionalStats = this.#getAdditionalStats();
+    let wildcardIconURL = CONFIG.SWADE.wildCardIcons.regular;
+    if (game.settings.get('core', 'uiConfig')?.colorScheme?.applications === 'light') {
+      wildcardIconURL = CONFIG.SWADE.wildCardIcons.compendium;
+    }
     return {
       ...context,
       additionalStats: additionalStats,
       allApplicableEffects: Array.from(this.actor.allApplicableEffects()),
-      arcanes: Array.from(arcanesSet).filter((a) => a),
       armorTooltip: this.actor.getArmorTooltip(),
       enrichedBiography,
       hasAdditionalStatsFields: Object.keys(additionalStats).length > 0,
       itemTypes,
       parryTooltip: this.actor.getPTTooltip('parry'),
+      powers: this.getPowers(),
       settingrules: {
         conviction: game.settings.get('swade', 'enableConviction'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -173,6 +201,7 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
       toughnessTooltip: this.actor.getPTTooltip('toughness'),
       useAttributeShorts: game.settings.get('swade', 'useAttributeShorts'),
       wealthDieTypes: getDieSidesRange(4, 12),
+      wildcardIconURL: wildcardIconURL,
     };
   }
 
@@ -306,15 +335,24 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
     });
   }
 
-  _filterPowers() {
+  _filterPowers(context: NpcSheetRenderContext | null = null) {
+    // Initialize selected AB to first real, non-general AB, if possible.
+    if (this.#activeArcane === 'general' && !context?.powers?.showGeneral) {
+      for (const key of Object.keys(context?.powers?.arcaneBackgrounds ?? {})) {
+        if (key?.length < 1 || key === 'general') continue;
+        this.#activeArcane = key;
+        break;
+      }
+    }
+
+    // Toggle AB selectors, PP counters and powers display depending on selected AB.
     this.element.querySelectorAll('.arcane, .power, .power-counter').forEach((el) => {
-      if (el.dataset.arcane === this.#activeArcane || this.#activeArcane === 'All') el.classList.add('active');
-      else el.classList.remove('active');
+      el.classList.toggle('active', el.dataset.arcane === this.#activeArcane);
     });
   }
 
   static #filterPowers(this: SwadeNPCSheet, _event: PointerEvent, target: HTMLElement) {
-    this.#activeArcane = target.dataset.arcane ?? 'All';
+    this.#activeArcane = target.dataset.arcane ?? 'general';
     this._filterPowers();
   }
 
@@ -439,15 +477,16 @@ export default class SwadeNPCSheet extends SwadeActorSheetV2<NpcSheetRenderConte
 interface NpcSheetRenderContext extends SwadeActorSheetV2.RenderContext {
   additionalStats: AdditionalStats;
   allApplicableEffects: ActiveEffect[];
-  arcanes: string[];
   armorTooltip: string;
   enrichedBiography: string;
   hasAdditionalStatsFields: boolean;
   itemTypes: Record<string, SwadeItem[]>;
   parryTooltip: string;
+  powers: SheetPowers;
   settingrules: Record<string, unknown>;
   sortedSkills: SwadeItem[];
   toughnessTooltip: string;
   useAttributeShorts: boolean;
   wealthDieTypes: DieSidesOption[];
+  wildcardIconURL: string;
 }

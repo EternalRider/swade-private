@@ -60,18 +60,18 @@ export default class SwadeActiveEffect<
   }
 
   get expiresAtStartOfTurn(): boolean {
-    return this.duration.expiry.startsWith('turnStart');
+    return this.duration?.expiry?.startsWith('turnStart');
   }
 
   get expiresAtEndOfTurn(): boolean {
-    return this.duration.expiry.startsWith('turnEnd');
+    return this.duration?.expiry?.startsWith('turnEnd');
   }
 
   get expirationText(): string {
     let localizationKey = 'SWADE.Expiration.';
-    const suffix = this.duration.expiry.endsWith("Prompt") ? 'Prompt' : 'Auto';
-    if (this.duration.expiry === 'turnStart') localizationKey += `Begin${suffix}`;
-    else if (this.duration.expiry === 'turnEnd') localizationKey += `End${suffix}`;
+    const suffix = this.duration?.expiry.endsWith("Prompt") ? 'Prompt' : 'Auto';
+    if (this.duration?.expiry === 'turnStart') localizationKey += `Begin${suffix}`;
+    else if (this.duration?.expiry === 'turnEnd') localizationKey += `End${suffix}`;
     else localizationKey += 'None';
     return _loc(localizationKey);
   }
@@ -285,12 +285,12 @@ export default class SwadeActiveEffect<
     if (!this.isTemporary) return;
 
     const duration = this.updateDuration(context);
-    const remaining = duration.remaining ?? 0;
+    const remaining = duration?.remaining ?? 0;
 
     // SWADE rules count the current turn as part of the duration, so if duration is in rounds, check < 2 instead of 1.
-    if (remaining < 1 || (duration.units === 'rounds' && remaining < 2)) {
-      if (pointInTurn === 'start' && duration.expiry?.startsWith('turnStart') ||
-          pointInTurn === 'end' && duration.expiry?.startsWith('turnEnd')) {
+    if (remaining < 1 || (duration?.units === 'rounds' && remaining < 2)) {
+      if (pointInTurn === 'start' && duration?.expiry?.startsWith('turnStart') ||
+          pointInTurn === 'end' && duration?.expiry?.startsWith('turnEnd')) {
         await this.expire();
       }
     }
@@ -315,6 +315,17 @@ export default class SwadeActiveEffect<
     } else {
       await this.delete();
     }
+  }
+
+  get isExpiryTrackable() {
+    // We currently don't support expiration of AEs on items.
+    // If we change that, we may need to handle `start.time` values mistakenly added by the V14 migration.
+    // See `_preCreate` note about issue #1478.
+    if (this.parent instanceof SwadeItem) return false;
+
+    // This handles other cases, like AEs in compendia etc.
+    const base = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(SwadeActiveEffect.prototype), "isExpiryTrackable");
+    return base?.get?.call(this) ?? false;
   }
 
   async promptEffectDeletion() {
@@ -351,10 +362,9 @@ export default class SwadeActiveEffect<
 
   async resetDuration() {
     await this.update({
-      start: {
-        round: game.combat?.round ?? 1,
-        time: game.time.worldTime,
-      },
+      start: SwadeActiveEffect.getEffectStart(),
+      'duration.expired': false,
+      disabled: false,
     });
   }
 
@@ -419,6 +429,20 @@ export default class SwadeActiveEffect<
     const allowed = await super._preCreate(data, options, user);
     if (allowed === false) return false;
 
+    // This mostly matches what super._preCreate() already does, overriding it with these differences:
+    // 1. We don't allow user-defined `start.time`,
+    //    instead always resetting it to current time when an AE is applied to an actor.
+    //    This is because in the V14 migration, some of our AEs mistakenly got a start time generated. See issue #1478.
+    // 2. We discard user-defined duration data with `null` values, instead of just checking the keys don't exist.
+    if (this.parent instanceof Actor && data.start?.time >= 0) {
+      const start = SwadeActiveEffect.getEffectStart();
+      for (const key of Object.keys(start)) {
+        // Prefer user-defined duration data except for `start.time`.
+        if (data.start?.[key] !== undefined && data.start?.[key] !== null && key !== 'time') delete start[key];
+      }
+      this.updateSource({ start });
+    }
+
     if (!data.img) {
       let path = 'systems/swade/assets/icons/active-effect.svg';
       if (this.parent instanceof SwadeItem) path = this.parent.img as string;
@@ -454,7 +478,7 @@ export default class SwadeActiveEffect<
       // Vulnerable & Distracted should expire this round if combatant hasn't gone yet, and be attached to target combatant
       if (['vulnerable000000', 'distracted000000'].includes(this._id)) {
         const sourceUpdate = { 'start.combatant': combatant.id };
-        if ((combat.turn !== null) && (combat.turn < combatant.turnNumber) && (this.duration.units === 'rounds')) {
+        if ((combat.turn !== null) && (combat.turn < combatant.turnNumber) && (this.duration?.units === 'rounds')) {
           sourceUpdate['duration.value'] = this.duration.value - 1;
         }
         this.updateSource(sourceUpdate);
@@ -498,6 +522,7 @@ export default class SwadeActiveEffect<
         : negativeColor;
     const color = Color.from(colorCode);
     for (const token of tokens) {
+      if (!token.visible || token.document?.isSecret) continue;
       token.ring?.flashColor(color, {
         duration: 1000,
         easing: CONFIG.Token.ring?.ringClass.createSpikeEasing(0.4),

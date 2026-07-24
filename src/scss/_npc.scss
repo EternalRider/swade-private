@@ -151,21 +151,37 @@ body.theme-light .swade.sheet.actor.npc,
             background: var(--input-background);
           }
 
+          .parry-block,
           .toughness-block {
             display: flex;
             flex-direction: row;
             input {
               flex: 2;
             }
-            .armor-value {
-              flex: 1;
+            .armor-value,
+            .parry-value {
+              display: block;
+              padding: 0;
               line-height: 27px;
               font-weight: 600;
               text-align: center;
-              background: url('/assets/icons/police-badge.svg') no-repeat center;
-              background-size: cover;
-              cursor: pointer;
               border: none;
+              background-color: transparent;
+              --button-text-color: inherit;
+              &:disabled {
+                --button-text-color: inherit;
+              }
+              &:not(:disabled) {
+                cursor: pointer;
+              }
+              img {
+                height: 1lh;
+                filter: var(--invert-if-dark);
+              }
+              span {
+                position: relative;
+                top: -1lh;
+              }
             }
           }
         }
@@ -246,15 +262,6 @@ body.theme-light .swade.sheet.actor.npc,
       }
     }
 
-    .skills {
-      // Skills
-      .skills-list {
-        list-style: none;
-        margin: 0;
-        padding: 0;
-      }
-    }
-
     .gear {
       .gear-list {
         list-style: none;
@@ -318,7 +325,10 @@ body.theme-light .swade.sheet.actor.npc,
     }
     .power-counter {
       display: none;
+      justify-content: right;
+      gap: 2px;
       input {
+        text-align: center;
         width: 40px;
         color: variables.$light-pastel-blue;
         font-weight: bold;
@@ -382,6 +392,8 @@ body.theme-light .swade.sheet.actor.npc,
     grid-template-areas:
       'profile-img header-fields'
       'category category';
+    
+    padding-bottom: 6px;
 
     //Actor Name
     .charline {
@@ -396,8 +408,15 @@ body.theme-light .swade.sheet.actor.npc,
       }
     }
 
+    .bennies,
     .conviction {
       text-align: center;
+      input {
+        text-align: center;
+      }
+    }
+
+    .conviction {
       margin-left: 4px;
       width: 20%;
       .convction-toggle {
@@ -540,12 +559,18 @@ body.theme-light .swade.sheet.actor.npc,
         font-size: 30px;
         line-height: 25px;
       }
+      input {
+        text-align: center;
+      }
     }
   }
 
   // Summary
   .skills {
     .skills-list {
+      list-style: none;
+      margin: 5px 0;
+      padding: 0;
       span {
         a:hover {
           border-bottom: 1px dotted #293133;
@@ -566,7 +591,7 @@ body.theme-light .swade.sheet.actor.npc,
     }
   }
 
-  //Gear
+  // Gear
   .gear {
     margin: 5px 0px 0px 0px;
     &.inventory {

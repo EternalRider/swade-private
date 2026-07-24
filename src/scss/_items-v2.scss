@@ -244,6 +244,7 @@ body.theme-light .swade-item-sheet,
   }
 
   .window-content .description.active {
+    gap: 0;
     display: grid;
     grid-template-rows: max-content 1fr;
     &:has(> :nth-child(1):last-child) {

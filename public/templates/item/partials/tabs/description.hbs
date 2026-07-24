@@ -14,24 +14,19 @@
     </div>
   {{/if}}
   {{#if (eq item.type 'power')}}
-    <div class='form-group trapping'>
+    <div class='form-group trapping' data-tooltip='{{localize "SWADE.Trap"}}: {{item.system.trapping}}'>
       <input
         name='system.trapping'
         type='text'
         value='{{item.system.trapping}}'
         placeholder='{{localize "SWADE.Trap"}}'
-        title='{{localize "SWADE.Trap"}}'
         data-dtype='String'
       />
     </div>
   {{/if}}
-  {{#if editable}}
-    <div class='editor-container'>
-      <prose-mirror toggled name='system.description' value='{{document.system.description}}'>
-        {{{enrichedDescription}}}
-      </prose-mirror>
-    </div>
-  {{else}}
-    {{{enrichedDescription}}}
-  {{/if}}
+  <div class='editor-container'>
+    <prose-mirror toggled name='system.description' value='{{document.system.description}}' editable='{{editable}}'>
+      {{{enrichedDescription}}}
+    </prose-mirror>
+  </div>
 </section>

@@ -16,7 +16,7 @@ import SwadeItem from '../documents/item/SwadeItem';
 import { hotReloadActorSheet } from '../hmr';
 import { Accordion } from '../style/Accordion';
 import * as util from '../util';
-import { SwadeActorSheetV2 } from './SwadeActorSheetV2';
+import { SwadeActorSheetV2, SheetPowers } from './SwadeActorSheetV2';
 
 export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRenderContext> {
   _equipStateMenu: foundry.applications.ux.ContextMenu<false>;
@@ -377,7 +377,7 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
       hasAnyRechargeableItems,
       itemTypes: itemTypes,
       parryTooltip: this.actor.getPTTooltip('parry'),
-      powers: this.#getPowers(),
+      powers: this.getPowers(),
       settingrules: {
         conviction: game.settings.get('swade', 'enableConviction'),
         noPowerPoints: game.settings.get('swade', 'noPowerPoints'),
@@ -999,39 +999,6 @@ export default class CharacterSheet extends SwadeActorSheetV2<CharacterSheetRend
     return stats;
   }
 
-  #getPowers(): SheetPowers {
-    //Deal with ABs and Powers
-    const arcaneBackgrounds: Record<string, SheetArcaneBackground> = {};
-
-    for (const power of this.actor.itemTypes.power) {
-      const ab = power.system.arcane || 'general';
-      if (!arcaneBackgrounds[ab]) {
-        arcaneBackgrounds[ab] = {
-          valuePath: `system.powerPoints.${ab}.value`,
-          value: foundry.utils.getProperty(this.actor, `system.powerPoints.${ab}.value`),
-          maxPath: `system.powerPoints.${ab}.max`,
-          max: foundry.utils.getProperty(this.actor, `system.powerPoints.${ab}.max`),
-          powers: [],
-        };
-      }
-      arcaneBackgrounds[ab].powers.push(power);
-    }
-
-    //sort the powers by their sort value
-    for (const entry of Object.values(arcaneBackgrounds)) {
-      entry.powers.sort((a, b) => a.sort - b.sort);
-    }
-
-    const hasPowersWithoutArcane = arcaneBackgrounds?.general?.powers.length > 0;
-    const showGeneral = hasPowersWithoutArcane || game.settings.get('swade', 'alwaysGeneralPP');
-
-    return {
-      arcaneBackgrounds,
-      hasPowersWithoutArcane,
-      showGeneral,
-    };
-  }
-
   #getAttributesForDisplay(): Record<string, TraitDisplay> {
     if (this.actor.type === 'vehicle') throw Error();
     const attributes: Record<string, TraitDisplay> = {};
@@ -1401,20 +1368,6 @@ interface SheetEffect {
     startTurn: number;
     remaining: number;
   };
-}
-
-interface SheetPowers {
-  hasPowersWithoutArcane: boolean;
-  arcaneBackgrounds: Record<string, SheetArcaneBackground>;
-  showGeneral: boolean;
-}
-
-interface SheetArcaneBackground {
-  valuePath: string;
-  value: any;
-  maxPath: string;
-  max: any;
-  powers: SwadeItem[];
 }
 
 interface TraitDisplay {
