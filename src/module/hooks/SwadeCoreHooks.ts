@@ -707,7 +707,7 @@ export default class SwadeCoreHooks {
   }
 
   static async onTargetToken(user: User, token: foundry.canvas.placeables.Token, targeted: boolean) {
-    if (!targeted) return;
+    if (!targeted || !token.visible || token.document?.isSecret) return;
     token.ring?.flashColor(user.color, {
       duration: 1000,
       easing: (pt: number) => {

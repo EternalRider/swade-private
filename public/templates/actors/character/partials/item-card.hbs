@@ -4,7 +4,7 @@
       <div class="item-image" style="background-image: url('{{img}}')"></div>
       <a class="item-name">{{name}}</a>
       <div class="item-controls">
-        <button type="button" data-action="showItem" class="item-control item-show">
+        <button type="button" data-action="showItem" class="item-control item-show" title='{{localize "SWADE.ShowInChat"}}'>
           <i class="far fa-comment-alt"></i>
         </button>
         <button type="button" data-action="toggleProperty" class="item-toggle {{#unless system.favorite}}item-unequipped{{/unless}}" data-toggle="system.favorite"

@@ -22,6 +22,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Known Issues
 -->
 
+## 6.0.4
+
+### Fixed
+
+- Template regions now respect the grid distance **by @ddbrown30**
+- Fixed sheet toggles not triggering status effects. (#1480) **by @ddbrown30**
+- Fixed layout issues with the community NPC sheet. (#1481) **by @mhilbrunner**
+- Fixed Active Effects on items expiring. (#1478) **by @mhilbrunner**
+- Fixed Active Effects not properly resetting their start time when being applied to actors. (#1478) **by @mhilbrunner**
+- Fixed Active Effects duration only being reset to a single round, instead of full duration, when manually reset on expiration. (#496) **by @mhilbrunner**
+- Fixed item sheet appearance for compendium items. (#1482) **by @mhilbrunner**
+
 ## 6.0.3
 
 ### Added

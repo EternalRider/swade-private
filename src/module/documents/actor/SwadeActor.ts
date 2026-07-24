@@ -683,7 +683,7 @@ class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Su
       aeClass.cleanData(statusEffect);
       statusEffect.name = game.i18n.localize(statusEffect.name as string);
       if (overlay) foundry.utils.setProperty(statusEffect, 'flags.core.overlay', true);
-      await aeClass.create(statusEffect, { parent: this });
+      await aeClass.create(statusEffect, { parent: this, keepId: true });
     }
     return state;
   }
@@ -1297,6 +1297,7 @@ class SwadeActor<Subtype extends Actor.SubType = Actor.SubType> extends Actor<Su
           : false;
       const tokens = this.getActiveTokens(true, false);
       for (const token of tokens) {
+        if (!token.visible || token.document?.isSecret) continue;
         token.ring?.flashColor(isDamage ? Color.from('#D41159') : Color.from('#1A85FF'), {
           duration: 1000,
           easing: CONFIG.Token.ring.ringClass.createSpikeEasing(0.4),
